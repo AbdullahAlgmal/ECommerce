@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="../BusinessLayer/BusinessLayer.csproj" />
+  <Project Path="../CoreLayer/CoreLayer.csproj" />
+  <Project Path="../DataAccessLayer/DataAccessLayer.csproj" />
   <Project Path="ECommerceApi/ECommerceApi.csproj" />
 </Solution>
