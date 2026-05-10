@@ -1,0 +1,17 @@
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\bin\Debug\net8.0\DataAccessLayer.deps.json
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\bin\Debug\net8.0\DataAccessLayer.runtimeconfig.json
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\bin\Debug\net8.0\DataAccessLayer.dll
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\bin\Debug\net8.0\DataAccessLayer.pdb
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\bin\Debug\net8.0\CoreLayer.dll
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\bin\Debug\net8.0\CoreLayer.pdb
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAccessLayer.csproj.AssemblyReference.cache
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAccessLayer.GeneratedMSBuildEditorConfig.editorconfig
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAccessLayer.AssemblyInfoInputs.cache
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAccessLayer.AssemblyInfo.cs
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAccessLayer.csproj.CoreCompileInputs.cache
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAcce.E67BD773.Up2Date
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAccessLayer.dll
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\refint\DataAccessLayer.dll
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAccessLayer.pdb
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAccessLayer.genruntimeconfig.cache
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\ref\DataAccessLayer.dll

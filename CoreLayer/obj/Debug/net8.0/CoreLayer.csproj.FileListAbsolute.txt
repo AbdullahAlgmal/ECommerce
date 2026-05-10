@@ -1,0 +1,11 @@
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\bin\Debug\net8.0\CoreLayer.deps.json
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\bin\Debug\net8.0\CoreLayer.dll
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\bin\Debug\net8.0\CoreLayer.pdb
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\obj\Debug\net8.0\CoreLayer.GeneratedMSBuildEditorConfig.editorconfig
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\obj\Debug\net8.0\CoreLayer.AssemblyInfoInputs.cache
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\obj\Debug\net8.0\CoreLayer.AssemblyInfo.cs
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\obj\Debug\net8.0\CoreLayer.csproj.CoreCompileInputs.cache
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\obj\Debug\net8.0\CoreLayer.dll
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\obj\Debug\net8.0\refint\CoreLayer.dll
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\obj\Debug\net8.0\CoreLayer.pdb
+E:\1-Programming\5-MyProjects\ECommerce\CoreLayer\obj\Debug\net8.0\ref\CoreLayer.dll
