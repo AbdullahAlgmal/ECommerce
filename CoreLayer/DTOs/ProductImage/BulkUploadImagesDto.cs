@@ -1,0 +1,13 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CoreLayer.DTOs.ProductImage
+{
+    public class BulkUploadImagesDto
+    {
+        [Required]
+        public List<string> ImageUrls { get; set; } = new();
+
+        [Required]
+        public int ProductId { get; set; }
+    }
+}

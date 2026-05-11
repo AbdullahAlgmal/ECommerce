@@ -89,5 +89,15 @@ namespace DataAccessLayer.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> UserOwnsAddressAsync(int imageId, int productId)
+        {
+            return await _dbSet
+                .AnyAsync(pi => pi.Id == imageId && pi.ProductId == productId);
+        }
+        public async Task<int> CountAddressesByUserAsync(int productId)
+        {
+            return await _dbSet.CountAsync(pi => pi.ProductId == productId);
+        }
     }
 }

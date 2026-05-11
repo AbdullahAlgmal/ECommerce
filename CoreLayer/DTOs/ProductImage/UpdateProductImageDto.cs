@@ -2,17 +2,15 @@
 
 namespace CoreLayer.DTOs.ProductImage
 {
-    public class CreateProductImageDto
+    public class UpdateProductImageDto
     {
         [Required]
         [Url]
         [StringLength(400, MinimumLength = 1)]
         public string Url { get; set; } = null!;
 
-        [Range(1, 255)]
-        public byte? ImageOrder { get; set; }
-
         [Required]
-        public int ProductId { get; set; }
+        [Range(1, 255)]
+        public byte ImageOrder { get; set; }
     }
 }
