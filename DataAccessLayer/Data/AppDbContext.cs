@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
-namespace DataAccessLayer.Data;
+namespace ECommerceApi;
 
 public partial class AppDbContext : DbContext
 {
@@ -8,7 +10,8 @@ public partial class AppDbContext : DbContext
     {
     }
 
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options)
     {
     }
 
@@ -117,6 +120,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Method)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.TransactionId).IsUnicode(false);
 
             entity.HasOne(d => d.Order).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.OrderId)

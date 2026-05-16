@@ -3,7 +3,7 @@ using CoreLayer.DTOs.Product;
 using CoreLayer.DTOs.ProductImage;
 using CoreLayer.Interfaces.Repositories;
 using CoreLayer.Interfaces.Services;
-using DataAccessLayer;
+using ECommerceApi;
 using System.Linq.Expressions;
 
 namespace BusinessLayer.Services

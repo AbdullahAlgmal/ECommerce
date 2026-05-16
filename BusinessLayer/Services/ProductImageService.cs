@@ -1,7 +1,7 @@
 ﻿using CoreLayer.DTOs.ProductImage;
 using CoreLayer.Interfaces.Repositories;
 using CoreLayer.Interfaces.Services;
-using DataAccessLayer;
+using ECommerceApi;
 
 namespace BusinessLayer.Services
 {

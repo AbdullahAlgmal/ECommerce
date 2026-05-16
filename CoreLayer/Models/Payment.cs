@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataAccessLayer;
+namespace ECommerceApi;
 
 public partial class Payment
 {
@@ -12,6 +12,10 @@ public partial class Payment
     public string Method { get; set; } = null!;
 
     public decimal Amount { get; set; }
+
+    public string Status { get; set; } = null!;
+
+    public string? TransactionId { get; set; }
 
     public int OrderId { get; set; }
 

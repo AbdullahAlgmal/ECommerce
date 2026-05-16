@@ -1,4 +1,4 @@
-﻿using DataAccessLayer;
+﻿using ECommerceApi;
 
 namespace CoreLayer.Interfaces.Repositories
 {

@@ -1,4 +1,4 @@
-﻿using DataAccessLayer;
+﻿using ECommerceApi;
 using System.Linq.Expressions;
 
 namespace CoreLayer.Interfaces.Repositories

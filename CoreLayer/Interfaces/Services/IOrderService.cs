@@ -1,6 +1,5 @@
 ﻿using CoreLayer.DTOs;
 using CoreLayer.DTOs.Order;
-using CoreLayer.Interfaces.Repositories;
 
 namespace CoreLayer.Interfaces.Services
 {

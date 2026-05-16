@@ -2,7 +2,7 @@
 using CoreLayer.DTOs.Product;
 using CoreLayer.Interfaces.Repositories;
 using CoreLayer.Interfaces.Services;
-using DataAccessLayer;
+using ECommerceApi;
 
 namespace BusinessLayer.Services
 {

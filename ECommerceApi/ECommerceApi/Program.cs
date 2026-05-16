@@ -1,8 +1,8 @@
 using BusinessLayer.Services;
 using CoreLayer.Interfaces.Repositories;
 using CoreLayer.Interfaces.Services;
-using DataAccessLayer.Data;
 using DataAccessLayer.Repositories;
+using ECommerceApi;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +26,8 @@ builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IShippingRepository, ShippingRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
@@ -35,6 +37,10 @@ builder.Services.AddScoped<IProductImageService, ProductImageService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderItemService, OrderItemService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IShippingService, ShippingService>();
+builder.Services.AddScoped<ISimulatedPaymentService, SimulatedPaymentService>();
+builder.Services.AddScoped<ISimulatedShippingService, SimulatedShippingService>();
 
 var app = builder.Build();
 
