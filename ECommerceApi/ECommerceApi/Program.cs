@@ -42,6 +42,16 @@ builder.Services.AddScoped<IShippingService, ShippingService>();
 builder.Services.AddScoped<ISimulatedPaymentService, SimulatedPaymentService>();
 builder.Services.AddScoped<ISimulatedShippingService, SimulatedShippingService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ECommerceApiPolicy", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -52,6 +62,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();    
+
+app.UseCors("ECommerceApiPolicy");
 
 app.UseAuthorization();
 
