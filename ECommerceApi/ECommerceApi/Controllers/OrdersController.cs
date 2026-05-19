@@ -2,6 +2,7 @@
 using CoreLayer.DTOs.Order;
 using CoreLayer.DTOs.OrderItem;
 using CoreLayer.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceApi.Controllers
@@ -10,6 +11,7 @@ namespace ECommerceApi.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;

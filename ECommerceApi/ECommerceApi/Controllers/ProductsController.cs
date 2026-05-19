@@ -1,6 +1,7 @@
 ﻿using CoreLayer.DTOs;
 using CoreLayer.DTOs.Product;
 using CoreLayer.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceApi.Controllers
@@ -9,6 +10,7 @@ namespace ECommerceApi.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;

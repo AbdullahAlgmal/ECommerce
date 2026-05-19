@@ -1,6 +1,7 @@
 ﻿using CoreLayer.DTOs.Shipping;
 using CoreLayer.Interfaces.Repositories;
 using CoreLayer.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceApi.Controllers
@@ -9,6 +10,7 @@ namespace ECommerceApi.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [Authorize]
     public class ShippingsController : ControllerBase
     {
         private readonly IShippingService _shippingService;

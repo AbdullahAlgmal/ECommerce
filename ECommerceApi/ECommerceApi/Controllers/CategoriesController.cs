@@ -1,5 +1,6 @@
 ﻿using CoreLayer.DTOs.Category;
 using CoreLayer.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceApi.Controllers
@@ -8,6 +9,7 @@ namespace ECommerceApi.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [Authorize]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
