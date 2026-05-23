@@ -26,6 +26,7 @@ namespace ECommerceApi.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<PaymentDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
@@ -42,6 +43,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<PaymentDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -62,6 +64,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("order/{orderId}")]
         [ProducesResponseType(typeof(ApiResponse<PaymentDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -82,6 +85,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("user/{userId}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<PaymentDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -103,6 +107,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("user/{userId}/total-spending")]
         [ProducesResponseType(typeof(ApiResponse<decimal>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -124,6 +129,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<PaymentDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -152,6 +158,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("refund")]
         [ProducesResponseType(typeof(ApiResponse<PaymentDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]

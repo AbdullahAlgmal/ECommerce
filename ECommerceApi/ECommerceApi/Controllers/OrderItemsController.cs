@@ -27,6 +27,7 @@ namespace ECommerceApi.Controllers
             _productService = productService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<OrderItemDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
@@ -43,6 +44,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<OrderItemDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -63,6 +65,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("order/{orderId}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<OrderItemDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -84,6 +87,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("product/{productId}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<OrderItemDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -105,6 +109,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("statistics")]
         [ProducesResponseType(typeof(ApiResponse<OrderItemStatisticsDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
@@ -121,6 +126,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("top-selling/{count}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ProductSalesDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
@@ -140,6 +146,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("product/{productId}/total-sales")]
         [ProducesResponseType(typeof(ApiResponse<decimal>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -161,6 +168,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<OrderItemDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -189,6 +197,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiResponse<OrderItemDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -216,6 +225,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -236,6 +246,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("order/{orderId}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]

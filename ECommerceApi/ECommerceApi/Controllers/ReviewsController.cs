@@ -29,6 +29,7 @@ namespace ECommerceApi.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
@@ -45,6 +46,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<ReviewDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -65,6 +67,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("{id}/details")]
         [ProducesResponseType(typeof(ApiResponse<ReviewDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -85,6 +88,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("product/{productId}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -106,6 +110,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("user/{userId}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -127,6 +132,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("rating-range")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -150,6 +156,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("product/{productId}/rating")]
         [ProducesResponseType(typeof(ApiResponse<ProductRatingDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -171,6 +178,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("user/{userId}/summary")]
         [ProducesResponseType(typeof(ApiResponse<UserReviewSummaryDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -192,6 +200,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("check/{userId}/{productId}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
@@ -208,6 +217,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("search")]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -231,6 +241,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<ReviewDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -259,6 +270,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiResponse<ReviewDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -281,6 +293,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -301,6 +314,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("product/{productId}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -322,6 +336,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("user/{userId}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]

@@ -20,6 +20,7 @@ namespace ECommerceApi.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -40,6 +41,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("email/{email}")]
         [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -60,7 +62,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("statistics")]
         [ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
@@ -77,6 +79,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -102,6 +105,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -124,6 +128,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]

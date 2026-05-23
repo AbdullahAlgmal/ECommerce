@@ -27,6 +27,7 @@ namespace ECommerceApi.Controllers
             _addressRepository = addressRepository;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ShippingDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
@@ -43,6 +44,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<ShippingDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -63,6 +65,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Customer")]
         [HttpGet("order/{orderId}")]
         [ProducesResponseType(typeof(ApiResponse<ShippingDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -83,6 +86,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("track/{trackingNumber}")]
         [ProducesResponseType(typeof(ApiResponse<ShippingTrackingResult>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
@@ -103,6 +107,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPost("calculate-rate")]
         [ProducesResponseType(typeof(ApiResponse<ShippingRateResult>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -128,6 +133,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<ShippingDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -156,6 +162,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/status")]
         [ProducesResponseType(typeof(ApiResponse<ShippingDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
@@ -178,6 +185,7 @@ namespace ECommerceApi.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("{id}/cancel")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
