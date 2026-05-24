@@ -3,6 +3,7 @@ using CoreLayer.DTOs.User;
 using CoreLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ECommerceApi.Controllers
 {
@@ -10,6 +11,8 @@ namespace ECommerceApi.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [EnableRateLimiting("ECommerceLimiter")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status429TooManyRequests)]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;

@@ -69,7 +69,7 @@ namespace BusinessLayer.Services
                 };
             }
 
-            var today = DateOnly.FromDateTime(DateTime.Today);
+            var today = DateTime.Today;
             var age = today.Year - registerDto.DateofBirth.Year;
             if (registerDto.DateofBirth > today.AddYears(-age)) age--;
 
@@ -102,7 +102,7 @@ namespace BusinessLayer.Services
                 LastName = registerDto.LastName.Trim(),
                 Email = registerDto.Email.Trim().ToLower(),
                 Phone = registerDto.Phone,
-                DateofBirth = registerDto.DateofBirth,
+                DateofBirth = DateOnly.FromDateTime(registerDto.DateofBirth),
                 Role = registerDto.Role,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password)
             };

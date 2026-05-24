@@ -3,6 +3,7 @@ using CoreLayer.DTOs.Product;
 using CoreLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ECommerceApi.Controllers
 {
@@ -11,6 +12,8 @@ namespace ECommerceApi.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize]
+    [EnableRateLimiting("ECommerceLimiter")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status429TooManyRequests)]
     public class OrderItemsController : ControllerBase
     {
         private readonly IOrderItemService _orderItemService;
@@ -31,6 +34,7 @@ namespace ECommerceApi.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<OrderItemDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<IEnumerable<OrderItemDto>>>> GetAllOrderItems()
         {
             try
@@ -49,6 +53,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<OrderItemDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<OrderItemDto>>> GetOrderItemById(int id)
         {
             try
@@ -70,13 +75,18 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<OrderItemDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ApiResponse<IEnumerable<OrderItemDto>>>> GetOrderItemsByOrder(int orderId)
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<ApiResponse<IEnumerable<OrderItemDto>>>> GetOrderItemsByOrder(int orderId, [FromServices] IAuthorizationService authorizationService)
         {
             try
             {
                 var orderExists = await _orderService.OrderExistsAsync(orderId);
                 if (!orderExists)
                     return NotFound(ApiResponse<IEnumerable<OrderItemDto>>.Fail($"Order with ID {orderId} not found"));
+
+                var authResult = await authorizationService.AuthorizeAsync(User, orderId, "AdminOrOrderOwner");
+                if (!authResult.Succeeded)
+                    return Forbid();
 
                 var items = await _orderItemService.GetOrderItemsByOrderAsync(orderId);
                 return Ok(ApiResponse<IEnumerable<OrderItemDto>>.Succ(items));
@@ -92,6 +102,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<OrderItemDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<IEnumerable<OrderItemDto>>>> GetOrderItemsByProduct(int productId)
         {
             try
@@ -113,6 +124,7 @@ namespace ECommerceApi.Controllers
         [HttpGet("statistics")]
         [ProducesResponseType(typeof(ApiResponse<OrderItemStatisticsDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<OrderItemStatisticsDto>>> GetStatistics()
         {
             try
@@ -130,6 +142,7 @@ namespace ECommerceApi.Controllers
         [HttpGet("top-selling/{count}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ProductSalesDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<IEnumerable<ProductSalesDto>>>> GetTopSellingProducts(int count)
         {
             try
@@ -151,6 +164,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<decimal>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<decimal>>> GetTotalSalesByProduct(int productId)
         {
             try
@@ -175,6 +189,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<OrderItemDto>>> CreateOrderItem([FromBody] CreateOrderItemDto createDto)
         {
             try
@@ -204,6 +219,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<OrderItemDto>>> UpdateOrderItem(int id, [FromBody] UpdateOrderItemDto updateDto)
         {
             try
@@ -230,6 +246,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteOrderItem(int id)
         {
             try
@@ -251,6 +268,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteOrderItemsByOrder(int orderId)
         {
             try

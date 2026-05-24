@@ -3,6 +3,7 @@ using CoreLayer.Interfaces.Repositories;
 using CoreLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ECommerceApi.Controllers
 {
@@ -11,6 +12,8 @@ namespace ECommerceApi.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize]
+    [EnableRateLimiting("ECommerceLimiter")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status429TooManyRequests)]
     public class ShippingsController : ControllerBase
     {
         private readonly IShippingService _shippingService;
@@ -31,6 +34,7 @@ namespace ECommerceApi.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ShippingDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<IEnumerable<ShippingDto>>>> GetAllShippings()
         {
             try
@@ -49,13 +53,18 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<ShippingDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ApiResponse<ShippingDto>>> GetShippingById(int id)
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<ApiResponse<ShippingDto>>> GetShippingById(int id, [FromServices] IAuthorizationService authorizationService)
         {
             try
             {
                 var shipping = await _shippingService.GetShippingByIdAsync(id);
                 if (shipping == null)
                     return NotFound(ApiResponse<ShippingDto>.Fail($"Shipping with ID {id} not found"));
+
+                var authResult = await authorizationService.AuthorizeAsync(User, id, "AdminOrShippingOwner");
+                if (!authResult.Succeeded)
+                    return Forbid();
 
                 return Ok(ApiResponse<ShippingDto>.Succ(shipping));
             }
@@ -70,13 +79,18 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<ShippingDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ApiResponse<ShippingDto>>> GetShippingByOrder(int orderId)
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<ApiResponse<ShippingDto>>> GetShippingByOrder(int orderId, [FromServices] IAuthorizationService authorizationService)
         {
             try
             {
                 var shipping = await _shippingService.GetShippingByOrderAsync(orderId);
                 if (shipping == null)
                     return NotFound(ApiResponse<ShippingDto>.Fail($"No shipping found for order {orderId}"));
+
+                var authResult = await authorizationService.AuthorizeAsync(User, shipping.Id, "AdminOrShippingOwner");
+                if (!authResult.Succeeded)
+                    return Forbid();
 
                 return Ok(ApiResponse<ShippingDto>.Succ(shipping));
             }
@@ -113,6 +127,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<ShippingRateResult>>> CalculateRate(
             [FromQuery] int addressId,
             [FromQuery] decimal totalWeight,
@@ -140,6 +155,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<ShippingDto>>> CreateShipping([FromBody] CreateShippingDto createDto)
         {
             try
@@ -168,6 +184,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<ShippingDto>>> UpdateShippingStatus(int id, [FromBody] UpdateShippingStatusDto updateDto)
         {
             try
@@ -190,6 +207,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<bool>>> CancelShipping(int id)
         {
             try

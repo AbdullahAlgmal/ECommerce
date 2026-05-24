@@ -21,7 +21,7 @@ namespace CoreLayer.DTOs.Authentication
         public string Phone { get; set; } = null!;
 
         [Required]
-        public DateOnly DateofBirth { get; set; }
+        public DateTime DateofBirth { get; set; }
 
         [Required]
         [StringLength(100, MinimumLength = 6)]

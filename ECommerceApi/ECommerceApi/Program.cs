@@ -4,10 +4,13 @@ using CoreLayer.Interfaces.Repositories;
 using CoreLayer.Interfaces.Services;
 using DataAccessLayer.Repositories;
 using ECommerceApi;
+using ECommerceApi.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +52,8 @@ builder.Services.AddDbContext<AppDbContext>(Options =>
 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
 b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
 
+builder.Services.AddScoped<AdminOrCustomerOwnerHandler>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -85,6 +90,23 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("ECommerceLimiter", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: ip,
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 5,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        });
+    });
+});
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 
 builder.Services.Configure<JwtSettings>(jwtSettings);
@@ -108,7 +130,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOrOrderOwner", policy =>
+        policy.Requirements.Add(new AdminOrCustomerOwnerRequirement("Order")));
+
+    options.AddPolicy("AdminOrAddressOwner", policy =>
+        policy.Requirements.Add(new AdminOrCustomerOwnerRequirement("Address")));
+
+    options.AddPolicy("AdminOrReviewOwner", policy =>
+        policy.Requirements.Add(new AdminOrCustomerOwnerRequirement("Review")));
+
+    options.AddPolicy("AdminOrPaymentOwner", policy =>
+        policy.Requirements.Add(new AdminOrCustomerOwnerRequirement("Payment")));
+
+    options.AddPolicy("AdminOrShippingOwner", policy =>
+        policy.Requirements.Add(new AdminOrCustomerOwnerRequirement("Shipping")));
+
+    options.AddPolicy("AdminOrUserOwner", policy =>
+        policy.Requirements.Add(new AdminOrCustomerOwnerRequirement("User")));
+});
 
 var app = builder.Build();
 
@@ -123,9 +164,39 @@ app.UseHttpsRedirection();
 
 app.UseCors("ECommerceApiPolicy");
 
+app.UseRateLimiter();
+
+app.Use(async (context, next) =>
+{
+    await next();
+    if (context.Response.StatusCode == StatusCodes.Status429TooManyRequests)
+    {
+        await context.Response.WriteAsync("Too many login attempts. Please try again later.");
+    }
+});
+
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Response.StatusCode == StatusCodes.Status403Forbidden)
+    {
+        var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "anonymous";
+        var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        var path = context.Request.Path.ToString();
+
+        app.Logger.LogWarning(
+            "Forbidden access. UserId={UserId}, Path={Path}, IP={IP}",
+            userId,
+            path,
+            ip
+        );
+    }
+});
 
 app.MapControllers();
 

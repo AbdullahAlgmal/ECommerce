@@ -5,6 +5,7 @@ using CoreLayer.DTOs.User;
 using CoreLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ECommerceApi.Controllers
 {
@@ -13,6 +14,8 @@ namespace ECommerceApi.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize]
+    [EnableRateLimiting("ECommerceLimiter")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status429TooManyRequests)]
     public class ReviewsController : ControllerBase
     {
         private readonly IReviewService _reviewService;
@@ -33,6 +36,7 @@ namespace ECommerceApi.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<IEnumerable<ReviewDto>>>> GetAllReviews()
         {
             try
@@ -51,13 +55,18 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<ReviewDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ApiResponse<ReviewDto>>> GetReviewById(int id)
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<ApiResponse<ReviewDto>>> GetReviewById(int id, [FromServices] IAuthorizationService authorizationService)
         {
             try
             {
                 var review = await _reviewService.GetReviewByIdAsync(id);
                 if (review == null)
                     return NotFound(ApiResponse<ReviewDto>.Fail($"Review with ID {id} not found"));
+
+                var authResult = await authorizationService.AuthorizeAsync(User, id, "AdminOrReviewOwner");
+                if (!authResult.Succeeded)
+                    return Forbid();
 
                 return Ok(ApiResponse<ReviewDto>.Succ(review));
             }
@@ -72,13 +81,18 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<ReviewDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ApiResponse<ReviewDto>>> GetReviewWithDetails(int id)
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<ApiResponse<ReviewDto>>> GetReviewWithDetails(int id, [FromServices] IAuthorizationService authorizationService)
         {
             try
             {
                 var review = await _reviewService.GetReviewWithDetailsAsync(id);
                 if (review == null)
                     return NotFound(ApiResponse<ReviewDto>.Fail($"Review with ID {id} not found"));
+
+                var authResult = await authorizationService.AuthorizeAsync(User, id, "AdminOrReviewOwner");
+                if (!authResult.Succeeded)
+                    return Forbid();
 
                 return Ok(ApiResponse<ReviewDto>.Succ(review));
             }
@@ -93,6 +107,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<IEnumerable<ReviewDto>>>> GetReviewsByProduct(int productId)
         {
             try
@@ -115,15 +130,21 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ApiResponse<IEnumerable<ReviewDto>>>> GetReviewsByUser(int userId)
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<ApiResponse<IEnumerable<ReviewDto>>>> GetReviewsByUser(int userId, [FromServices] IAuthorizationService authorizationService)
         {
             try
             {
                 var userExists = await _userService.UserExistsAsync(userId);
                 if (!userExists)
                     return NotFound(ApiResponse<IEnumerable<ReviewDto>>.Fail($"User with ID {userId} not found"));
-
+                
+                var authResult = await authorizationService.AuthorizeAsync(User, userId, "AdminOrUserOwner");
+                if (!authResult.Succeeded)
+                    return Forbid();
+              
                 var reviews = await _reviewService.GetReviewsByUserAsync(userId);
+           
                 return Ok(ApiResponse<IEnumerable<ReviewDto>>.Succ(reviews));
             }
             catch (Exception ex)
@@ -137,6 +158,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ReviewDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<IEnumerable<ReviewDto>>>> GetReviewsByRatingRange(
             [FromQuery] decimal minRating,
             [FromQuery] decimal maxRating)
@@ -183,7 +205,8 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<UserReviewSummaryDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ApiResponse<UserReviewSummaryDto>>> GetUserReviewSummary(int userId)
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<ApiResponse<UserReviewSummaryDto>>> GetUserReviewSummary(int userId, [FromServices] IAuthorizationService authorizationService)
         {
             try
             {
@@ -248,6 +271,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<ReviewDto>>> CreateReview([FromBody] CreateReviewDto createDto)
         {
             try
@@ -276,6 +300,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<ReviewDto>>> UpdateReview(int id, [FromBody] UpdateReviewDto updateDto)
         {
             try
@@ -298,6 +323,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteReview(int id)
         {
             try
@@ -319,6 +345,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteReviewsByProduct(int productId)
         {
             try
@@ -341,6 +368,7 @@ namespace ECommerceApi.Controllers
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<bool>>> DeleteReviewsByUser(int userId)
         {
             try
