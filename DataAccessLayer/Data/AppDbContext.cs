@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 
-namespace ECommerceApi;
+namespace DataAccessLayer.Data;
 
 public partial class AppDbContext : DbContext
 {
@@ -215,6 +216,10 @@ public partial class AppDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Users__3214EC072BCFD1AD");
 
+            entity.HasIndex(e => e.RefreshTokenExpiresAt, "IX_Users_RefreshTokenExpiresAt");
+
+            entity.HasIndex(e => new { e.RefreshTokenExpiresAt, e.RefreshTokenRevokedAt }, "IX_Users_RefreshTokenValid").HasFilter("([RefreshTokenHash] IS NOT NULL)");
+
             entity.HasIndex(e => e.Phone, "UQ__Users__5C7E359EFA2E827F").IsUnique();
 
             entity.HasIndex(e => e.Email, "UQ__Users__A9D105343EBCF7F2").IsUnique();
@@ -232,6 +237,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(30)
                 .IsUnicode(false);
+            entity.Property(e => e.RefreshTokenHash).HasMaxLength(255);
             entity.Property(e => e.Role)
                 .HasMaxLength(20)
                 .IsUnicode(false);

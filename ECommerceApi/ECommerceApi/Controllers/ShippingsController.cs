@@ -1,6 +1,6 @@
-﻿using CoreLayer.DTOs.Shipping;
-using CoreLayer.Interfaces.Repositories;
-using CoreLayer.Interfaces.Services;
+﻿using BusinessLayer.DTOs.Shipping;
+using BusinessLayer.Interfaces.Repositories;
+using BusinessLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;

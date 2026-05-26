@@ -1,5 +1,5 @@
-﻿using CoreLayer.Interfaces.Repositories;
-using ECommerceApi;
+﻿using BusinessLayer.Interfaces.Repositories;
+using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repositories

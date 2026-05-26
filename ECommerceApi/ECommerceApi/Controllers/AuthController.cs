@@ -1,6 +1,6 @@
-﻿using CoreLayer.DTOs.Authentication;
-using CoreLayer.DTOs.User;
-using CoreLayer.Interfaces.Services;
+﻿using BusinessLayer.DTOs.Authentication;
+using BusinessLayer.DTOs.User;
+using BusinessLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -71,17 +71,62 @@ namespace ECommerceApi.Controllers
             }
         }
 
-        [Authorize]
+        [HttpPost("refresh-token")]
+        [ProducesResponseType(typeof(ApiResponse<TokenResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<ApiResponse<TokenResponseDto>>> RefreshToken([FromBody] RefreshTokenRequestDto request)
+        {
+            try
+            {
+                var result = await _authService.RefreshTokenAsync(request);
+                return Ok(ApiResponse<TokenResponseDto>.Succ(result, "Token refreshed successfully"));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ApiResponse<TokenResponseDto>.Fail(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<TokenResponseDto>.Fail(ex.Message));
+            }
+        }
+
         [HttpPost("logout")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<ApiResponse<bool>>> Logout()
+        public async Task<ActionResult<ApiResponse<bool>>> Logout([FromBody] LogoutRequestDto request)
+        {
+            try
+            {
+                var result = await _authService.LogoutAsync(request);
+                if (!result)
+                    return BadRequest(ApiResponse<bool>.Fail("Logout failed"));
+
+                return Ok(ApiResponse<bool>.Succ(true, "Logged out successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<bool>.Fail(ex.Message));
+            }
+        }
+
+        [Authorize]
+        [HttpPost("revoke-all-tokens")]
+        [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<ApiResponse<bool>>> RevokeAllTokens()
         {
             try
             {
                 var userId = GetCurrentUserId();
-                await _authService.LogoutAsync(userId);
-                return Ok(ApiResponse<bool>.Succ(true, "Logout successful"));
+                var result = await _authService.RevokeAllUserTokensAsync(userId);
+
+                if (!result)
+                    return BadRequest(ApiResponse<bool>.Fail("Failed to revoke tokens"));
+
+                return Ok(ApiResponse<bool>.Succ(true, "All tokens revoked successfully"));
             }
             catch (Exception ex)
             {
@@ -136,7 +181,8 @@ namespace ECommerceApi.Controllers
 
         private int GetCurrentUserId()
         {
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = User.FindFirst("UserId")?.Value ??
+                             User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             return int.TryParse(userIdClaim, out var userId) ? userId : 0;
         }
         private string GetTokenFromRequest()

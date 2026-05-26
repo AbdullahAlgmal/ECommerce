@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ECommerceApi;
+namespace DataAccessLayer;
 
 public partial class Address
 {

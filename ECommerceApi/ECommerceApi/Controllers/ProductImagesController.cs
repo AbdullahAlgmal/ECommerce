@@ -1,5 +1,5 @@
-﻿using CoreLayer.DTOs.ProductImage;
-using CoreLayer.Interfaces.Services;
+﻿using BusinessLayer.DTOs.ProductImage;
+using BusinessLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;

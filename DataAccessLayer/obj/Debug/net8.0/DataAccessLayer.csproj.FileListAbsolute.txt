@@ -15,3 +15,5 @@ E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\refint\
 E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAccessLayer.pdb
 E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\DataAccessLayer.genruntimeconfig.cache
 E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\obj\Debug\net8.0\ref\DataAccessLayer.dll
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\bin\Debug\net8.0\BusinessLayer.dll
+E:\1-Programming\5-MyProjects\ECommerce\DataAccessLayer\bin\Debug\net8.0\BusinessLayer.pdb

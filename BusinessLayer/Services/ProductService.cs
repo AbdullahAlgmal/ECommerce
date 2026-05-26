@@ -1,9 +1,9 @@
-﻿using CoreLayer.DTOs;
-using CoreLayer.DTOs.Product;
-using CoreLayer.DTOs.ProductImage;
-using CoreLayer.Interfaces.Repositories;
-using CoreLayer.Interfaces.Services;
-using ECommerceApi;
+﻿using BusinessLayer.DTOs;
+using BusinessLayer.DTOs.Product;
+using BusinessLayer.DTOs.ProductImage;
+using BusinessLayer.Interfaces.Repositories;
+using BusinessLayer.Interfaces.Services;
+using DataAccessLayer;
 using System.Linq.Expressions;
 
 namespace BusinessLayer.Services

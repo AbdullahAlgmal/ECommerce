@@ -1,9 +1,9 @@
 using BusinessLayer.Services;
 using CoreLayer;
-using CoreLayer.Interfaces.Repositories;
-using CoreLayer.Interfaces.Services;
+using BusinessLayer.Interfaces.Repositories;
+using BusinessLayer.Interfaces.Services;
 using DataAccessLayer.Repositories;
-using ECommerceApi;
+using DataAccessLayer.Data;
 using ECommerceApi.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

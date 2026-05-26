@@ -1,8 +1,8 @@
-﻿using CoreLayer.DTOs.Address;
-using CoreLayer.DTOs.User;
-using CoreLayer.Interfaces.Repositories;
-using CoreLayer.Interfaces.Services;
-using ECommerceApi;
+﻿using BusinessLayer.DTOs.Address;
+using BusinessLayer.DTOs.User;
+using BusinessLayer.Interfaces.Repositories;
+using BusinessLayer.Interfaces.Services;
+using DataAccessLayer;
 
 namespace BusinessLayer.Services
 {

@@ -1,5 +1,5 @@
-﻿using CoreLayer.DTOs.Payment;
-using CoreLayer.Interfaces.Services;
+﻿using BusinessLayer.DTOs.Payment;
+using BusinessLayer.Interfaces.Services;
 using Microsoft.Extensions.Logging;
 
 namespace BusinessLayer.Services

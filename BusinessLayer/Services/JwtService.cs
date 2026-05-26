@@ -1,10 +1,11 @@
 ﻿using CoreLayer;
-using CoreLayer.Interfaces.Services;
-using ECommerceApi;
-using Microsoft.Extensions.Options;
+using BusinessLayer.Interfaces.Services;
+using DataAccessLayer;
+using Microsoft.Extensions.Options; 
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BusinessLayer.Services
@@ -18,7 +19,7 @@ namespace BusinessLayer.Services
             _jwtSettings = jwtSettings.Value;
         }
 
-        public string GenerateToken(User user)
+        public string GenerateAccessToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
@@ -27,13 +28,16 @@ namespace BusinessLayer.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim("UserId", user.Id.ToString()),
+                new Claim("Email", user.Email)
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationMinutes),
+                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
                 Issuer = _jwtSettings.Issuer,
                 Audience = _jwtSettings.Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -41,6 +45,13 @@ namespace BusinessLayer.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
         public ClaimsPrincipal? ValidateToken(string token)
         {
@@ -68,6 +79,7 @@ namespace BusinessLayer.Services
                 return null;
             }
         }
+
         public string GetEmailFromToken(string token)
         {
             var principal = ValidateToken(token);
@@ -76,8 +88,29 @@ namespace BusinessLayer.Services
         public int GetUserIdFromToken(string token)
         {
             var principal = ValidateToken(token);
-            var userIdClaim = principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = principal?.FindFirst("UserId")?.Value ??
+                             principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return int.TryParse(userIdClaim, out var userId) ? userId : 0;
+        }
+        public bool ValidateRefreshToken(User user, string refreshToken)
+        {
+            if (string.IsNullOrEmpty(user.RefreshTokenHash))
+                return false;
+
+            if (user.RefreshTokenRevokedAt.HasValue)
+                return false;
+
+            if (!user.RefreshTokenExpiresAt.HasValue || user.RefreshTokenExpiresAt.Value < DateTime.UtcNow)
+                return false;
+
+            var hashedRefreshToken = HashRefreshToken(refreshToken);
+            return user.RefreshTokenHash == hashedRefreshToken;
+        }
+        private string HashRefreshToken(string refreshToken)
+        {
+            using var sha256 = SHA256.Create();
+            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(refreshToken));
+            return Convert.ToBase64String(hashedBytes);
         }
     }
 }

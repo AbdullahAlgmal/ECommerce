@@ -1,8 +1,8 @@
-﻿using CoreLayer.DTOs.OrderItem;
-using CoreLayer.DTOs.Product;
-using CoreLayer.Interfaces.Repositories;
-using CoreLayer.Interfaces.Services;
-using ECommerceApi;
+﻿using BusinessLayer.DTOs.OrderItem;
+using BusinessLayer.DTOs.Product;
+using BusinessLayer.Interfaces.Repositories;
+using BusinessLayer.Interfaces.Services;
+using DataAccessLayer;
 
 namespace BusinessLayer.Services
 {

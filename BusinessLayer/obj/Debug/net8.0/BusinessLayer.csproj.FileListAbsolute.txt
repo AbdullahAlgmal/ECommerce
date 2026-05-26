@@ -2,8 +2,6 @@ E:\1-Programming\5-MyProjects\ECommerce\BusinessLayer\bin\Debug\net8.0\BusinessL
 E:\1-Programming\5-MyProjects\ECommerce\BusinessLayer\bin\Debug\net8.0\BusinessLayer.dll
 E:\1-Programming\5-MyProjects\ECommerce\BusinessLayer\bin\Debug\net8.0\BusinessLayer.pdb
 E:\1-Programming\5-MyProjects\ECommerce\BusinessLayer\bin\Debug\net8.0\CoreLayer.dll
-E:\1-Programming\5-MyProjects\ECommerce\BusinessLayer\bin\Debug\net8.0\DataAccessLayer.dll
-E:\1-Programming\5-MyProjects\ECommerce\BusinessLayer\bin\Debug\net8.0\DataAccessLayer.pdb
 E:\1-Programming\5-MyProjects\ECommerce\BusinessLayer\bin\Debug\net8.0\CoreLayer.pdb
 E:\1-Programming\5-MyProjects\ECommerce\BusinessLayer\obj\Debug\net8.0\BusinessLayer.csproj.AssemblyReference.cache
 E:\1-Programming\5-MyProjects\ECommerce\BusinessLayer\obj\Debug\net8.0\BusinessLayer.GeneratedMSBuildEditorConfig.editorconfig

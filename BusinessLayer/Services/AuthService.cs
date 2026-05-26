@@ -1,8 +1,8 @@
-﻿using CoreLayer.DTOs.Authentication;
-using CoreLayer.DTOs.User;
-using CoreLayer.Interfaces.Repositories;
-using CoreLayer.Interfaces.Services;
-using ECommerceApi;
+﻿using BusinessLayer.DTOs.Authentication;
+using BusinessLayer.DTOs.User;
+using BusinessLayer.Interfaces.Repositories;
+using BusinessLayer.Interfaces.Services;
+using DataAccessLayer;
 
 namespace BusinessLayer.Services
 {
@@ -10,7 +10,6 @@ namespace BusinessLayer.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;
-        private static readonly Dictionary<int, DateTime> _blacklistedTokens = new();
 
         public AuthService(IUserRepository userRepository, IJwtService jwtService)
         {
@@ -44,14 +43,22 @@ namespace BusinessLayer.Services
                 };
             }
 
-            var token = _jwtService.GenerateToken(user);
+            var accessToken = _jwtService.GenerateAccessToken(user);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+
+            user.RefreshTokenHash = HashRefreshToken(refreshToken);
+            user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenRevokedAt = null;
+            await _userRepository.UpdateAsync(user);
 
             return new AuthResponseDto
             {
                 Success = true,
                 Message = "Login successful",
-                Token = token,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(60),
+                Token = accessToken,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(30),
+                RefreshToken = refreshToken,
+                RefreshTokenExpiresAt = user.RefreshTokenExpiresAt.Value,
                 User = MapToUserDto(user)
             };
         }
@@ -69,9 +76,9 @@ namespace BusinessLayer.Services
                 };
             }
 
-            var today = DateTime.Today;
+            var today = DateOnly.FromDateTime(DateTime.Today);
             var age = today.Year - registerDto.DateofBirth.Year;
-            if (registerDto.DateofBirth > today.AddYears(-age)) age--;
+            if (DateOnly.FromDateTime(registerDto.DateofBirth) > today.AddYears(-age)) age--;
 
             if (age < 18)
             {
@@ -84,7 +91,7 @@ namespace BusinessLayer.Services
                 };
             }
 
-            var validRoles = new[] { "Admin", "Customer"};
+            var validRoles = new[] { "Admin", "Customer", "Seller", "Manager" };
             if (!validRoles.Contains(registerDto.Role))
             {
                 return new AuthResponseDto
@@ -104,36 +111,98 @@ namespace BusinessLayer.Services
                 Phone = registerDto.Phone,
                 DateofBirth = DateOnly.FromDateTime(registerDto.DateofBirth),
                 Role = registerDto.Role,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
             };
 
             var createdUser = await _userRepository.AddAsync(user);
-            var token = _jwtService.GenerateToken(createdUser);
+            var accessToken = _jwtService.GenerateAccessToken(createdUser);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+
+            createdUser.RefreshTokenHash = HashRefreshToken(refreshToken);
+            createdUser.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7);
+            await _userRepository.UpdateAsync(createdUser);
 
             return new AuthResponseDto
             {
                 Success = true,
                 Message = "Registration successful",
-                Token = token,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(60),
+                Token = accessToken,
+                RefreshToken = refreshToken,
+                AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(30),
+                RefreshTokenExpiresAt = createdUser.RefreshTokenExpiresAt.Value,
                 User = MapToUserDto(createdUser)
             };
         }
-        public async Task<bool> LogoutAsync(int userId)
+        public async Task<TokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request)
         {
-            _blacklistedTokens[userId] = DateTime.UtcNow;
-            await Task.CompletedTask;
+            var user = await _userRepository.GetUserByEmailAsync(request.Email);
+
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("Invalid refresh token");
+            }
+
+            if (!_jwtService.ValidateRefreshToken(user, request.RefreshToken))
+            {
+                throw new UnauthorizedAccessException("Invalid or expired refresh token");
+            }
+
+            var newAccessToken = _jwtService.GenerateAccessToken(user);
+            var newRefreshToken = _jwtService.GenerateRefreshToken();
+
+            user.RefreshTokenHash = HashRefreshToken(newRefreshToken);
+            user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenRevokedAt = null;
+            await _userRepository.UpdateAsync(user);
+
+            return new TokenResponseDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken,
+                AccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(30),
+                RefreshTokenExpiresAt = user.RefreshTokenExpiresAt.Value
+            };
+        }
+        public async Task<bool> LogoutAsync(LogoutRequestDto request)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(request.Email);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (!_jwtService.ValidateRefreshToken(user, request.RefreshToken))
+            {
+                return false;
+            }
+
+            user.RefreshTokenRevokedAt = DateTime.UtcNow;
+            user.RefreshTokenHash = null;
+            await _userRepository.UpdateAsync(user);
+
+            return true;
+        }
+        public async Task<bool> RevokeAllUserTokensAsync(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.RefreshTokenRevokedAt = DateTime.UtcNow;
+            user.RefreshTokenHash = null;
+            user.RefreshTokenExpiresAt = null;
+            await _userRepository.UpdateAsync(user);
+
             return true;
         }
         public async Task<bool> ValidateTokenAsync(string token)
         {
             var principal = _jwtService.ValidateToken(token);
             if (principal == null)
-                return false;
-
-            var userId = _jwtService.GetUserIdFromToken(token);
-
-            if (_blacklistedTokens.ContainsKey(userId))
                 return false;
 
             await Task.CompletedTask;
@@ -149,6 +218,10 @@ namespace BusinessLayer.Services
             return user != null ? MapToUserDto(user) : null;
         }
 
+        private string HashRefreshToken(string refreshToken)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(refreshToken);
+        }
         private UserDto MapToUserDto(User user)
         {
             return new UserDto
@@ -159,7 +232,7 @@ namespace BusinessLayer.Services
                 Email = user.Email,
                 Phone = user.Phone,
                 DateofBirth = user.DateofBirth,
-                Role = user.Role
+                Role = user.Role,
             };
         }
     }

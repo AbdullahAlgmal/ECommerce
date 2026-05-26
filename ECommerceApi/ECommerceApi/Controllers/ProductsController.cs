@@ -1,6 +1,6 @@
-﻿using CoreLayer.DTOs;
-using CoreLayer.DTOs.Product;
-using CoreLayer.Interfaces.Services;
+﻿using BusinessLayer.DTOs;
+using BusinessLayer.DTOs.Product;
+using BusinessLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;

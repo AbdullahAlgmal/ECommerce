@@ -1,4 +1,4 @@
-﻿using CoreLayer.Interfaces.Services;
+﻿using BusinessLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 

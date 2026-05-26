@@ -1,8 +1,8 @@
-﻿using CoreLayer.DTOs.Shipping;
+﻿using BusinessLayer.DTOs.Shipping;
 using CoreLayer.Enums;
-using CoreLayer.Interfaces.Repositories;
-using CoreLayer.Interfaces.Services;
-using ECommerceApi;
+using BusinessLayer.Interfaces.Repositories;
+using BusinessLayer.Interfaces.Services;
+using DataAccessLayer;
 
 namespace BusinessLayer.Services
 {

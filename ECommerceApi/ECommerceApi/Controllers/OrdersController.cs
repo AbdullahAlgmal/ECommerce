@@ -1,7 +1,7 @@
-﻿using CoreLayer.DTOs;
-using CoreLayer.DTOs.Order;
-using CoreLayer.DTOs.OrderItem;
-using CoreLayer.Interfaces.Services;
+﻿using BusinessLayer.DTOs;
+using BusinessLayer.DTOs.Order;
+using BusinessLayer.DTOs.OrderItem;
+using BusinessLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;

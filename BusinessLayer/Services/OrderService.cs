@@ -1,10 +1,10 @@
-﻿using CoreLayer.DTOs;
-using CoreLayer.DTOs.Order;
-using CoreLayer.DTOs.OrderItem;
+﻿using BusinessLayer.DTOs;
+using BusinessLayer.DTOs.Order;
+using BusinessLayer.DTOs.OrderItem;
+using BusinessLayer.Interfaces.Repositories;
+using BusinessLayer.Interfaces.Services;
 using CoreLayer.Enums;
-using CoreLayer.Interfaces.Repositories;
-using CoreLayer.Interfaces.Services;
-using ECommerceApi;
+using DataAccessLayer;
 using System.Linq.Expressions;
 
 namespace BusinessLayer.Services

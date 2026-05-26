@@ -1,5 +1,5 @@
-﻿using CoreLayer.DTOs.Category;
-using CoreLayer.Interfaces.Services;
+﻿using BusinessLayer.DTOs.Category;
+using BusinessLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
