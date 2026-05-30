@@ -3,24 +3,15 @@ using System.Linq.Expressions;
 
 namespace BusinessLayer.Interfaces.Repositories
 {
-    public interface IReviewRepository
+    public interface IReviewRepository : IBaseRepository<Review>
     {
-        Task<Review?> GetByIdAsync(int id);
-        Task<IEnumerable<Review>> GetAllAsync();
-        Task<Review> AddAsync(Review entity);
-        Task<Review> UpdateAsync(Review entity);
-        Task<bool> DeleteAsync(int id);
-
-        Task<IEnumerable<Review>> FindAsync(Expression<Func<Review, bool>> predicate);
         Task<Review?> GetReviewWithDetailsAsync(int id);
         Task<IEnumerable<Review>> GetReviewsByProductAsync(int productId);
         Task<IEnumerable<Review>> GetReviewsByUserAsync(int userId);
         Task<IEnumerable<Review>> GetReviewsByRatingAsync(decimal minRating, decimal maxRating);
 
-        Task<bool> ExistsAsync(Expression<Func<Review, bool>> predicate);
         Task<bool> HasUserReviewedProductAsync(int userId, int productId);
 
-        Task<int> CountAsync(Expression<Func<Review, bool>>? predicate = null);
         Task<decimal> GetAverageRatingForProductAsync(int productId);
         Task<Dictionary<int, int>> GetRatingDistributionForProductAsync(int productId);
         Task<Dictionary<int, int>> GetRatingDistributionForUserAsync(int userId);

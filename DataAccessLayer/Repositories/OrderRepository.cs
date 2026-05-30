@@ -5,62 +5,10 @@ using System.Linq.Expressions;
 
 namespace DataAccessLayer.Repositories
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : BaseRepository<Order>, IOrderRepository
     {
-        private readonly AppDbContext _context;
-        private readonly DbSet<Order> _dbSet;
+        public OrderRepository(AppDbContext context) : base(context) { }
 
-        public OrderRepository(AppDbContext context)
-        {
-            _context = context;
-            _dbSet = context.Set<Order>();
-        }
-
-        public async Task<Order?> GetByIdAsync(int id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
-        public async Task<IEnumerable<Order>> GetAllAsync()
-        {
-            return await _dbSet
-                .Include(o => o.User)
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .OrderByDescending(o => o.OrderDate)
-                .ToListAsync();
-        }
-        public async Task<Order> AddAsync(Order entity)
-        {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-        public async Task<Order> UpdateAsync(Order entity)
-        {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var order = await GetByIdAsync(id);
-            if (order == null)
-                return false;
-
-            _dbSet.Remove(order);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<IEnumerable<Order>> FindAsync(Expression<Func<Order, bool>> predicate)
-        {
-            return await _dbSet
-                .Include(o => o.User)
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .Where(predicate)
-                .ToListAsync();
-        }
         public async Task<Order?> GetOrderWithDetailsAsync(int id)
         {
             return await _dbSet
@@ -97,17 +45,6 @@ namespace DataAccessLayer.Repositories
                 .ToListAsync();
         }
 
-        public async Task<bool> ExistsAsync(Expression<Func<Order, bool>> predicate)
-        {
-            return await _dbSet.AnyAsync(predicate);
-        }
-        public async Task<int> CountAsync(Expression<Func<Order, bool>>? predicate = null)
-        {
-            if (predicate == null)
-                return await _dbSet.CountAsync();
-
-            return await _dbSet.CountAsync(predicate);
-        }
         public async Task<decimal> GetTotalRevenueAsync(DateOnly? fromDate = null, DateOnly? toDate = null)
         {
             var query = _dbSet.Where(o => o.Status != (byte)CoreLayer.Enums.OrderStatus.Cancelled);

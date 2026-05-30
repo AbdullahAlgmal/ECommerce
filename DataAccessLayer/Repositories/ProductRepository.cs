@@ -5,60 +5,10 @@ using System.Linq.Expressions;
 
 namespace DataAccessLayer.Repositories
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
-        private readonly AppDbContext _context;
-        private readonly DbSet<Product> _dbSet;
+        public ProductRepository(AppDbContext context) : base(context) { }
 
-        public ProductRepository(AppDbContext context)
-        {
-            _context = context;
-            _dbSet = context.Set<Product>();
-        }
-
-        public async Task<Product?> GetByIdAsync(int id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
-        public async Task<IEnumerable<Product>> GetAllAsync()
-        {
-            return await _dbSet
-                .Include(p => p.Category)
-                .Include(p => p.ProductImages)
-                .Include(p => p.Reviews)
-                .ToListAsync();
-        }
-        public async Task<Product> AddAsync(Product entity)
-        {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-        public async Task<Product> UpdateAsync(Product entity)
-        {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var product = await GetByIdAsync(id);
-            if (product == null)
-                return false;
-
-            _dbSet.Remove(product);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<IEnumerable<Product>> FindAsync(Expression<Func<Product, bool>> predicate)
-        {
-            return await _dbSet
-                .Include(p => p.Category)
-                .Include(p => p.ProductImages)
-                .Where(predicate)
-                .ToListAsync();
-        }
         public async Task<Product?> GetProductWithDetailsAsync(int id)
         {
             return await _dbSet
@@ -101,10 +51,6 @@ namespace DataAccessLayer.Repositories
                 .ToListAsync();
         }
 
-        public async Task<bool> ExistsAsync(Expression<Func<Product, bool>> predicate)
-        {
-            return await _dbSet.AnyAsync(predicate);
-        }
         public async Task<bool> IsProductNameUniqueAsync(string name, int? excludeId = null)
         {
             var query = _dbSet.Where(p => p.Name.ToLower() == name.ToLower());
@@ -115,13 +61,6 @@ namespace DataAccessLayer.Repositories
             return !await query.AnyAsync();
         }
 
-        public async Task<int> CountAsync(Expression<Func<Product, bool>>? predicate = null)
-        {
-            if (predicate == null)
-                return await _dbSet.CountAsync();
-
-            return await _dbSet.CountAsync(predicate);
-        }
         public async Task<decimal> GetAverageProductPriceAsync()
         {
             return await _dbSet.AverageAsync(p => p.Price);

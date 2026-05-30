@@ -5,59 +5,10 @@ using System.Linq.Expressions;
 
 namespace DataAccessLayer.Repositories
 {
-    public class ReviewRepository : IReviewRepository
+    public class ReviewRepository : BaseRepository<Review>, IReviewRepository
     {
-        private readonly AppDbContext _context;
-        private readonly DbSet<Review> _dbSet;
-
-        public ReviewRepository(AppDbContext context)
+        public ReviewRepository(AppDbContext context) : base(context)
         {
-            _context = context;
-            _dbSet = context.Set<Review>();
-        }
-
-        public async Task<Review?> GetByIdAsync(int id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
-        public async Task<IEnumerable<Review>> GetAllAsync()
-        {
-            return await _dbSet
-                .Include(r => r.Product)
-                .Include(r => r.User)
-                .OrderByDescending(r => r.ReviewDate)
-                .ToListAsync();
-        }
-        public async Task<Review> AddAsync(Review entity)
-        {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-        public async Task<Review> UpdateAsync(Review entity)
-        {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var review = await GetByIdAsync(id);
-            if (review == null)
-                return false;
-
-            _dbSet.Remove(review);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<IEnumerable<Review>> FindAsync(Expression<Func<Review, bool>> predicate)
-        {
-            return await _dbSet
-                .Include(r => r.Product)
-                .Include(r => r.User)
-                .Where(predicate)
-                .ToListAsync();
         }
 
         public async Task<Review?> GetReviewWithDetailsAsync(int id)
@@ -93,22 +44,11 @@ namespace DataAccessLayer.Repositories
                 .ToListAsync();
         }
 
-        public async Task<bool> ExistsAsync(Expression<Func<Review, bool>> predicate)
-        {
-            return await _dbSet.AnyAsync(predicate);
-        }
         public async Task<bool> HasUserReviewedProductAsync(int userId, int productId)
         {
             return await _dbSet.AnyAsync(r => r.UserId == userId && r.ProductId == productId);
         }
 
-        public async Task<int> CountAsync(Expression<Func<Review, bool>>? predicate = null)
-        {
-            if (predicate == null)
-                return await _dbSet.CountAsync();
-
-            return await _dbSet.CountAsync(predicate);
-        }
         public async Task<decimal> GetAverageRatingForProductAsync(int productId)
         {
             return await _dbSet
