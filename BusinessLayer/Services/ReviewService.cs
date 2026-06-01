@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 
 namespace BusinessLayer.Services
 {
-    public class ReviewService : IReviewService
+    public class ReviewService : BaseService<Review, ReviewDto, CreateReviewDto, UpdateReviewDto>, IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
         private readonly IProductRepository _productRepository;
@@ -18,70 +18,17 @@ namespace BusinessLayer.Services
         public ReviewService(
             IReviewRepository reviewRepository,
             IProductRepository productRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository) : base(reviewRepository)
         {
             _reviewRepository = reviewRepository;
             _productRepository = productRepository;
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<ReviewDto>> GetAllReviewsAsync()
-        {
-            var reviews = await _reviewRepository.GetAllAsync();
-            return reviews.Select(MapToReviewDto);
-        }
-
-        public async Task<ReviewDto?> GetReviewByIdAsync(int id)
-        {
-            var review = await _reviewRepository.GetByIdAsync(id);
-            return review != null ? MapToReviewDto(review) : null;
-        }
         public async Task<ReviewDto?> GetReviewWithDetailsAsync(int id)
         {
             var review = await _reviewRepository.GetReviewWithDetailsAsync(id);
-            return review != null ? MapToReviewDto(review) : null;
-        }
-        public async Task<ReviewDto> CreateReviewAsync(CreateReviewDto createDto)
-        {
-            var productExists = await _productRepository.ExistsAsync(p => p.Id == createDto.ProductId);
-            if (!productExists)
-                throw new InvalidOperationException($"Product with ID {createDto.ProductId} does not exist");
-
-            var userExists = await _userRepository.ExistsAsync(u => u.Id == createDto.UserId);
-            if (!userExists)
-                throw new InvalidOperationException($"User with ID {createDto.UserId} does not exist");
-
-            var hasReviewed = await _reviewRepository.HasUserReviewedProductAsync(createDto.UserId, createDto.ProductId);
-            if (hasReviewed)
-                throw new InvalidOperationException("User has already reviewed this product");
-
-            var review = new Review
-            {
-                ReviewText = createDto.ReviewText.Trim(),
-                Rating = createDto.Rating,
-                ReviewDate = DateOnly.FromDateTime(DateTime.Today),
-                ProductId = createDto.ProductId,
-                UserId = createDto.UserId
-            };
-
-            var createdReview = await _reviewRepository.AddAsync(review);
-            return MapToReviewDto(createdReview);
-        }
-        public async Task<ReviewDto> UpdateReviewAsync(int id, UpdateReviewDto updateDto)
-        {
-            var review = await _reviewRepository.GetReviewWithDetailsAsync(id);
-            if (review == null)
-                throw new KeyNotFoundException($"Review with ID {id} not found");
-
-            review.ReviewText = updateDto.ReviewText.Trim();
-            review.Rating = updateDto.Rating;
-
-            var updatedReview = await _reviewRepository.UpdateAsync(review);
-            return MapToReviewDto(updatedReview);
-        }
-        public async Task<bool> DeleteReviewAsync(int id)
-        {
-            return await _reviewRepository.DeleteAsync(id);
+            return review != null ? await MapToDto(review) : null;
         }
 
         public async Task<IEnumerable<ReviewDto>> GetReviewsByProductAsync(int productId)
@@ -91,7 +38,7 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException($"Product with ID {productId} does not exist");
 
             var reviews = await _reviewRepository.GetReviewsByProductAsync(productId);
-            return reviews.Select(MapToReviewDto);
+            return await Task.WhenAll(reviews.Select(MapToDto));
         }
         public async Task<IEnumerable<ReviewDto>> GetReviewsByUserAsync(int userId)
         {
@@ -100,7 +47,7 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException($"User with ID {userId} does not exist");
 
             var reviews = await _reviewRepository.GetReviewsByUserAsync(userId);
-            return reviews.Select(MapToReviewDto);
+            return await Task.WhenAll(reviews.Select(MapToDto));
         }
         public async Task<IEnumerable<ReviewDto>> GetReviewsByRatingRangeAsync(decimal minRating, decimal maxRating)
         {
@@ -108,7 +55,7 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException("Invalid rating range. Ratings must be between 0 and 5");
 
             var reviews = await _reviewRepository.GetReviewsByRatingAsync(minRating, maxRating);
-            return reviews.Select(MapToReviewDto);
+            return await Task.WhenAll(reviews.Select(MapToDto));
         }
 
         public async Task<ProductRatingDto> GetProductRatingAsync(int productId)
@@ -141,12 +88,13 @@ namespace BusinessLayer.Services
             var reviews = await _reviewRepository.GetReviewsByUserAsync(userId);
             var reviewsList = reviews.ToList();
 
-            var averageRating = reviewsList.Any() ? reviewsList.Average(r => r.Rating) : 0;
+            var averageRating = reviewsList.Count != 0 ? reviewsList.Average(r => r.Rating) : 0;
             var ratingDistribution = await _reviewRepository.GetRatingDistributionForUserAsync(userId);
-            var recentReviews = reviewsList
-                .OrderByDescending(r => r.ReviewDate)
-                .Take(5)
-                .Select(MapToReviewDto)
+            var recentReviews = (await Task.WhenAll(
+                reviewsList
+                    .OrderByDescending(r => r.ReviewDate)
+                    .Take(5)
+                    .Select(MapToDto)))
                 .ToList();
 
             return new UserReviewSummaryDto
@@ -172,7 +120,7 @@ namespace BusinessLayer.Services
 
             return new PagedResult<ReviewDto>
             {
-                Items = reviews.Select(MapToReviewDto),
+                Items = await Task.WhenAll(reviews.Select(MapToDto)),
                 TotalCount = totalCount,
                 PageNumber = filter.PageNumber,
                 PageSize = filter.PageSize
@@ -205,7 +153,7 @@ namespace BusinessLayer.Services
             return await _reviewRepository.DeleteReviewsByUserAsync(userId);
         }
 
-        private Expression<Func<Review, bool>>? BuildPredicate(ReviewFilterDto filter)
+        private static Expression<Func<Review, bool>>? BuildPredicate(ReviewFilterDto filter)
         {
             Expression<Func<Review, bool>>? predicate = null;
 
@@ -241,7 +189,7 @@ namespace BusinessLayer.Services
 
             return predicate;
         }
-        private Expression<Func<Review, bool>>? CombinePredicates(
+        private static Expression<Func<Review, bool>>? CombinePredicates(
             Expression<Func<Review, bool>>? existing,
             Expression<Func<Review, bool>> newPredicate)
         {
@@ -255,20 +203,62 @@ namespace BusinessLayer.Services
 
             return Expression.Lambda<Func<Review, bool>>(combined, parameter);
         }
-        private ReviewDto MapToReviewDto(Review review)
+
+        protected override Task<ReviewDto> MapToDto(Review entity)
         {
-            return new ReviewDto
+            return Task.FromResult(new ReviewDto
             {
-                Id = review.Id,
-                ReviewText = review.ReviewText,
-                Rating = review.Rating,
-                ReviewDate = review.ReviewDate,
-                ProductId = review.ProductId,
-                ProductName = review.Product?.Name ?? "Unknown",
-                UserId = review.UserId,
-                UserName = review.User != null ? $"{review.User.FirstName} {review.User.LastName}" : "Unknown",
-                UserEmail = review.User?.Email ?? "Unknown"
+                Id = entity.Id,
+                ReviewText = entity.ReviewText,
+                Rating = entity.Rating,
+                ReviewDate = entity.ReviewDate,
+                ProductId = entity.ProductId,
+                ProductName = entity.Product?.Name ?? "Unknown",
+                UserId = entity.UserId,
+                UserName = entity.User != null ? $"{entity.User.FirstName} {entity.User.LastName}" : "Unknown",
+                UserEmail = entity.User?.Email ?? "Unknown"
+            });
+        }
+        protected override async Task<IEnumerable<ReviewDto>> MapToDtoList(IEnumerable<Review> entities)
+        {
+            var dtoList = entities.Select(MapToDto);
+            return await Task.WhenAll(dtoList);
+        }
+        protected override Review MapToEntity(CreateReviewDto createDto)
+        {
+            return new Review
+            {
+                ReviewText = createDto.ReviewText.Trim(),
+                Rating = createDto.Rating,
+                ReviewDate = DateOnly.FromDateTime(DateTime.Today),
+                ProductId = createDto.ProductId,
+                UserId = createDto.UserId
             };
+        }
+        protected override void UpdateEntity(Review entity, UpdateReviewDto updateDto)
+        {
+            entity.ReviewText = updateDto.ReviewText.Trim();
+            entity.Rating = updateDto.Rating;
+            entity.ReviewDate = DateOnly.FromDateTime(DateTime.Today);
+        }
+        protected override async Task ValidateBeforeCreateAsync(CreateReviewDto createDto)
+        {
+            var productExists = await _productRepository.ExistsAsync(p => p.Id == createDto.ProductId);
+            if (!productExists)
+                throw new InvalidOperationException($"Product with ID {createDto.ProductId} does not exist");
+
+            var userExists = await _userRepository.ExistsAsync(u => u.Id == createDto.UserId);
+            if (!userExists)
+                throw new InvalidOperationException($"User with ID {createDto.UserId} does not exist");
+
+            var hasReviewed = await _reviewRepository.HasUserReviewedProductAsync(createDto.UserId, createDto.ProductId);
+            if (hasReviewed)
+                throw new InvalidOperationException("User has already reviewed this product");
+
+        }
+        protected override async Task ValidateBeforeUpdateAsync(int id, UpdateReviewDto updateDto)
+        {
+            _ = await _reviewRepository.GetReviewWithDetailsAsync(id) ?? throw new KeyNotFoundException($"Review with ID {id} not found");
         }
     }
 }

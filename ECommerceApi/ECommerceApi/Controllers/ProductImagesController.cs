@@ -34,7 +34,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var images = await _productImageService.GetAllImagesAsync();
+                var images = await _productImageService.GetAllAsync();
                 return Ok(ApiResponse<IEnumerable<ProductImageDto>>.Succ(images));
             }
             catch (Exception ex)
@@ -52,7 +52,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var image = await _productImageService.GetImageByIdAsync(id);
+                var image = await _productImageService.GetByIdAsync(id);
                 if (image == null)
                     return NotFound(ApiResponse<ProductImageDto>.Fail($"Image with ID {id} not found"));
 
@@ -73,7 +73,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var productExists = await _productService.GetProductByIdAsync(productId);
+                var productExists = await _productService.GetByIdAsync(productId);
                 if (productExists == null)
                     return NotFound(ApiResponse<IEnumerable<ProductImageDto>>.Fail($"Product with ID {productId} not found"));
 
@@ -95,7 +95,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var productExists = await _productService.GetProductByIdAsync(productId);
+                var productExists = await _productService.GetByIdAsync(productId);
                 if (productExists == null)
                     return NotFound(ApiResponse<ProductImageDto>.Fail($"Product with ID {productId} not found"));
 
@@ -120,7 +120,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var productExists = await _productService.GetProductByIdAsync(productId);
+                var productExists = await _productService.GetByIdAsync(productId);
                 if (productExists == null)
                     return NotFound(ApiResponse<int>.Fail($"Product with ID {productId} not found"));
 
@@ -144,7 +144,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var image = await _productImageService.CreateImageAsync(createDto);
+                var image = await _productImageService.CreateAsync(createDto);
                 return CreatedAtAction(nameof(GetImageById), new { id = image.Id },
                     ApiResponse<ProductImageDto>.Succ(image, "Image created successfully"));
             }
@@ -201,7 +201,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var image = await _productImageService.UpdateImageAsync(id, updateDto);
+                var image = await _productImageService.UpdateAsync(id, updateDto);
                 return Ok(ApiResponse<ProductImageDto>.Succ(image, "Image updated successfully"));
             }
             catch (KeyNotFoundException)
@@ -224,7 +224,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var deleted = await _productImageService.DeleteImageAsync(id);
+                var deleted = await _productImageService.DeleteAsync(id);
                 if (!deleted)
                     return NotFound(ApiResponse<bool>.Fail($"Image with ID {id} not found"));
 
@@ -246,7 +246,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var productExists = await _productService.GetProductByIdAsync(productId);
+                var productExists = await _productService.GetByIdAsync(productId);
                 if (productExists == null)
                     return NotFound(ApiResponse<bool>.Fail($"Product with ID {productId} not found"));
 
@@ -298,7 +298,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var productExists = await _productService.GetProductByIdAsync(productId);
+                var productExists = await _productService.GetByIdAsync(productId);
                 if (productExists == null)
                     return NotFound(ApiResponse<bool>.Fail($"Product with ID {productId} not found"));
 

@@ -109,7 +109,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var userExists = await _userService.UserExistsAsync(userId);
+                var userExists = await _userService.ExistsAsync(userId);
                 if (!userExists)
                     return NotFound(ApiResponse<IEnumerable<PaymentDto>>.Fail($"User with ID {userId} not found"));
 
@@ -137,7 +137,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var userExists = await _userService.UserExistsAsync(userId);
+                var userExists = await _userService.ExistsAsync(userId);
                 if (!userExists)
                     return NotFound(ApiResponse<decimal>.Fail($"User with ID {userId} not found"));
 

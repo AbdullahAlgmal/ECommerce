@@ -41,7 +41,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var reviews = await _reviewService.GetAllReviewsAsync();
+                var reviews = await _reviewService.GetAllAsync();
                 return Ok(ApiResponse<IEnumerable<ReviewDto>>.Succ(reviews));
             }
             catch (Exception ex)
@@ -60,7 +60,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var review = await _reviewService.GetReviewByIdAsync(id);
+                var review = await _reviewService.GetByIdAsync(id);
                 if (review == null)
                     return NotFound(ApiResponse<ReviewDto>.Fail($"Review with ID {id} not found"));
 
@@ -112,7 +112,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var productExists = await _productService.GetProductByIdAsync(productId);
+                var productExists = await _productService.GetByIdAsync(productId);
                 if (productExists == null)
                     return NotFound(ApiResponse<IEnumerable<ReviewDto>>.Fail($"Product with ID {productId} not found"));
 
@@ -135,7 +135,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var userExists = await _userService.UserExistsAsync(userId);
+                var userExists = await _userService.ExistsAsync(userId);
                 if (!userExists)
                     return NotFound(ApiResponse<IEnumerable<ReviewDto>>.Fail($"User with ID {userId} not found"));
                 
@@ -187,7 +187,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var productExists = await _productService.GetProductByIdAsync(productId);
+                var productExists = await _productService.GetByIdAsync(productId);
                 if (productExists == null)
                     return NotFound(ApiResponse<ProductRatingDto>.Fail($"Product with ID {productId} not found"));
 
@@ -210,9 +210,13 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var userExists = await _userService.UserExistsAsync(userId);
+                var userExists = await _userService.ExistsAsync(userId);
                 if (!userExists)
                     return NotFound(ApiResponse<UserReviewSummaryDto>.Fail($"User with ID {userId} not found"));
+
+                var authResult = await authorizationService.AuthorizeAsync(User, userId, "AdminOrUserOwner");
+                if (!authResult.Succeeded)
+                    return Forbid();
 
                 var summary = await _reviewService.GetUserReviewSummaryAsync(userId);
                 return Ok(ApiResponse<UserReviewSummaryDto>.Succ(summary));
@@ -276,7 +280,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var review = await _reviewService.CreateReviewAsync(createDto);
+                var review = await _reviewService.CreateAsync(createDto);
                 return CreatedAtAction(nameof(GetReviewById), new { id = review.Id },
                     ApiResponse<ReviewDto>.Succ(review, "Review created successfully"));
             }
@@ -305,7 +309,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var review = await _reviewService.UpdateReviewAsync(id, updateDto);
+                var review = await _reviewService.UpdateAsync(id, updateDto);
                 return Ok(ApiResponse<ReviewDto>.Succ(review, "Review updated successfully"));
             }
             catch (KeyNotFoundException)
@@ -328,7 +332,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var deleted = await _reviewService.DeleteReviewAsync(id);
+                var deleted = await _reviewService.DeleteAsync(id);
                 if (!deleted)
                     return NotFound(ApiResponse<bool>.Fail($"Review with ID {id} not found"));
 
@@ -350,7 +354,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var productExists = await _productService.GetProductByIdAsync(productId);
+                var productExists = await _productService.GetByIdAsync(productId);
                 if (productExists == null)
                     return NotFound(ApiResponse<bool>.Fail($"Product with ID {productId} not found"));
 
@@ -373,7 +377,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var userExists = await _userService.UserExistsAsync(userId);
+                var userExists = await _userService.ExistsAsync(userId);
                 if (!userExists)
                     return NotFound(ApiResponse<bool>.Fail($"User with ID {userId} not found"));
 

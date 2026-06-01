@@ -1,15 +1,10 @@
 ﻿using BusinessLayer.DTOs.ProductImage;
+using DataAccessLayer;
 
 namespace BusinessLayer.Interfaces.Services
 {
-    public interface IProductImageService
+    public interface IProductImageService : IBaseService<ProductImage, ProductImageDto, CreateProductImageDto, UpdateProductImageDto>
     {
-        Task<IEnumerable<ProductImageDto>> GetAllImagesAsync();
-        Task<ProductImageDto?> GetImageByIdAsync(int id);
-        Task<ProductImageDto> CreateImageAsync(CreateProductImageDto createDto);
-        Task<ProductImageDto> UpdateImageAsync(int id, UpdateProductImageDto updateDto);
-        Task<bool> DeleteImageAsync(int id);
-
         Task<IEnumerable<ProductImageDto>> GetImagesByProductAsync(int productId);
         Task<ProductImageDto?> GetPrimaryImageAsync(int productId);
         Task<ProductImageDto> SetAsPrimaryAsync(int imageId, int productId);

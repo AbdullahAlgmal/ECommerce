@@ -111,7 +111,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var userExists = await _userService.UserExistsAsync(userId);
+                var userExists = await _userService.ExistsAsync(userId);
                 if (!userExists)
                     return NotFound(ApiResponse<IEnumerable<OrderDto>>.Fail($"User with ID {userId} not found"));
 

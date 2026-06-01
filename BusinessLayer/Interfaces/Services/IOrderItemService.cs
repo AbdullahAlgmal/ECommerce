@@ -1,16 +1,11 @@
 ﻿using BusinessLayer.DTOs.OrderItem;
 using BusinessLayer.DTOs.Product;
+using DataAccessLayer;
 
 namespace BusinessLayer.Interfaces.Services
 {
-    public interface IOrderItemService
+    public interface IOrderItemService : IBaseService<OrderItem, OrderItemDto, CreateOrderItemDto, UpdateOrderItemDto>
     {
-        Task<IEnumerable<OrderItemDto>> GetAllOrderItemsAsync();
-        Task<OrderItemDto?> GetOrderItemByIdAsync(int id);
-        Task<OrderItemDto> CreateOrderItemAsync(CreateOrderItemDto createDto);
-        Task<OrderItemDto> UpdateOrderItemAsync(int id, UpdateOrderItemDto updateDto);
-        Task<bool> DeleteOrderItemAsync(int id);
-
         Task<IEnumerable<OrderItemDto>> GetOrderItemsByOrderAsync(int orderId);
         Task<IEnumerable<OrderItemDto>> GetOrderItemsByProductAsync(int productId);
         Task<decimal> GetTotalSalesByProductAsync(int productId);

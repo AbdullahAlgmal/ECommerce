@@ -34,7 +34,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var address = await _addressService.GetAddressByIdAsync(id);
+                var address = await _addressService.GetByIdAsync(id);
                 if (address == null)
                     return NotFound(ApiResponse<AddressDto>.Fail($"Address with ID {id} not found"));
 
@@ -60,7 +60,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var userExists = await _userService.UserExistsAsync(userId);
+                var userExists = await _userService.ExistsAsync(userId);
                 if (!userExists)
                     return NotFound(ApiResponse<IEnumerable<AddressDto>>.Fail($"User with ID {userId} not found"));
 
@@ -88,7 +88,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var address = await _addressService.CreateAddressAsync(createAddressDto);
+                var address = await _addressService.CreateAsync(createAddressDto);
                 return CreatedAtAction(nameof(GetAddressById), new { id = address.Id },
                     ApiResponse<AddressDto>.Succ(address, "Address created successfully"));
             }
@@ -119,7 +119,7 @@ namespace ECommerceApi.Controllers
                 if (!authResult.Succeeded)
                     return Forbid();
 
-                var address = await _addressService.UpdateAddressAsync(id, updateAddressDto);
+                var address = await _addressService.UpdateAsync(id, updateAddressDto);
                 return Ok(ApiResponse<AddressDto>.Succ(address, "Address updated successfully"));
             }
             catch (KeyNotFoundException)

@@ -21,45 +21,42 @@ namespace BusinessLayer.Services
         public virtual async Task<TDto?> GetByIdAsync(int id)
         {
             var entity = await _repository.GetByIdAsync(id);
-            return entity != null ? MapToDto(entity) : null;
+            return entity != null ? await MapToDto(entity) : null;
         }
         public virtual async Task<IEnumerable<TDto>> GetAllAsync()
         {
             var entities = await _repository.GetAllAsync();
-            return MapToDtoList(entities);
+            return await MapToDtoList(entities);
         }
         public virtual async Task<IEnumerable<TDto>> FindAsync(Expression<Func<T, bool>> predicate)
         {
             var entities = await _repository.FindAsync(predicate);
-            return MapToDtoList(entities);
+            return await MapToDtoList(entities);
         }
         public virtual async Task<TDto> CreateAsync(TCreateDto createDto)
         {
             await ValidateBeforeCreateAsync(createDto);
             var entity = MapToEntity(createDto);
             var createdEntity = await _repository.AddAsync(entity);
-            return MapToDto(createdEntity);
+            return await MapToDto(createdEntity);
         }
         public virtual async Task<TDto> UpdateAsync(int id, TUpdateDto updateDto)
         {
-            var existingEntity = await _repository.GetByIdAsync(id);
-            if (existingEntity == null)
-                throw new KeyNotFoundException($"Entity with ID {id} not found");
-
+            var existingEntity = await _repository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"Entity with ID {id} not found");
             await ValidateBeforeUpdateAsync(id, updateDto);
             UpdateEntity(existingEntity, updateDto);
             var updatedEntity = await _repository.UpdateAsync(existingEntity);
-            return MapToDto(updatedEntity);
+            return await MapToDto(updatedEntity);
         }
         public virtual async Task<bool> DeleteAsync(int id)
         {
             var entity = await _repository.GetByIdAsync(id);
-            if (entity == null)
-                return false;
+
+            if (entity == null) return false;
 
             await ValidateBeforeDeleteAsync(id);
-            var result = await _repository.DeleteAsync(entity);
-            return result;
+
+            return await _repository.DeleteAsync(entity);
         }
         public virtual async Task<bool> ExistsAsync(int id)
         {
@@ -77,19 +74,18 @@ namespace BusinessLayer.Services
             bool orderByDescending = false)
         {
             var pagedResult = await _repository.GetPagedAsync(pageNumber, pageSize, predicate, orderBy, orderByDescending);
-            var dtos = MapToDtoList(pagedResult.Items);
 
             return new PagedResult<TDto>
             {
-                Items = dtos,
+                Items = await MapToDtoList(pagedResult.Items),
                 TotalCount = pagedResult.TotalCount,
                 PageNumber = pagedResult.PageNumber,
                 PageSize = pagedResult.PageSize
             };
         }
 
-        protected abstract TDto MapToDto(T entity);
-        protected abstract IEnumerable<TDto> MapToDtoList(IEnumerable<T> entities);
+        protected abstract Task<TDto> MapToDto(T entity);
+        protected abstract Task<IEnumerable<TDto>> MapToDtoList(IEnumerable<T> entities);
         protected abstract T MapToEntity(TCreateDto createDto);
         protected abstract void UpdateEntity(T entity, TUpdateDto updateDto);
 

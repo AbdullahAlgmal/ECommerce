@@ -1,16 +1,11 @@
 ﻿using BusinessLayer.DTOs.Category;
+using DataAccessLayer;
 
 namespace BusinessLayer.Interfaces.Services
 {
-    public interface ICategoryService
+    public interface ICategoryService : IBaseService<Category, CategoryDto, CreateCategoryDto, UpdateCategoryDto>
     {
-        Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
-        Task<CategoryDto?> GetCategoryByIdAsync(int id);
         Task<CategoryDto?> GetCategoryWithProductsAsync(int id);
-        Task<CategoryDto> CreateCategoryAsync(CreateCategoryDto createDto);
-        Task<CategoryDto> UpdateCategoryAsync(int id, UpdateCategoryDto updateDto);
-        Task<bool> DeleteCategoryAsync(int id);
-        Task<bool> CategoryExistsAsync(int id);
         Task<Dictionary<int, int>> GetProductCountPerCategoryAsync();
     }
 }

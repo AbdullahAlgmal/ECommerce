@@ -33,7 +33,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var user = await _userService.GetUserByIdAsync(id);
+                var user = await _userService.GetByIdAsync(id);
                 if (user == null)
                     return NotFound(ApiResponse<UserDto>.Fail($"User with ID {id} not found"));
 
@@ -85,7 +85,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var statistics = await _userService.GetTotalUsersCountAsync();
+                var statistics = await _userService.CountAsync();
                 return Ok(ApiResponse<int>.Succ(statistics));
             }
             catch (Exception ex)
@@ -105,7 +105,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var user = await _userService.CreateUserAsync(createUserDto);
+                var user = await _userService.CreateAsync(createUserDto);
                 return CreatedAtAction(nameof(GetUser), new { id = user.Id },
                     ApiResponse<UserDto>.Succ(user, "User created successfully"));
             }
@@ -136,7 +136,7 @@ namespace ECommerceApi.Controllers
                 if (!authResult.Succeeded)
                     return Forbid();
 
-                var user = await _userService.UpdateUserAsync(id, updateUserDto);
+                var user = await _userService.UpdateAsync(id, updateUserDto);
 
                 
 
@@ -166,7 +166,7 @@ namespace ECommerceApi.Controllers
                 if (!authResult.Succeeded)
                     return Forbid();
 
-                var deleted = await _userService.DeleteUserAsync(id);
+                var deleted = await _userService.DeleteAsync(id);
                 if (!deleted)
                     return NotFound(ApiResponse<bool>.Fail($"User with ID {id} not found"));
 

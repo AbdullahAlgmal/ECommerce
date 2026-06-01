@@ -39,7 +39,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var items = await _orderItemService.GetAllOrderItemsAsync();
+                var items = await _orderItemService.GetAllAsync();
                 return Ok(ApiResponse<IEnumerable<OrderItemDto>>.Succ(items));
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var item = await _orderItemService.GetOrderItemByIdAsync(id);
+                var item = await _orderItemService.GetByIdAsync(id);
                 if (item == null)
                     return NotFound(ApiResponse<OrderItemDto>.Fail($"Order item with ID {id} not found"));
 
@@ -107,7 +107,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var productExists = await _productService.GetProductByIdAsync(productId);
+                var productExists = await _productService.GetByIdAsync(productId);
                 if (productExists == null)
                     return NotFound(ApiResponse<IEnumerable<OrderItemDto>>.Fail($"Product with ID {productId} not found"));
 
@@ -169,7 +169,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var productExists = await _productService.GetProductByIdAsync(productId);
+                var productExists = await _productService.GetByIdAsync(productId);
                 if (productExists == null)
                     return NotFound(ApiResponse<decimal>.Fail($"Product with ID {productId} not found"));
 
@@ -194,7 +194,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var item = await _orderItemService.CreateOrderItemAsync(createDto);
+                var item = await _orderItemService.CreateAsync(createDto);
                 return CreatedAtAction(nameof(GetOrderItemById), new { id = item.Id },
                     ApiResponse<OrderItemDto>.Succ(item, "Order item created successfully"));
             }
@@ -224,7 +224,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var item = await _orderItemService.UpdateOrderItemAsync(id, updateDto);
+                var item = await _orderItemService.UpdateAsync(id, updateDto);
                 return Ok(ApiResponse<OrderItemDto>.Succ(item, "Order item updated successfully"));
             }
             catch (KeyNotFoundException)
@@ -251,7 +251,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var deleted = await _orderItemService.DeleteOrderItemAsync(id);
+                var deleted = await _orderItemService.DeleteAsync(id);
                 if (!deleted)
                     return NotFound(ApiResponse<bool>.Fail($"Order item with ID {id} not found"));
 

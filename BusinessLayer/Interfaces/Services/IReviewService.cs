@@ -2,17 +2,13 @@
 using BusinessLayer.DTOs.Product;
 using BusinessLayer.DTOs.Review;
 using BusinessLayer.DTOs.User;
+using DataAccessLayer;
 
 namespace BusinessLayer.Interfaces.Services
 {
-    public interface IReviewService
+    public interface IReviewService : IBaseService<Review, ReviewDto, CreateReviewDto, UpdateReviewDto>
     {
-        Task<IEnumerable<ReviewDto>> GetAllReviewsAsync();
-        Task<ReviewDto?> GetReviewByIdAsync(int id);
         Task<ReviewDto?> GetReviewWithDetailsAsync(int id);
-        Task<ReviewDto> CreateReviewAsync(CreateReviewDto createDto);
-        Task<ReviewDto> UpdateReviewAsync(int id, UpdateReviewDto updateDto);
-        Task<bool> DeleteReviewAsync(int id);
 
         Task<IEnumerable<ReviewDto>> GetReviewsByProductAsync(int productId);
         Task<IEnumerable<ReviewDto>> GetReviewsByUserAsync(int userId);
@@ -23,7 +19,6 @@ namespace BusinessLayer.Interfaces.Services
         Task<PagedResult<ReviewDto>> SearchReviewsAsync(ReviewFilterDto filter);
 
         Task<bool> HasUserReviewedProductAsync(int userId, int productId);
-        Task<bool> ReviewExistsAsync(int id);
 
         Task<bool> DeleteReviewsByProductAsync(int productId);
         Task<bool> DeleteReviewsByUserAsync(int userId);

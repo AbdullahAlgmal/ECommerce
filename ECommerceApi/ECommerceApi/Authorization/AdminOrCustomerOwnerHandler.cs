@@ -63,7 +63,7 @@ namespace ECommerceApi.Authorization
 
         private async Task<bool> CheckReviewOwnership(int reviewId, int userId)
         {
-            var review = await _reviewService.GetReviewByIdAsync(reviewId);
+            var review = await _reviewService.GetByIdAsync(reviewId);
             return review != null && review.UserId == userId;
         }
         private async Task<bool> CheckPaymentOwnership(int paymentId, int userId)

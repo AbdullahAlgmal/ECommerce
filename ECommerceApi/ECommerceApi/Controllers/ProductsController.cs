@@ -33,7 +33,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var products = await _productService.GetAllProductsAsync();
+                var products = await _productService.GetAllAsync();
                 return Ok(ApiResponse<IEnumerable<ProductDto>>.Succ(products));
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var product = await _productService.GetProductByIdAsync(id);
+                var product = await _productService.GetByIdAsync(id);
                 if (product == null)
                     return NotFound(ApiResponse<ProductDto>.Fail($"Product with ID {id} not found"));
 
@@ -93,7 +93,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var categoryExists = await _categoryService.CategoryExistsAsync(categoryId);
+                var categoryExists = await _categoryService.ExistsAsync(categoryId);
                 if (!categoryExists)
                     return NotFound(ApiResponse<IEnumerable<ProductDto>>.Fail($"Category with ID {categoryId} not found"));
 
@@ -176,7 +176,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var product = await _productService.CreateProductAsync(createDto);
+                var product = await _productService.CreateAsync(createDto);
                 return CreatedAtAction(nameof(GetProductById), new { id = product.Id },
                     ApiResponse<ProductDto>.Succ(product, "Product created successfully"));
             }
@@ -204,7 +204,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var product = await _productService.UpdateProductAsync(id, updateDto);
+                var product = await _productService.UpdateAsync(id, updateDto);
                 return Ok(ApiResponse<ProductDto>.Succ(product, "Product updated successfully"));
             }
             catch (KeyNotFoundException)
@@ -233,7 +233,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var deleted = await _productService.DeleteProductAsync(id);
+                var deleted = await _productService.DeleteAsync(id);
                 if (!deleted)
                     return NotFound(ApiResponse<bool>.Fail($"Product with ID {id} not found"));
 

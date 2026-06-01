@@ -8,79 +8,21 @@ using System.Linq.Expressions;
 
 namespace BusinessLayer.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : BaseService<Product, ProductDto, CreateProductDto, UpdateProductDto>, IProductService
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
 
-        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository)
+        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository) : base(productRepository)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
         }
-        public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
-        {
-            var products = await _productRepository.GetAllAsync();
-            return products.Select(MapToProductDto);
-        }
-        public async Task<ProductDto?> GetProductByIdAsync(int id)
-        {
-            var product = await _productRepository.GetByIdAsync(id);
-            return product != null ? MapToProductDto(product) : null;
-        }
+
         public async Task<ProductDto?> GetProductWithDetailsAsync(int id)
         {
             var product = await _productRepository.GetProductWithDetailsAsync(id);
-            return product != null ? MapToProductDto(product) : null;
-        }
-        public async Task<ProductDto> CreateProductAsync(CreateProductDto createDto)
-        {
-            var isUnique = await _productRepository.IsProductNameUniqueAsync(createDto.Name);
-            if (!isUnique)
-                throw new InvalidOperationException($"Product name '{createDto.Name}' already exists");
-
-            var categoryExists = await _categoryRepository.ExistsAsync(c => c.Id == createDto.CategoryId);
-            if (!categoryExists)
-                throw new InvalidOperationException($"Category with ID {createDto.CategoryId} does not exist");
-
-            var product = new Product
-            {
-                Name = createDto.Name.Trim(),
-                Description = createDto.Description?.Trim() ?? string.Empty,
-                Price = createDto.Price,
-                Quantity = createDto.Quantity,
-                CategoryId = createDto.CategoryId
-            };
-
-            var created = await _productRepository.AddAsync(product);
-            return MapToProductDto(created);
-        }
-        public async Task<ProductDto> UpdateProductAsync(int id, UpdateProductDto updateDto)
-        {
-            var product = await _productRepository.GetByIdAsync(id);
-            if (product == null)
-                throw new KeyNotFoundException($"Product with ID {id} not found");
-
-            var isUnique = await _productRepository.IsProductNameUniqueAsync(updateDto.Name, id);
-            if (!isUnique)
-                throw new InvalidOperationException($"Product name '{updateDto.Name}' already exists");
-
-            var categoryExists = await _categoryRepository.ExistsAsync(c => c.Id == updateDto.CategoryId);
-            if (!categoryExists)
-                throw new InvalidOperationException($"Category with ID {updateDto.CategoryId} does not exist");
-
-            product.Name = updateDto.Name.Trim();
-            product.Description = updateDto.Description?.Trim() ?? string.Empty;
-            product.Price = updateDto.Price;
-            product.Quantity = updateDto.Quantity;
-            product.CategoryId = updateDto.CategoryId;
-
-            var updated = await _productRepository.UpdateAsync(product);
-            return MapToProductDto(updated);
-        }
-        public async Task<bool> DeleteProductAsync(int id)
-        {
-            return await _productRepository.DeleteAsync(id);
+            return product != null ? await MapToDto(product) : null;
         }
         public async Task<PagedResult<ProductDto>> SearchProductsAsync(ProductFilterDto filter)
         {
@@ -95,7 +37,7 @@ namespace BusinessLayer.Services
 
             return new PagedResult<ProductDto>
             {
-                Items = products.Select(MapToProductDto),
+                Items = await Task.WhenAll(products.Select(MapToDto)),
                 TotalCount = totalCount,
                 PageNumber = filter.PageNumber,
                 PageSize = filter.PageSize
@@ -112,7 +54,7 @@ namespace BusinessLayer.Services
         public async Task<IEnumerable<ProductDto>> GetLowStockProductsAsync(int threshold)
         {
             var products = await _productRepository.GetLowStockProductsAsync(threshold);
-            return products.Select(MapToProductDto);
+            return await Task.WhenAll(products.Select(MapToDto));
         }
         public async Task<decimal> GetAverageProductPriceAsync()
         {
@@ -169,9 +111,9 @@ namespace BusinessLayer.Services
             return Expression.Lambda<Func<Product, bool>>(combined, parameter);
         }
 
-        private ProductDto MapToProductDto(Product product)
+        protected override Task<ProductDto> MapToDto(Product product)
         {
-            return new ProductDto
+            return Task.FromResult(new ProductDto
             {
                 Id = product.Id,
                 Name = product.Name,
@@ -190,7 +132,59 @@ namespace BusinessLayer.Services
                 }).ToList() ?? new(),
                 AverageRating = product.Reviews?.Any() == true ? product.Reviews.Average(r => (double)r.Rating) : 0,
                 ReviewCount = product.Reviews?.Count ?? 0
+            });
+        }
+        protected override async Task<IEnumerable<ProductDto>> MapToDtoList(IEnumerable<Product> entities)
+        {
+            var dtoList = new List<ProductDto>();
+            foreach (var entity in entities)
+            {
+                dtoList.Add(await MapToDto(entity));
+            }
+            return dtoList;
+        }
+        protected override Product MapToEntity(CreateProductDto createDto)
+        {
+            return new Product
+            {
+                Name = createDto.Name.Trim(),
+                Description = createDto.Description?.Trim() ?? string.Empty,
+                Price = createDto.Price,
+                Quantity = createDto.Quantity,
+                CategoryId = createDto.CategoryId
             };
+        }
+        protected override void UpdateEntity(Product entity, UpdateProductDto updateDto)
+        {
+            entity.Name = updateDto.Name.Trim();
+            entity.Description = updateDto.Description?.Trim() ?? string.Empty;
+            entity.Price = updateDto.Price;
+            entity.Quantity = updateDto.Quantity;
+            entity.CategoryId = updateDto.CategoryId;
+        }
+        protected override async Task ValidateBeforeCreateAsync(CreateProductDto createDto)
+        {
+            var isUnique = await _productRepository.IsProductNameUniqueAsync(createDto.Name);
+            if (!isUnique)
+                throw new InvalidOperationException($"Product name '{createDto.Name}' already exists");
+
+            var categoryExists = await _categoryRepository.ExistsAsync(c => c.Id == createDto.CategoryId);
+            if (!categoryExists)
+                throw new InvalidOperationException($"Category with ID {createDto.CategoryId} does not exist");
+        }
+        protected override async Task ValidateBeforeUpdateAsync(int id, UpdateProductDto updateDto)
+        {
+            var product = await _productRepository.GetByIdAsync(id);
+            if (product == null)
+                throw new KeyNotFoundException($"Product with ID {id} not found");
+
+            var isUnique = await _productRepository.IsProductNameUniqueAsync(updateDto.Name, id);
+            if (!isUnique)
+                throw new InvalidOperationException($"Product name '{updateDto.Name}' already exists");
+
+            var categoryExists = await _categoryRepository.ExistsAsync(c => c.Id == updateDto.CategoryId);
+            if (!categoryExists)
+                throw new InvalidOperationException($"Category with ID {updateDto.CategoryId} does not exist");
         }
     }
 }

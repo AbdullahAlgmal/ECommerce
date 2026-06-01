@@ -6,7 +6,7 @@ using DataAccessLayer;
 
 namespace BusinessLayer.Services
 {
-    public class OrderItemService : IOrderItemService
+    public class OrderItemService : BaseService<OrderItem, OrderItemDto, CreateOrderItemDto, UpdateOrderItemDto>, IOrderItemService
     {
         private readonly IOrderItemRepository _orderItemRepository;
         private readonly IOrderRepository _orderRepository;
@@ -15,24 +15,14 @@ namespace BusinessLayer.Services
         public OrderItemService(
             IOrderItemRepository orderItemRepository,
             IOrderRepository orderRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository) : base(orderItemRepository)
         {
             _orderItemRepository = orderItemRepository;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
         }
 
-        public async Task<IEnumerable<OrderItemDto>> GetAllOrderItemsAsync()
-        {
-            var orderItems = await _orderItemRepository.GetAllAsync();
-            return orderItems.Select(MapToOrderItemDto);
-        }
-        public async Task<OrderItemDto?> GetOrderItemByIdAsync(int id)
-        {
-            var orderItem = await _orderItemRepository.GetByIdAsync(id);
-            return orderItem != null ? MapToOrderItemDto(orderItem) : null;
-        }
-        public async Task<OrderItemDto> CreateOrderItemAsync(CreateOrderItemDto createDto)
+        public override async Task<OrderItemDto> CreateAsync(CreateOrderItemDto createDto)
         {
             var orderExists = await _orderRepository.ExistsAsync(o => o.Id == createDto.OrderId);
             if (!orderExists)
@@ -47,14 +37,9 @@ namespace BusinessLayer.Services
 
             var totalPrice = product.Price * createDto.Quantity;
 
-            var orderItem = new OrderItem
-            {
-                OrderId = createDto.OrderId,
-                ProductId = createDto.ProductId,
-                Quantity = createDto.Quantity,
-                Price = product.Price,
-                TotalPrice = totalPrice
-            };
+            var orderItem = MapToEntity(createDto);
+            orderItem.Price = product.Price;
+            orderItem.TotalPrice = totalPrice;
 
             await _productRepository.ReduceStockAsync(createDto.ProductId, createDto.Quantity);
 
@@ -66,9 +51,9 @@ namespace BusinessLayer.Services
             }
 
             var createdOrderItem = await _orderItemRepository.AddAsync(orderItem);
-            return MapToOrderItemDto(createdOrderItem);
+            return await MapToDto(createdOrderItem);
         }
-        public async Task<OrderItemDto> UpdateOrderItemAsync(int id, UpdateOrderItemDto updateDto)
+        public override async Task<OrderItemDto> UpdateAsync(int id, UpdateOrderItemDto updateDto)
         {
             var orderItem = await _orderItemRepository.GetByIdAsync(id);
             if (orderItem == null)
@@ -92,9 +77,7 @@ namespace BusinessLayer.Services
                 }
             }
 
-            orderItem.Quantity = updateDto.Quantity;
-            orderItem.Price = updateDto.Price;
-            orderItem.TotalPrice = updateDto.Quantity * updateDto.Price;
+            UpdateEntity(orderItem, updateDto);
 
             var order = await _orderRepository.GetByIdAsync(orderItem.OrderId);
             if (order != null)
@@ -104,29 +87,7 @@ namespace BusinessLayer.Services
             }
 
             var updatedOrderItem = await _orderItemRepository.UpdateAsync(orderItem);
-            return MapToOrderItemDto(updatedOrderItem);
-        }
-        public async Task<bool> DeleteOrderItemAsync(int id)
-        {
-            var orderItem = await _orderItemRepository.GetByIdAsync(id);
-            if (orderItem == null)
-                return false;
-
-            var product = await _productRepository.GetByIdAsync(orderItem.ProductId);
-            if (product != null)
-            {
-                product.Quantity += orderItem.Quantity;
-                await _productRepository.UpdateAsync(product);
-            }
-
-            var order = await _orderRepository.GetByIdAsync(orderItem.OrderId);
-            if (order != null)
-            {
-                order.TotalAmount -= orderItem.TotalPrice;
-                await _orderRepository.UpdateAsync(order);
-            }
-
-            return await _orderItemRepository.DeleteAsync(id);
+            return await MapToDto(updatedOrderItem);
         }
 
         public async Task<IEnumerable<OrderItemDto>> GetOrderItemsByOrderAsync(int orderId)
@@ -136,7 +97,7 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException($"Order with ID {orderId} does not exist");
 
             var orderItems = await _orderItemRepository.GetItemsByOrderAsync(orderId);
-            return orderItems.Select(MapToOrderItemDto);
+            return await Task.WhenAll(orderItems.Select(MapToDto));
         }
         public async Task<IEnumerable<OrderItemDto>> GetOrderItemsByProductAsync(int productId)
         {
@@ -146,7 +107,7 @@ namespace BusinessLayer.Services
 
             var allItems = await _orderItemRepository.GetAllAsync();
             var productItems = allItems.Where(oi => oi.ProductId == productId);
-            return productItems.Select(MapToOrderItemDto);
+            return await Task.WhenAll(productItems.Select(MapToDto));
         }
         public async Task<decimal> GetTotalSalesByProductAsync(int productId)
         {
@@ -217,19 +178,61 @@ namespace BusinessLayer.Services
             return await _orderItemRepository.DeleteItemsByOrderAsync(orderId);
         }
 
-        private OrderItemDto MapToOrderItemDto(OrderItem orderItem)
+        protected override Task<OrderItemDto> MapToDto(OrderItem entity)
         {
-            return new OrderItemDto
+            return Task.FromResult(new OrderItemDto
             {
-                Id = orderItem.Id,
-                Quantity = orderItem.Quantity,
-                Price = orderItem.Price,
-                TotalPrice = orderItem.TotalPrice,
-                OrderId = orderItem.OrderId,
-                ProductId = orderItem.ProductId,
-                ProductName = orderItem.Product?.Name ?? "Unknown",
-                ProductImage = orderItem.Product?.ProductImages?.FirstOrDefault()?.Url ?? string.Empty
+                Id = entity.Id,
+                Quantity = entity.Quantity,
+                Price = entity.Price,
+                TotalPrice = entity.TotalPrice,
+                OrderId = entity.OrderId,
+                ProductId = entity.ProductId,
+                ProductName = entity.Product?.Name ?? "Unknown",
+                ProductImage = entity.Product?.ProductImages?.FirstOrDefault()?.Url ?? string.Empty
+            });
+        }
+        protected override async Task<IEnumerable<OrderItemDto>> MapToDtoList(IEnumerable<OrderItem> entities)
+        {
+            var dtoTasks = entities.Select(MapToDto);
+            return await Task.WhenAll(dtoTasks);
+        }
+        protected override OrderItem MapToEntity(CreateOrderItemDto createDto)
+        {
+            return new OrderItem
+            {
+                OrderId = createDto.OrderId,
+                ProductId = createDto.ProductId,
+                Quantity = createDto.Quantity,
+                Price = 0,
+                TotalPrice = 0
             };
+        }
+        protected override void UpdateEntity(OrderItem entity, UpdateOrderItemDto updateDto)
+        {
+            entity.Quantity = updateDto.Quantity;
+            entity.Price = updateDto.Price;
+            entity.TotalPrice = updateDto.Quantity * updateDto.Price;
+        }
+         protected override async Task ValidateBeforeDeleteAsync(int id)
+         {
+            var orderItem = await _orderItemRepository.GetByIdAsync(id);
+            if (orderItem == null)
+                return;
+
+            var product = await _productRepository.GetByIdAsync(orderItem.ProductId);
+            if (product != null)
+            {
+                product.Quantity += orderItem.Quantity;
+                await _productRepository.UpdateAsync(product);
+            }
+
+            var order = await _orderRepository.GetByIdAsync(orderItem.OrderId);
+            if (order != null)
+            {
+                order.TotalAmount -= orderItem.TotalPrice;
+                await _orderRepository.UpdateAsync(order);
+            }
         }
     }
 }

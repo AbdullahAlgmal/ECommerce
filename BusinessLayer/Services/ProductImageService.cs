@@ -1,34 +1,25 @@
-﻿using BusinessLayer.DTOs.ProductImage;
+﻿ using BusinessLayer.DTOs.ProductImage;
 using BusinessLayer.Interfaces.Repositories;
 using BusinessLayer.Interfaces.Services;
 using DataAccessLayer;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BusinessLayer.Services
 {
-    public class ProductImageService : IProductImageService
+    public class ProductImageService : BaseService<ProductImage, ProductImageDto, CreateProductImageDto, UpdateProductImageDto>, IProductImageService
     {
         private readonly IProductImageRepository _productImageRepository;
         private readonly IProductRepository _productRepository;
 
         public ProductImageService(
             IProductImageRepository productImageRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository) : base(productImageRepository)
         {
             _productImageRepository = productImageRepository;
             _productRepository = productRepository;
         }
 
-        public async Task<IEnumerable<ProductImageDto>> GetAllImagesAsync()
-        {
-            var images = await _productImageRepository.GetAllAsync();
-            return images.Select(MapToProductImageDto);
-        }
-        public async Task<ProductImageDto?> GetImageByIdAsync(int id)
-        {
-            var image = await _productImageRepository.GetByIdAsync(id);
-            return image != null ? MapToProductImageDto(image) : null;
-        }
-        public async Task<ProductImageDto> CreateImageAsync(CreateProductImageDto createDto)
+        public override async Task<ProductImageDto> CreateAsync(CreateProductImageDto createDto)
         {
             var productExists = await _productRepository.ExistsAsync(p => p.Id == createDto.ProductId);
             if (!productExists)
@@ -63,9 +54,9 @@ namespace BusinessLayer.Services
                 await _productImageRepository.UpdateAsync(createdImage);
             }
 
-            return MapToProductImageDto(createdImage);
+            return await MapToDto(createdImage);
         }
-        public async Task<ProductImageDto> UpdateImageAsync(int id, UpdateProductImageDto updateDto)
+        public override async Task<ProductImageDto> UpdateAsync(int id, UpdateProductImageDto updateDto)
         {
             var image = await _productImageRepository.GetByIdAsync(id);
             if (image == null)
@@ -100,9 +91,9 @@ namespace BusinessLayer.Services
             }
 
             var updatedImage = await _productImageRepository.UpdateAsync(image);
-            return MapToProductImageDto(updatedImage);
+            return await MapToDto(updatedImage);
         }
-        public async Task<bool> DeleteImageAsync(int id)
+        public override async Task<bool> DeleteAsync(int id)
         {
             var image = await _productImageRepository.GetByIdAsync(id);
             if (image == null)
@@ -132,12 +123,12 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException($"Product with ID {productId} does not exist");
 
             var images = await _productImageRepository.GetImagesByProductAsync(productId);
-            return images.Select(MapToProductImageDto);
+            return await MapToDtoList(images);
         }
         public async Task<ProductImageDto?> GetPrimaryImageAsync(int productId)
         {
             var image = await _productImageRepository.GetPrimaryImageAsync(productId);
-            return image != null ? MapToProductImageDto(image) : null;
+            return image != null ? await MapToDto(image) : null;
         }
         public async Task<ProductImageDto> SetAsPrimaryAsync(int imageId, int productId)
         {
@@ -163,7 +154,7 @@ namespace BusinessLayer.Services
             }
 
             var primaryImage = await _productImageRepository.GetByIdAsync(imageId);
-            return MapToProductImageDto(primaryImage!);
+            return await MapToDto(primaryImage!);
         }
 
         public async Task<IEnumerable<ProductImageDto>> BulkUploadImagesAsync(BulkUploadImagesDto bulkDto)
@@ -201,7 +192,7 @@ namespace BusinessLayer.Services
                 await ReorderImagesAsync(bulkDto.ProductId, reorderDict);
             }
 
-            return createdImages.Select(MapToProductImageDto);
+            return await MapToDtoList(createdImages);
         }
         public async Task<bool> DeleteAllProductImagesAsync(int productId)
         {
@@ -225,16 +216,39 @@ namespace BusinessLayer.Services
             return await _productImageRepository.CountAddressesByUserAsync(productId);
         }
 
-        private ProductImageDto MapToProductImageDto(ProductImage image)
+        protected override Task<ProductImageDto> MapToDto(ProductImage entity)
         {
-            return new ProductImageDto
+            return Task.FromResult(new ProductImageDto
             {
-                Id = image.Id,
-                Url = image.Url,
-                ImageOrder = image.ImageOrder,
-                ProductId = image.ProductId,
-                ProductName = image.Product?.Name ?? string.Empty
+                Id = entity.Id,
+                Url = entity.Url,
+                ImageOrder = entity.ImageOrder,
+                ProductId = entity.ProductId,
+                ProductName = entity.Product?.Name ?? string.Empty
+            });
+        }
+        protected override async Task<IEnumerable<ProductImageDto>> MapToDtoList(IEnumerable<ProductImage> entities)
+        {
+            var dtoList = new List<ProductImageDto>();
+            foreach (var entity in entities)
+            {
+                dtoList.Add(await MapToDto(entity));
+            }
+            return dtoList;
+        }
+        protected override ProductImage MapToEntity(CreateProductImageDto createDto)
+        {
+            return new ProductImage
+            {
+                Url = createDto.Url,
+                ImageOrder = createDto.ImageOrder ?? 0,
+                ProductId = createDto.ProductId
             };
+        }
+        protected override void UpdateEntity(ProductImage entity, UpdateProductImageDto updateDto)
+        {
+            entity.Url = updateDto.Url;
+            entity.ImageOrder = updateDto.ImageOrder;
         }
     }
 }

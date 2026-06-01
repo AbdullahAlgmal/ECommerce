@@ -30,7 +30,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var categories = await _categoryService.GetAllCategoriesAsync();
+                var categories = await _categoryService.GetAllAsync();
                 return Ok(ApiResponse<IEnumerable<CategoryDto>>.Succ(categories));
             }
             catch (Exception ex)
@@ -48,7 +48,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var category = await _categoryService.GetCategoryByIdAsync(id);
+                var category = await _categoryService.GetByIdAsync(id);
                 if (category == null)
                     return NotFound(ApiResponse<CategoryDto>.Fail($"Category with ID {id} not found"));
 
@@ -92,7 +92,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var category = await _categoryService.CreateCategoryAsync(createDto);
+                var category = await _categoryService.CreateAsync(createDto);
                 return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id },
                     ApiResponse<CategoryDto>.Succ(category, "Category created successfully"));
             }
@@ -118,7 +118,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var category = await _categoryService.UpdateCategoryAsync(id, updateDto);
+                var category = await _categoryService.UpdateAsync(id, updateDto);
                 return Ok(ApiResponse<CategoryDto>.Succ(category, "Category updated successfully"));
             }
             catch (KeyNotFoundException)
@@ -145,7 +145,7 @@ namespace ECommerceApi.Controllers
         {
             try
             {
-                var deleted = await _categoryService.DeleteCategoryAsync(id);
+                var deleted = await _categoryService.DeleteAsync(id);
                 if (!deleted)
                     return NotFound(ApiResponse<bool>.Fail($"Category with ID {id} not found"));
 
