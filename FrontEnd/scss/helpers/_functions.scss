@@ -1,0 +1,103 @@
+// sass/helpers/_functions.scss
+
+@use 'variables' as *;
+
+// ============================================
+// Color Functions
+// ============================================
+
+// Convert hex to RGB
+@function hex-to-rgb($hex) {
+    @return red($hex), green($hex), blue($hex);
+}
+
+// Get contrast color (black or white)
+@function contrast-color($color) {
+    $r: red($color);
+    $g: green($color);
+    $b: blue($color);
+    $luminance: (0.299 * $r + 0.587 * $g + 0.114 * $b) / 255;
+    
+    @if $luminance > 0.5 {
+        @return $gray-900;
+    } @else {
+        @return $white;
+    }
+}
+
+// Lighten or darken color
+@function adjust-color-tone($color, $amount: 10%) {
+    $lightness: lightness($color);
+    
+    @if $lightness > 50% {
+        @return darken($color, $amount);
+    } @else {
+        @return lighten($color, $amount);
+    }
+}
+
+// ============================================
+// Spacing Functions
+// ============================================
+
+// Convert rem to pixels
+@function rem-to-px($rem) {
+    @return $rem * 16px;
+}
+
+// Convert pixels to rem
+@function px-to-rem($px) {
+    @return $px / 16px * 1rem;
+}
+
+// Get spacing value
+@function spacing($multiplier: 1) {
+    @return $spacing-4 * $multiplier;
+}
+
+// ============================================
+// Typography Functions
+// ============================================
+
+// Calculate fluid font size
+@function fluid-font-size($min-size, $max-size, $min-width: 320px, $max-width: 1200px) {
+    $slope: ($max-size - $min-size) / ($max-width - $min-width);
+    $intercept: $min-size - $slope * $min-width;
+    
+    @return clamp(#{$min-size}, #{$intercept} + #{$slope * 100}vw, #{$max-size});
+}
+
+// ============================================
+// Utility Functions
+// ============================================
+
+// Strip unit from number
+@function strip-unit($number) {
+    @if type-of($number) == 'number' and not unitless($number) {
+        @return $number / ($number * 0 + 1);
+    }
+    @return $number;
+}
+
+// Convert to percentage
+@function to-percentage($number) {
+    @return strip-unit($number) * 1%;
+}
+
+// Calculate z-index
+@function z($layer) {
+    @return map-get($z-layers, $layer);
+}
+
+// Deep map merge
+@function map-deep-merge($map1, $map2) {
+    $result: $map1;
+    @each $key, $value in $map2 {
+        @if type-of($value) == 'map' and type-of(map-get($result, $key)) == 'map' {
+            $result: map-merge($result, ($key: map-deep-merge(map-get($result, $key), $value)));
+        } @else {
+            $result: map-merge($result, ($key: $value));
+        }
+    }
+    @return $result;
+}

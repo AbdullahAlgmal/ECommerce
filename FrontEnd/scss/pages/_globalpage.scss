@@ -1,0 +1,183 @@
+@use "../helpers/variables" as *;
+@use "../helpers/mixins" as *;
+
+// ============================================
+// Global Styles
+// ============================================
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: $font-family;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  background: $bg;
+  color: $text;
+  transition:
+    background var(--transition-base),
+    color var(--transition-base);
+}
+
+// ============================================
+// Focus & Accessibility
+// ============================================
+:focus-visible {
+  outline: 2px solid $accent;
+  outline-offset: 2px;
+  border-radius: $radius-sm;
+}
+
+// ============================================
+// Selection Styles
+// ============================================
+::selection {
+  background: rgba($accent, 0.2);
+  color: $accent;
+}
+
+::-moz-selection {
+  background: rgba($accent, 0.2);
+  color: $accent;
+}
+
+// ============================================
+// Scrollbar Styles
+// ============================================
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: $line;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $muted;
+  border-radius: $radius-full;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+}
+
+// ============================================
+// Utility Classes
+// ============================================
+.container {
+  max-width: $maxw;
+  margin: 0 auto;
+  padding: 0 $spacing-4;
+}
+
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+
+// Margin Utilities
+@each $i in 1, 2, 3, 4, 5, 6, 8, 10, 12 {
+  .mt-#{$i} {
+    margin-top: calc(#{$spacing-4} * #{$i});
+  }
+  .mb-#{$i} {
+    margin-bottom: calc(#{$spacing-4} * #{$i});
+  }
+  .ml-#{$i} {
+    margin-left: calc(#{$spacing-4} * #{$i});
+  }
+  .mr-#{$i} {
+    margin-right: calc(#{$spacing-4} * #{$i});
+  }
+  .mx-#{$i} {
+    margin-left: calc(#{$spacing-4} * #{$i});
+    margin-right: calc(#{$spacing-4} * #{$i});
+  }
+  .my-#{$i} {
+    margin-top: calc(#{$spacing-4} * #{$i});
+    margin-bottom: calc(#{$spacing-4} * #{$i});
+  }
+}
+
+// Padding Utilities
+@each $i in 1, 2, 3, 4, 5, 6, 8, 10, 12 {
+  .pt-#{$i} {
+    padding-top: calc(#{$spacing-4} * #{$i});
+  }
+  .pb-#{$i} {
+    padding-bottom: calc(#{$spacing-4} * #{$i});
+  }
+  .pl-#{$i} {
+    padding-left: calc(#{$spacing-4} * #{$i});
+  }
+  .pr-#{$i} {
+    padding-right: calc(#{$spacing-4} * #{$i});
+  }
+  .px-#{$i} {
+    padding-left: calc(#{$spacing-4} * #{$i});
+    padding-right: calc(#{$spacing-4} * #{$i});
+  }
+  .py-#{$i} {
+    padding-top: calc(#{$spacing-4} * #{$i});
+    padding-bottom: calc(#{$spacing-4} * #{$i});
+  }
+}
+
+// Display Utilities
+.hidden {
+  display: none;
+}
+.visible {
+  display: block;
+}
+.flex {
+  display: flex;
+}
+.grid {
+  display: grid;
+}
+
+// ============================================
+// Responsive Utilities
+// ============================================
+@include respond-to("mobile") {
+  .hide-mobile {
+    display: none;
+  }
+}
+
+@include respond-to("tablet") {
+  .hide-tablet {
+    display: none;
+  }
+}
+
+@include respond-to("desktop") {
+  .hide-desktop {
+    display: none;
+  }
+}
+
+// ============================================
+// Smooth Theme Transition
+// ============================================
+* {
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}

@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Login to your E-Commerce account" />
+    <meta
+      name="theme-color"
+      content="#4f46e5"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0b1220"
+      media="(prefers-color-scheme: dark)"
+    />
+    <title>Login | E-Commerce Platform</title>
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Prevent flash of incorrect theme -->
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark") {
+          document.documentElement.setAttribute("data-theme", "dark");
+        } else if (savedTheme === "light") {
+          document.documentElement.removeAttribute("data-theme");
+        } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Main Container -->
+    <main class="login-container">
+      <!-- Hero Section (Left Side) -->
+      <section class="login-hero" aria-label="Login Benefits">
+        <div class="hero-content">
+          <div class="brand">
+            <i class="fas fa-store" aria-hidden="true"></i>
+            <h1>E-Commerce</h1>
+          </div>
+
+          <article class="benefits">
+            <h2>Welcome Back!</h2>
+            <p>Login to access your dashboard and manage your account.</p>
+
+            <ul class="benefits-list">
+              <li>
+                <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+                <div>
+                  <strong>Dashboard Access</strong>
+                  <span>View analytics and insights</span>
+                </div>
+              </li>
+              <li>
+                <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                <div>
+                  <strong>Order Management</strong>
+                  <span>Track and manage orders</span>
+                </div>
+              </li>
+              <li>
+                <i class="fas fa-credit-card" aria-hidden="true"></i>
+                <div>
+                  <strong>Secure Payments</strong>
+                  <span>Manage transactions safely</span>
+                </div>
+              </li>
+              <li>
+                <i class="fas fa-headset" aria-hidden="true"></i>
+                <div>
+                  <strong>24/7 Support</strong>
+                  <span>Get help when you need it</span>
+                </div>
+              </li>
+            </ul>
+          </article>
+
+          <footer class="hero-footer">
+            <p>
+              Don't have an account?
+              <a href="register.html">Create Account →</a>
+            </p>
+          </footer>
+        </div>
+      </section>
+
+      <!-- Login Form Section (Right Side) -->
+      <section class="login-form-section" aria-label="Login Form">
+        <!-- Theme Toggle Button -->
+        <div class="theme-toggle">
+          <button
+            class="theme-btn"
+            id="themeToggle"
+            aria-label="Toggle dark mode"
+          >
+            <i class="fas fa-moon" id="themeIcon"></i>
+          </button>
+        </div>
+
+        <div class="form-container">
+          <header class="form-header">
+            <h2>Sign In</h2>
+            <p>Enter your credentials to access your account</p>
+          </header>
+
+          <form id="loginForm" class="login-form" novalidate>
+            <!-- Email Field -->
+            <div class="form-group">
+              <label for="email">
+                <i class="fas fa-envelope" aria-hidden="true"></i>
+                Email Address
+                <span class="required-star">*</span>
+              </label>
+              <div class="input-wrapper">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="admin@example.com"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+              <span class="error-message" id="emailError"></span>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+              <label for="password">
+                <i class="fas fa-lock" aria-hidden="true"></i>
+                Password
+                <span class="required-star">*</span>
+              </label>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="toggle-password"
+                  aria-label="Toggle password visibility"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <span class="error-message" id="passwordError"></span>
+            </div>
+
+            <!-- Form Options -->
+            <div class="form-options">
+              <label class="checkbox-label">
+                <input type="checkbox" id="rememberMe" />
+                <span>Remember me</span>
+              </label>
+              <a href="forgot-password.html" class="forgot-password"
+                >Forgot Password?</a
+              >
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="login-btn" id="loginBtn">
+              <span class="btn-text">Sign In</span>
+              <span class="btn-loader" style="display: none">
+                <i class="fas fa-spinner fa-spin"></i>
+              </span>
+            </button>
+          </form>
+
+          <!-- Demo Credentials -->
+          <div class="demo-credentials">
+            <p><i class="fas fa-code-branch"></i> Demo Credentials:</p>
+            <div class="demo-buttons">
+              <button
+                class="demo-btn"
+                data-email="admin@example.com"
+                data-password="Admin123"
+              >
+                <i class="fas fa-user-shield"></i> Admin
+              </button>
+              <button
+                class="demo-btn"
+                data-email="customer@example.com"
+                data-password="Customer123"
+              >
+                <i class="fas fa-user"></i> Customer
+              </button>
+              <button
+                class="demo-btn"
+                data-email="seller@example.com"
+                data-password="Seller123"
+              >
+                <i class="fas fa-store"></i> Seller
+              </button>
+            </div>
+          </div>
+
+          <!-- Sign Up Link -->
+          <footer class="signup-link">
+            <p>
+              New to our platform? <a href="register.html">Create an account</a>
+            </p>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+      <div class="toast-content">
+        <i class="fas" aria-hidden="true"></i>
+        <span id="toastMessage"></span>
+      </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

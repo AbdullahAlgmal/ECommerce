@@ -1,0 +1,476 @@
+// sass/pages/_login.scss
+
+@use '../helpers/variables' as *;
+@use '../helpers/mixins' as *;
+
+// ============================================
+// Global Styles using CSS Variables
+// ============================================
+body {
+    background: $bg;
+    color: $text;
+    font-family: $font-family;
+    transition: background var(--transition-base), color var(--transition-base);
+}
+
+/* Hides the eye icon in Microsoft Edge and IE */
+input[type="password"]::-ms-reveal, 
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+/* Hides native toggle indicators in certain WebKit/Blink implementations */
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
+}
+
+
+// ============================================
+// Login Container
+// ============================================
+.login-container {
+    min-height: 100vh;
+    @include flex(row, space-between, stretch);
+    position: relative;
+    overflow: hidden;
+    
+    @include respond-to('mobile') {
+        flex-direction: column;
+    }
+}
+
+// ============================================
+// Hero Section (Left Side)
+// ============================================
+.login-hero {
+    flex: 1;
+    background: $accent;
+    padding: $spacing-12 $spacing-8;
+    @include flex(column, space-between, flex-start, $spacing-8);
+    position: relative;
+    overflow: hidden;
+    color: $white;
+    
+    @include respond-to('mobile') {
+        padding: $spacing-8 $spacing-6;
+        min-height: 60vh;
+    }
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba($white, 0.1) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+}
+
+@include keyframes(rotate) {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+
+.brand {
+    @include flex(row, flex-start, center, $spacing-3);
+    margin-bottom: $spacing-8;
+    
+    i {
+        font-size: $font-size-3xl;
+        color: $white;
+    }
+    
+    h1 {
+        @include heading($font-size-2xl, $font-weight-bold, $white);
+    }
+}
+
+.benefits {
+    margin-bottom: $spacing-8;
+    
+    h2 {
+        @include heading($font-size-2xl, $font-weight-bold, $white);
+        margin-bottom: $spacing-3;
+    }
+    
+    > p {
+        @include text($font-size-base, $font-weight-normal, rgba($white, 0.9));
+        margin-bottom: $spacing-6;
+    }
+}
+
+.benefits-list {
+    list-style: none;
+    @include flex(column, flex-start, flex-start, $spacing-4);
+    
+    li {
+        @include flex(row, flex-start, center, $spacing-3);
+        
+        i {
+            font-size: $font-size-xl;
+            color: rgba($white, 0.9);
+            width: $spacing-8;
+        }
+        
+        div {
+            @include flex(column, center, flex-start, $spacing-1);
+            
+            strong {
+                @include text($font-size-base, $font-weight-semibold, $white);
+            }
+            
+            span {
+                @include text($font-size-sm, $font-weight-normal, rgba($white, 0.8));
+            }
+        }
+    }
+}
+
+.hero-footer {
+    margin-top: auto;
+    padding-top: $spacing-8;
+    width: 100%;
+    
+    p {
+        @include text($font-size-base, $font-weight-normal, rgba($white, 0.9));
+        
+        a {
+            color: $white;
+            font-weight: $font-weight-semibold;
+            text-decoration: none;
+            transition: opacity $transition-fast;
+            
+            &:hover {
+                opacity: 0.8;
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+// ============================================
+// Form Section (Right Side)
+// ============================================
+.login-form-section {
+    flex: 1;
+    @include flex(column, center, center);
+    padding: $spacing-8;
+    background: $bg;
+    overflow-y: auto;
+    
+    @include respond-to('mobile') {
+        padding: $spacing-6;
+    }
+}
+
+.form-container {
+    max-width: 450px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: $spacing-8;
+    
+    h2 {
+        @include heading($font-size-3xl, $font-weight-bold);
+        margin-bottom: $spacing-2;
+    }
+    
+    p {
+        @include text($font-size-base, $font-weight-normal);
+    }
+}
+
+// ============================================
+// Theme Toggle
+// ============================================
+.theme-toggle {
+    position: absolute;
+    top: $spacing-6;
+    right: $spacing-6;
+    
+    @include respond-to('mobile') {
+        top: $spacing-4;
+        right: $spacing-4;
+    }
+}
+
+.theme-btn {
+    background: $card;
+    border: 1px solid $line;
+    border-radius: $radius-full;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    @include flex-center;
+    transition: all $transition-base;
+    color: $text;
+    
+    i {
+        font-size: $font-size-xl;
+        transition: all $transition-base;
+    }
+    
+    &:hover {
+        transform: scale(1.05);
+        border-color: $accent;
+        color: $accent;
+    }
+}
+
+// ============================================
+// Login Form
+// ============================================
+.login-form {
+    margin-bottom: $spacing-8;
+}
+
+.form-group {
+    margin-bottom: $spacing-6;
+    
+    label {
+        @include text($font-size-sm, $font-weight-medium);
+        display: block;
+        margin-bottom: $spacing-2;
+        
+        i {
+            margin-right: $spacing-2;
+            color: $accent;
+        }
+        
+        .required-star {
+            color: $error-color;
+            margin-left: $spacing-1;
+        }
+    }
+}
+
+.input-wrapper {
+    position: relative;
+    
+    input {
+        @include input;
+        padding-right: $spacing-12;
+    }
+}
+
+.toggle-password {
+    position: absolute;
+    right: $spacing-3;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $muted;
+    font-size: $font-size-lg;
+    transition: color $transition-fast;
+    
+    &:hover {
+        color: $accent;
+    }
+}
+
+.error-message {
+    display: block;
+    margin-top: $spacing-1;
+    font-size: $font-size-xs;
+    color: $error-color;
+}
+
+.form-options {
+    @include flex-between;
+    margin-bottom: $spacing-6;
+    flex-wrap: wrap;
+    gap: $spacing-3;
+}
+
+.checkbox-label {
+    @include flex(row, flex-start, center, $spacing-2);
+    cursor: pointer;
+    
+    input {
+        cursor: pointer;
+        accent-color: $accent;
+    }
+    
+    span {
+        @include text($font-size-sm, $font-weight-normal);
+    }
+}
+
+.forgot-password {
+    @include text($font-size-sm, $font-weight-medium, $accent);
+    text-decoration: none;
+    transition: opacity $transition-fast;
+    
+    &:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+}
+
+.login-btn {
+    @include button($accent, $white);
+    width: 100%;
+    padding: $spacing-4;
+    font-size: $font-size-base;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba($white, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.5s, height 0.5s;
+    }
+    
+    &:active::before {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+.btn-loader {
+    display: inline-block;
+}
+
+// ============================================
+// Demo Credentials
+// ============================================
+.demo-credentials {
+    background: $card;
+    padding: $spacing-5;
+    border-radius: $radius-lg;
+    margin-bottom: $spacing-6;
+    border: 1px solid $line;
+    
+    p {
+        @include text($font-size-sm, $font-weight-medium);
+        margin-bottom: $spacing-3;
+        
+        i {
+            color: $accent;
+            margin-right: $spacing-2;
+        }
+    }
+}
+
+.demo-buttons {
+    @include grid(3, $spacing-3);
+    
+    @include respond-to('mobile') {
+        @include grid(1, $spacing-3);
+    }
+}
+
+.demo-btn {
+    padding: $spacing-2 $spacing-3;
+    background: $bg;
+    border: 1px solid $line;
+    border-radius: $radius-md;
+    cursor: pointer;
+    @include text($font-size-xs, $font-weight-medium);
+    transition: all $transition-fast;
+    @include flex(row, center, center, $spacing-2);
+    color: $text;
+    
+    i {
+        font-size: $font-size-sm;
+    }
+    
+    &:hover {
+        background: $accent;
+        border-color: $accent;
+        color: $white;
+    }
+}
+
+// ============================================
+// Sign Up Link
+// ============================================
+.signup-link {
+    text-align: center;
+    margin-top: $spacing-6;
+    
+    p {
+        @include text($font-size-sm, $font-weight-normal);
+        
+        a {
+            color: $accent;
+            font-weight: $font-weight-semibold;
+            text-decoration: none;
+            
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+// ============================================
+// Toast Notification
+// ============================================
+.toast {
+    position: fixed;
+    bottom: $spacing-8;
+    right: $spacing-8;
+    background: $card;
+    border-radius: $radius-lg;
+    box-shadow: $shadow;
+    transform: translateX(400px);
+    transition: transform $transition-base;
+    z-index: $z-toast;
+    border: 1px solid $line;
+    
+    &.show {
+        transform: translateX(0);
+    }
+    
+    &.success {
+        border-left: 4px solid $success-color;
+        
+        i {
+            color: $success-color;
+        }
+    }
+    
+    &.error {
+        border-left: 4px solid $error-color;
+        
+        i {
+            color: $error-color;
+        }
+    }
+}
+
+.toast-content {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-4 $spacing-6;
+    min-width: 300px;
+    
+    i {
+        font-size: $font-size-xl;
+    }
+    
+    span {
+        @include text($font-size-sm, $font-weight-medium);
+    }
+}
