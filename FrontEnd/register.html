@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Create your account - E-Commerce Platform"
+    />
+    <meta
+      name="theme-color"
+      content="#4f46e5"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0b1220"
+      media="(prefers-color-scheme: dark)"
+    />
+    <title>Create Account | E-Commerce Platform</title>
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/register.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Prevent flash of incorrect theme -->
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark") {
+          document.documentElement.setAttribute("data-theme", "dark");
+        } else if (savedTheme === "light") {
+          document.documentElement.removeAttribute("data-theme");
+        } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Main Container -->
+    <main class="register-container">
+      <!-- Hero Section (Left Side) -->
+      <section class="register-hero" aria-label="Registration Benefits">
+        <div class="hero-content">
+          <div class="brand">
+            <i class="fas fa-store" aria-hidden="true"></i>
+            <h1>E-Commerce</h1>
+          </div>
+
+          <article class="benefits">
+            <h2>Join Our Community</h2>
+            <p>
+              Create an account to enjoy exclusive benefits and a seamless
+              shopping experience.
+            </p>
+
+            <ul class="benefits-list">
+              <li>
+                <i class="fas fa-truck-fast" aria-hidden="true"></i>
+                <div>
+                  <strong>Free Shipping</strong>
+                  <span>On orders over $50</span>
+                </div>
+              </li>
+              <li>
+                <i class="fas fa-tags" aria-hidden="true"></i>
+                <div>
+                  <strong>Exclusive Deals</strong>
+                  <span>Member-only discounts</span>
+                </div>
+              </li>
+              <li>
+                <i class="fas fa-clock" aria-hidden="true"></i>
+                <div>
+                  <strong>24/7 Support</strong>
+                  <span>Dedicated customer service</span>
+                </div>
+              </li>
+              <li>
+                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                <div>
+                  <strong>Secure Checkout</strong>
+                  <span>Protected payments</span>
+                </div>
+              </li>
+              <li>
+                <i class="fas fa-chart-line" aria-hidden="true"></i>
+                <div>
+                  <strong>Order Tracking</strong>
+                  <span>Real-time updates</span>
+                </div>
+              </li>
+              <li>
+                <i class="fas fa-gift" aria-hidden="true"></i>
+                <div>
+                  <strong>Rewards Program</strong>
+                  <span>Earn points on every purchase</span>
+                </div>
+              </li>
+            </ul>
+          </article>
+
+          <footer class="hero-footer">
+            <p>Already have an account? <a href="index.html">Sign in →</a></p>
+          </footer>
+        </div>
+      </section>
+
+      <!-- Registration Form Section (Right Side) -->
+      <section class="register-form-section" aria-label="Registration Form">
+        <!-- Theme Toggle Button -->
+        <div class="theme-toggle">
+          <button
+            class="theme-btn"
+            id="themeToggle"
+            aria-label="Toggle dark mode"
+          >
+            <i class="fas fa-moon" id="themeIcon"></i>
+          </button>
+        </div>
+
+        <div class="form-container">
+          <header class="form-header">
+            <h2>Create Account</h2>
+            <p>Fill in your details to get started</p>
+          </header>
+
+          <form id="registerForm" class="register-form" novalidate>
+            <!-- Personal Information Fieldset -->
+            <fieldset class="form-fieldset">
+              <legend>Personal Information</legend>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="firstName">
+                    <i class="fas fa-user" aria-hidden="true"></i>
+                    First Name
+                    <span class="required-star">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    placeholder="John"
+                    autocomplete="given-name"
+                    required
+                  />
+                  <span class="error-message" id="firstNameError"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="lastName">
+                    <i class="fas fa-user" aria-hidden="true"></i>
+                    Last Name
+                    <span class="required-star">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    placeholder="Doe"
+                    autocomplete="family-name"
+                    required
+                  />
+                  <span class="error-message" id="lastNameError"></span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email">
+                  <i class="fas fa-envelope" aria-hidden="true"></i>
+                  Email Address
+                  <span class="required-star">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="john.doe@example.com"
+                  autocomplete="email"
+                  required
+                />
+                <span class="error-message" id="emailError"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="phone">
+                  <i class="fas fa-phone-alt" aria-hidden="true"></i>
+                  Phone Number
+                  <span class="required-star">*</span>
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  placeholder="+1 234 567 8900"
+                  autocomplete="tel"
+                  required
+                />
+                <span class="error-message" id="phoneError"></span>
+              </div>
+            </fieldset>
+
+            <!-- Security Fieldset -->
+            <fieldset class="form-fieldset">
+              <legend>Security</legend>
+
+              <div class="form-group">
+                <label for="password">
+                  <i class="fas fa-lock" aria-hidden="true"></i>
+                  Password
+                  <span class="required-star">*</span>
+                </label>
+                <div class="input-wrapper">
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create a strong password"
+                    autocomplete="new-password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    class="toggle-password"
+                    data-target="password"
+                    aria-label="Toggle password visibility"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                <span class="error-message" id="passwordError"></span>
+
+                <!-- Password Strength Meter -->
+                <div class="password-strength" id="passwordStrength">
+                  <div class="strength-meter">
+                    <div class="strength-bar" id="strengthBar"></div>
+                  </div>
+                  <div class="strength-labels">
+                    <span>Weak</span>
+                    <span>Fair</span>
+                    <span>Good</span>
+                    <span>Strong</span>
+                  </div>
+                </div>
+
+                <!-- Password Requirements -->
+                <ul class="password-requirements">
+                  <li id="reqLength">
+                    <i class="fas fa-circle"></i>
+                    <span>At least 6 characters</span>
+                  </li>
+                  <li id="reqLowercase">
+                    <i class="fas fa-circle"></i>
+                    <span>At least one lowercase letter</span>
+                  </li>
+                  <li id="reqUppercase">
+                    <i class="fas fa-circle"></i>
+                    <span>At least one uppercase letter</span>
+                  </li>
+                  <li id="reqNumber">
+                    <i class="fas fa-circle"></i>
+                    <span>At least one number</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword">
+                  <i class="fas fa-check-circle" aria-hidden="true"></i>
+                  Confirm Password
+                  <span class="required-star">*</span>
+                </label>
+                <div class="input-wrapper">
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Confirm your password"
+                    autocomplete="off"
+                    required
+                  />
+                  <button
+                    type="button"
+                    class="toggle-password"
+                    data-target="confirmPassword"
+                    aria-label="Toggle password visibility"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                <span class="error-message" id="confirmPasswordError"></span>
+              </div>
+            </fieldset>
+
+            <!-- Additional Information Fieldset -->
+            <fieldset class="form-fieldset">
+              <legend>Additional Information</legend>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="dateOfBirth">
+                    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                    Date of Birth
+                    <span class="required-star">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="dateOfBirth"
+                    name="dateOfBirth"
+                    required
+                  />
+                  <span class="error-message" id="dateOfBirthError"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="role">
+                    <i class="fas fa-badge" aria-hidden="true"></i>
+                    Account Type
+                    <span class="required-star">*</span>
+                  </label>
+                  <select id="role" name="role" required>
+                    <option value="" disabled selected>
+                      Select account type
+                    </option>
+                    <option value="Customer">👤 Customer</option>
+                    <option value="Seller">🏪 Seller</option>
+                  </select>
+                  <span class="error-message" id="roleError"></span>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Terms and Conditions -->
+            <div class="terms-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="termsCheckbox" required />
+                <span class="checkmark"></span>
+                <span
+                  >I agree to the
+                  <a href="#" target="_blank">Terms of Service</a> and
+                  <a href="#" target="_blank">Privacy Policy</a></span
+                >
+              </label>
+              <span class="error-message" id="termsError"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="register-btn" id="registerBtn">
+              <span class="btn-text">Create Account</span>
+              <span class="btn-loader" style="display: none">
+                <i class="fas fa-spinner fa-spin"></i>
+              </span>
+            </button>
+          </form>
+
+          <!-- Social Registration -->
+          <div class="social-registration">
+            <div class="divider">
+              <span>Or sign up with</span>
+            </div>
+            <div class="social-buttons">
+              <button
+                type="button"
+                class="social-btn google-btn"
+                aria-label="Sign up with Google"
+              >
+                <i class="fab fa-google"></i>
+                Google
+              </button>
+              <button
+                type="button"
+                class="social-btn facebook-btn"
+                aria-label="Sign up with Facebook"
+              >
+                <i class="fab fa-facebook-f"></i>
+                Facebook
+              </button>
+              <button
+                type="button"
+                class="social-btn apple-btn"
+                aria-label="Sign up with Apple"
+              >
+                <i class="fab fa-apple"></i>
+                Apple
+              </button>
+            </div>
+          </div>
+
+          <footer class="form-footer">
+            <p>
+              By creating an account, you agree to our <a href="#">Terms</a> and
+              <a href="#">Privacy Policy</a>
+            </p>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+      <div class="toast-content">
+        <i class="fas" aria-hidden="true"></i>
+        <span id="toastMessage"></span>
+      </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script type="module" src="js/components/register.js"></script>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
