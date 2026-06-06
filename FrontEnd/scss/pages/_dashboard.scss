@@ -1,0 +1,962 @@
+// sass/pages/_dashboard.scss
+
+@use "../helpers/variables" as *;
+@use "../helpers/mixins" as *;
+
+// ============================================
+// Dashboard Layout
+// ============================================
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+  background: $bg;
+
+  @include respond-to("mobile") {
+    flex-direction: column;
+  }
+}
+
+// ============================================
+// Sidebar
+// ============================================
+.sidebar {
+  width: 280px;
+  background: $card;
+  border-right: 1px solid $line;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  transition: all $transition-base;
+  z-index: $z-fixed;
+
+  @include respond-to("mobile") {
+    width: 100%;
+    position: relative;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid $line;
+  }
+
+  @include custom-scrollbar;
+}
+
+.sidebar-header {
+  padding: $spacing-6;
+  border-bottom: 1px solid $line;
+
+  .logo {
+    @include flex(row, flex-start, center, $spacing-3);
+
+    i {
+      font-size: $font-size-2xl;
+      color: $accent;
+    }
+
+    h2 {
+      @include heading($font-size-xl, $font-weight-bold);
+    }
+  }
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: $spacing-4 $spacing-3;
+}
+
+.nav-item {
+  @include flex(row, flex-start, center, $spacing-3);
+  padding: $spacing-3 $spacing-4;
+  margin-bottom: $spacing-2;
+  border-radius: $radius-lg;
+  color: $text;
+  text-decoration: none;
+  transition: all $transition-base;
+
+  i {
+    width: 24px;
+    font-size: $font-size-lg;
+  }
+
+  span {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+
+  &:hover {
+    background: rgba($accent, 0.1);
+    color: $accent;
+  }
+
+  &.active {
+    background: $accent;
+    color: $white;
+
+    i,
+    span {
+      color: $white;
+    }
+  }
+}
+
+.sidebar-footer {
+  padding: $spacing-4 $spacing-3;
+  border-top: 1px solid $line;
+}
+
+.user-info {
+  @include flex(row, flex-start, center, $spacing-3);
+  margin-bottom: $spacing-4;
+  padding: $spacing-3 $spacing-4;
+  background: rgba($accent, 0.05);
+  border-radius: $radius-lg;
+
+  .user-avatar {
+    width: 48px;
+    height: 48px;
+    background: $accent;
+    border-radius: $radius-full;
+    @include flex-center;
+
+    i {
+      font-size: $font-size-xl;
+      color: $white;
+    }
+  }
+
+  .user-details {
+    flex: 1;
+
+    .user-name {
+      @include text($font-size-sm, $font-weight-semibold, $text);
+      display: block;
+    }
+
+    .user-role {
+      @include text($font-size-xs, $font-weight-normal, $muted);
+    }
+  }
+}
+
+.logout-btn {
+  width: 100%;
+  @include button($card, $error-color);
+  border: 1px solid $error-color;
+  justify-content: center;
+
+  &:hover {
+    background: $error-color;
+    color: $white;
+  }
+}
+
+// ============================================
+// Main Content
+// ============================================
+.main-content {
+  flex: 1;
+  margin-left: 280px;
+  padding: $spacing-6;
+
+  @include respond-to("mobile") {
+    margin-left: 0;
+    padding: $spacing-4;
+  }
+}
+
+// ============================================
+// Top Bar
+// ============================================
+.top-bar {
+  @include flex-between;
+  margin-bottom: $spacing-8;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+
+  h1 {
+    @include heading($font-size-2xl, $font-weight-bold);
+  }
+
+  .header-actions {
+    @include flex(row, flex-end, center, $spacing-4);
+  }
+
+  .date-time {
+    @include flex(row, center, center, $spacing-2);
+    padding: $spacing-2 $spacing-4;
+    background: $card;
+    border-radius: $radius-lg;
+    border: 1px solid $line;
+
+    i {
+      color: $accent;
+    }
+
+    span {
+      @include text($font-size-sm, $font-weight-medium);
+    }
+  }
+
+  .theme-toggle {
+    button {
+      background: $card;
+      border: 1px solid $line;
+      border-radius: $radius-full;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      @include flex-center;
+      color: $text;
+
+      &:hover {
+        border-color: $accent;
+        color: $accent;
+      }
+    }
+  }
+}
+
+// ============================================
+// Stats Grid
+// ============================================
+.stats-grid {
+  @include grid(4, $spacing-6);
+  margin-bottom: $spacing-8;
+
+  @include respond-to("tablet") {
+    @include grid(2, $spacing-4);
+  }
+
+  @include respond-to("mobile") {
+    @include grid(1, $spacing-4);
+  }
+}
+
+.stat-card {
+  background: $card;
+  border-radius: $radius-xl;
+  padding: $spacing-5;
+  border: 1px solid $line;
+  transition: all $transition-base;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow;
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba($accent, 0.1);
+    border-radius: $radius-lg;
+    @include flex-center;
+    margin-bottom: $spacing-4;
+
+    i {
+      font-size: $font-size-2xl;
+      color: $accent;
+    }
+  }
+
+  .stat-info {
+    h3 {
+      @include text($font-size-sm, $font-weight-medium, $muted);
+      margin-bottom: $spacing-2;
+    }
+
+    p {
+      @include heading($font-size-3xl, $font-weight-bold);
+    }
+  }
+}
+
+// ============================================
+// Dashboard Sections
+// ============================================
+.dashboard-section {
+  background: $card;
+  border-radius: $radius-xl;
+  border: 1px solid $line;
+  padding: $spacing-6;
+  margin-bottom: $spacing-6;
+
+  .section-header {
+    @include flex-between;
+    margin-bottom: $spacing-5;
+    flex-wrap: wrap;
+    gap: $spacing-3;
+
+    h2 {
+      @include heading($font-size-xl, $font-weight-semibold);
+    }
+
+    .view-all {
+      @include text($font-size-sm, $font-weight-medium, $accent);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// ============================================
+// Tables
+// ============================================
+.data-table {
+  width: 100%;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: $spacing-3 $spacing-4;
+      text-align: left;
+      border-bottom: 1px solid $line;
+    }
+
+    th {
+      @include text($font-size-sm, $font-weight-semibold, $text);
+      background: rgba($accent, 0.02);
+    }
+
+    td {
+      @include text($font-size-sm, $font-weight-normal);
+    }
+
+    tr:hover {
+      background: rgba($accent, 0.02);
+    }
+  }
+}
+
+.badge {
+  display: inline-flex;
+  padding: $spacing-1 $spacing-3;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+
+  &.badge-success {
+    background: rgba($success-color, 0.1);
+    color: $success-color;
+  }
+
+  &.badge-warning {
+    background: rgba($warning-color, 0.1);
+    color: $warning-color;
+  }
+
+  &.badge-error {
+    background: rgba($error-color, 0.1);
+    color: $error-color;
+  }
+
+  &.badge-info {
+    background: rgba($info-color, 0.1);
+    color: $info-color;
+  }
+}
+
+// ============================================
+// Activity List
+// ============================================
+.activity-list {
+  @include flex(column, flex-start, stretch, $spacing-4);
+}
+
+.activity-item {
+  @include flex(row, flex-start, center, $spacing-4);
+  padding: $spacing-3;
+  border-radius: $radius-lg;
+  transition: all $transition-base;
+
+  &:hover {
+    background: rgba($accent, 0.02);
+  }
+
+  .activity-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba($accent, 0.1);
+    border-radius: $radius-full;
+    @include flex-center;
+
+    i {
+      color: $accent;
+    }
+  }
+
+  .activity-content {
+    flex: 1;
+
+    .activity-text {
+      @include text($font-size-sm, $font-weight-medium, $text);
+      margin-bottom: $spacing-1;
+    }
+
+    .activity-time {
+      @include text($font-size-xs, $font-weight-normal, $muted);
+    }
+  }
+}
+
+// ============================================
+// Quick Actions
+// ============================================
+.quick-actions {
+  @include grid(2, $spacing-4);
+
+  @include respond-to("mobile") {
+    @include grid(1, $spacing-4);
+  }
+}
+
+.quick-action-btn {
+  @include flex(row, center, center, $spacing-3);
+  padding: $spacing-4;
+  background: $bg;
+  border: 1px solid $line;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  i {
+    font-size: $font-size-xl;
+    color: $accent;
+  }
+
+  span {
+    @include text($font-size-sm, $font-weight-medium, $text);
+  }
+
+  &:hover {
+    border-color: $accent;
+    background: rgba($accent, 0.05);
+    transform: translateY(-2px);
+  }
+}
+
+// ============================================
+// Loading State
+// ============================================
+.loading {
+  @include flex-center;
+  padding: $spacing-8;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid $line;
+    border-top-color: $accent;
+    border-radius: $radius-full;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@include keyframes(spin) {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// Empty State
+// ============================================
+.empty-state {
+  text-align: center;
+  padding: $spacing-8;
+
+  i {
+    font-size: $font-size-4xl;
+    color: $muted;
+    margin-bottom: $spacing-4;
+  }
+
+  h3 {
+    @include heading($font-size-lg, $font-weight-semibold);
+    margin-bottom: $spacing-2;
+  }
+
+  p {
+    @include text($font-size-sm, $font-weight-normal);
+    margin-bottom: $spacing-4;
+  }
+}
+
+// ============================================
+// Responsive Adjustments
+// ============================================
+@include respond-to("tablet") {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@include respond-to("mobile") {
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .header-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  .dashboard-section {
+    padding: $spacing-4;
+  }
+
+  .data-table {
+    font-size: $font-size-xs;
+
+    th,
+    td {
+      padding: $spacing-2 $spacing-3;
+    }
+  }
+}
+
+// ============================================
+// Profile Page Styles
+// ============================================
+
+// Profile Form Container
+.profile-form {
+  max-width: 600px;
+  width: 100%;
+
+  @include respond-to("mobile") {
+    max-width: 100%;
+  }
+}
+
+// Form Row for two columns
+.form-row {
+  @include grid(2, $spacing-4);
+  margin-bottom: $spacing-4;
+
+  @include respond-to("mobile") {
+    @include grid(1, $spacing-4);
+  }
+}
+
+// Form Group
+.form-group {
+  margin-bottom: $spacing-5;
+
+  label {
+    @include text($font-size-sm, $font-weight-medium);
+    display: block;
+    margin-bottom: $spacing-2;
+    color: $text;
+
+    i {
+      margin-right: $spacing-2;
+      color: $accent;
+    }
+  }
+
+  input {
+    @include input;
+    width: 100%;
+
+    &:disabled {
+      background: rgba($muted, 0.1);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    &::placeholder {
+      color: $muted;
+      opacity: 0.6;
+    }
+  }
+
+  .helper-text {
+    display: block;
+    margin-top: $spacing-2;
+    font-size: $font-size-xs;
+    color: $muted;
+  }
+
+  .error-message {
+    display: block;
+    margin-top: $spacing-1;
+    font-size: $font-size-xs;
+    color: $error-color;
+  }
+}
+
+// Password Wrapper for toggle button
+.password-wrapper {
+  position: relative;
+
+  input {
+    padding-right: $spacing-12;
+  }
+}
+
+.toggle-password {
+  position: absolute;
+  right: $spacing-3;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $muted;
+  font-size: $font-size-lg;
+  transition: color $transition-fast;
+  padding: $spacing-2;
+
+  &:hover {
+    color: $accent;
+  }
+}
+
+// Password Strength Meter
+.password-strength {
+  margin-top: $spacing-2;
+}
+
+.strength-meter {
+  height: 4px;
+  background: $line;
+  border-radius: $radius-full;
+  overflow: hidden;
+  margin-bottom: $spacing-2;
+}
+
+.strength-bar {
+  height: 100%;
+  width: 0;
+  transition:
+    width $transition-base,
+    background $transition-base;
+  border-radius: $radius-full;
+
+  &.weak {
+    width: 25%;
+    background: $error-color;
+  }
+
+  &.fair {
+    width: 50%;
+    background: $warning-color;
+  }
+
+  &.good {
+    width: 75%;
+    background: $info-color;
+  }
+
+  &.strong {
+    width: 100%;
+    background: $success-color;
+  }
+}
+
+.strength-labels {
+  @include flex(row, space-between, center);
+  font-size: $font-size-xs;
+  color: $muted;
+  margin-top: $spacing-1;
+}
+
+// Password Requirements Checklist
+.password-requirements {
+  list-style: none;
+  @include grid(2, $spacing-2);
+  margin-top: $spacing-3;
+  padding: 0;
+
+  @include respond-to("mobile") {
+    @include grid(1, $spacing-2);
+  }
+
+  li {
+    @include flex(row, flex-start, center, $spacing-2);
+    font-size: $font-size-xs;
+    color: $muted;
+    transition: color $transition-fast;
+
+    i {
+      font-size: 8px;
+      color: $muted;
+      transition: color $transition-fast;
+    }
+
+    &.valid {
+      color: $success-color;
+
+      i {
+        color: $success-color;
+      }
+    }
+  }
+}
+
+// Register/Update Button
+.register-btn {
+  @include button($accent, $white);
+  width: 100%;
+  padding: $spacing-4;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  margin-top: $spacing-4;
+  position: relative;
+  overflow: hidden;
+
+  i {
+    margin-right: $spacing-2;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba($white, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition:
+      width 0.5s,
+      height 0.5s;
+  }
+
+  &:active::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+// Change Password Button (Outline style)
+.dashboard-section:last-child .register-btn {
+  background: transparent;
+  border: 2px solid $accent;
+  color: $accent;
+
+  &:hover {
+    background: $accent;
+    color: $white;
+  }
+}
+
+// Loading state for buttons
+.btn-loader {
+  display: inline-block;
+  margin-left: $spacing-2;
+
+  i {
+    margin-right: 0;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@include keyframes(spin) {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Profile Section Spacing
+.dashboard-section {
+  margin-bottom: $spacing-6;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Section Header with icon
+.section-header {
+  @include flex-between;
+  margin-bottom: $spacing-5;
+  flex-wrap: wrap;
+  gap: $spacing-3;
+
+  h2 {
+    @include heading($font-size-xl, $font-weight-semibold);
+    position: relative;
+    padding-left: $spacing-4;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 20px;
+      background: $accent;
+      border-radius: $radius-full;
+    }
+  }
+
+  p {
+    @include text($font-size-sm, $font-weight-normal, $muted);
+  }
+}
+
+// Responsive adjustments for profile page
+@include respond-to("mobile") {
+  .profile-form {
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: $spacing-4;
+    }
+  }
+
+  .password-requirements {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    h2 {
+      font-size: $font-size-lg;
+    }
+  }
+}
+
+// Dark mode specific adjustments
+@include dark-mode {
+  .profile-form {
+    input:disabled {
+      background: rgba($white, 0.1);
+    }
+  }
+
+  .register-btn {
+    &.outline {
+      border-color: $accent;
+      color: $accent;
+
+      &:hover {
+        background: $accent;
+        color: $white;
+      }
+    }
+  }
+}
+
+// ============================================
+// Toast Notification
+// ============================================
+.toast {
+    position: fixed;
+    bottom: $spacing-8;
+    right: $spacing-8;
+    background: $card;
+    border-radius: $radius-lg;
+    box-shadow: $shadow;
+    transform: translateX(400px);
+    transition: transform $transition-base;
+    z-index: $z-toast;
+    border: 1px solid $line;
+    
+    &.show {
+        transform: translateX(0);
+    }
+    
+    &.success {
+        border-left: 4px solid $success-color;
+        
+        i {
+            color: $success-color;
+        }
+    }
+    
+    &.error {
+        border-left: 4px solid $error-color;
+        
+        i {
+            color: $error-color;
+        }
+    }
+}
+
+.toast-content {
+    @include flex(row, flex-start, center, $spacing-3);
+    padding: $spacing-4 $spacing-6;
+    min-width: 300px;
+    
+    i {
+        font-size: $font-size-xl;
+    }
+    
+    span {
+        @include text($font-size-sm, $font-weight-medium);
+    }
+}
+
+// Print styles for profile
+@media print {
+  .profile-form {
+    max-width: 100%;
+  }
+
+  .register-btn {
+    background: #000 !important;
+    color: #fff !important;
+  }
+
+  .toggle-password,
+  .password-strength,
+  .password-requirements,
+  .toast,
+  .theme-toggle,
+  .sidebar,
+  .top-bar .header-actions,
+  .quick-actions {
+    display: none !important;
+  }
+}
+
+// ============================================
+// Print Styles
+// ============================================
+@media print {
+  .sidebar,
+  .top-bar .header-actions,
+  .quick-actions,
+  .theme-toggle {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  .stat-card,
+  .dashboard-section {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #e5e7eb !important;
+  }
+
+  * {
+    background: white !important;
+    color: black !important;
+  }
+}

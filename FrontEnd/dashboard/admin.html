@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Dashboard - E-Commerce Platform">
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+    <title>Admin Dashboard | E-Commerce Platform</title>
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/all.min.css">
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (savedTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <h2>Admin Panel</h2>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="overview">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-page="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="#" class="nav-item" data-page="products">
+                    <i class="fas fa-box"></i>
+                    <span>Products</span>
+                </a>
+                <a href="#" class="nav-item" data-page="orders">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="#" class="nav-item" data-page="categories">
+                    <i class="fas fa-tags"></i>
+                    <span>Categories</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reviews">
+                    <i class="fas fa-star"></i>
+                    <span>Reviews</span>
+                </a>
+                <a href="#" class="nav-item" data-page="payments">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Payments</span>
+                </a>
+                <a href="#" class="nav-item" data-page="shipping">
+                    <i class="fas fa-truck"></i>
+                    <span>Shipping</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name" id="userName">Loading...</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 id="pageTitle">Dashboard Overview</h1>
+                <div class="header-actions">
+                    <div class="date-time">
+                        <i class="far fa-calendar-alt"></i>
+                        <span id="currentDateTime"></span>
+                    </div>
+                    <div class="theme-toggle">
+                        <button id="themeToggle">
+                            <i class="fas fa-moon" id="themeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Overview Page -->
+            <div id="overviewPage" class="dashboard-page active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Users</h3>
+                            <p id="totalUsers">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Products</h3>
+                            <p id="totalProducts">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Orders</h3>
+                            <p id="totalOrders">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Revenue</h3>
+                            <p id="totalRevenue">$0</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Orders -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Recent Orders</h2>
+                        <a href="#" class="view-all" data-page="orders">View All →</a>
+                    </div>
+                    <div class="data-table" id="recentOrdersTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Users -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Recent Users</h2>
+                        <a href="#" class="view-all" data-page="users">View All →</a>
+                    </div>
+                    <div class="data-table" id="recentUsersTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Users Page -->
+            <div id="usersPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>All Users</h2>
+                        <button class="quick-action-btn" id="addUserBtn" style="padding: 8px 16px;">
+                            <i class="fas fa-plus"></i>
+                            <span>Add User</span>
+                        </button>
+                    </div>
+                    <div class="data-table" id="allUsersTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products Page -->
+            <div id="productsPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>All Products</h2>
+                        <button class="quick-action-btn" id="addProductBtn" style="padding: 8px 16px;">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Product</span>
+                        </button>
+                    </div>
+                    <div class="data-table" id="allProductsTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Orders Page -->
+            <div id="ordersPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>All Orders</h2>
+                    </div>
+                    <div class="data-table" id="allOrdersTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Categories Page -->
+            <div id="categoriesPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Categories</h2>
+                        <button class="quick-action-btn" id="addCategoryBtn" style="padding: 8px 16px;">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Category</span>
+                        </button>
+                    </div>
+                    <div class="data-table" id="allCategoriesTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews Page -->
+            <div id="reviewsPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>All Reviews</h2>
+                    </div>
+                    <div class="data-table" id="allReviewsTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payments Page -->
+            <div id="paymentsPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Payments</h2>
+                    </div>
+                    <div class="data-table" id="allPaymentsTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Shipping Page -->
+            <div id="shippingPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Shipping</h2>
+                    </div>
+                    <div class="data-table" id="allShippingTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+        <div class="toast-content">
+            <i class="fas"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+    
+    <script type="module" src="../js/utils/constants.js"></script>
+    <script type="module" src="../js/components/darkMode.js"></script>
+    <script type="module" src="../js/components/dashboard.js"></script>
+</body>
+</html>

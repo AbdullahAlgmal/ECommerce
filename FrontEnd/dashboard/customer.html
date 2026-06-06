@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Customer Dashboard - E-Commerce Platform">
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+    <title>Customer Dashboard | E-Commerce Platform</title>
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/all.min.css">
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (savedTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <h2>E-Commerce</h2>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="overview">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-page="orders">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>My Orders</span>
+                </a>
+                <a href="#" class="nav-item" data-page="addresses">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Addresses</span>
+                </a>
+                <a href="#" class="nav-item" data-page="wishlist">
+                    <i class="fas fa-heart"></i>
+                    <span>Wishlist</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reviews">
+                    <i class="fas fa-star"></i>
+                    <span>My Reviews</span>
+                </a>
+                <a href="#" class="nav-item" data-page="profile">
+                    <i class="fas fa-user"></i>
+                    <span>Profile Settings</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name" id="userName">Loading...</span>
+                        <span class="user-role">Customer</span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 id="pageTitle">Dashboard Overview</h1>
+                <div class="header-actions">
+                    <div class="date-time">
+                        <i class="far fa-calendar-alt"></i>
+                        <span id="currentDateTime"></span>
+                    </div>
+                    <div class="theme-toggle">
+                        <button id="themeToggle">
+                            <i class="fas fa-moon" id="themeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Overview Page -->
+            <div id="overviewPage" class="dashboard-page active">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Orders</h3>
+                            <p id="totalOrders">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Spent</h3>
+                            <p id="totalSpent">$0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Active Orders</h3>
+                            <p id="activeOrders">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Reviews Written</h3>
+                            <p id="totalReviews">0</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Orders -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Recent Orders</h2>
+                        <a href="#" class="view-all" data-page="orders">View All →</a>
+                    </div>
+                    <div class="data-table" id="recentOrdersTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Quick Actions</h2>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="window.location.href='../shop.html'">
+                            <i class="fas fa-search"></i>
+                            <span>Browse Products</span>
+                        </button>
+                        <button class="quick-action-btn" onclick="window.location.href='../cart.html'">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>View Cart</span>
+                        </button>
+                        <button class="quick-action-btn" data-page="addresses">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Add New Address</span>
+                        </button>
+                        <button class="quick-action-btn" data-page="profile">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Edit Profile</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Orders Page -->
+            <div id="ordersPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>My Orders</h2>
+                    </div>
+                    <div class="data-table" id="allOrdersTable">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Addresses Page -->
+            <div id="addressesPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>My Addresses</h2>
+                        <button class="quick-action-btn" id="addAddressBtn" style="padding: 8px 16px;">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Address</span>
+                        </button>
+                    </div>
+                    <div id="addressesList" class="addresses-grid">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Wishlist Page -->
+            <div id="wishlistPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>My Wishlist</h2>
+                    </div>
+                    <div id="wishlistItems" class="wishlist-grid">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews Page -->
+            <div id="reviewsPage" class="dashboard-page" style="display: none;">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>My Reviews</h2>
+                    </div>
+                    <div id="reviewsList">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+           <!-- Profile Page -->
+<div id="profilePage" class="dashboard-page" style="display: none;">
+    <!-- Profile Settings Section -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h2>Profile Settings</h2>
+            <p>Update your personal information</p>
+        </div>
+        <form id="profileForm" class="profile-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-user"></i>
+                        First Name
+                    </label>
+                    <input type="text" id="profileFirstName" placeholder="Enter your first name" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-user"></i>
+                        Last Name
+                    </label>
+                    <input type="text" id="profileLastName" placeholder="Enter your last name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-envelope"></i>
+                    Email
+                </label>
+                <input type="email" id="profileEmail" placeholder="your@email.com" disabled>
+                <small class="helper-text">Email cannot be changed</small>
+            </div>
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-phone-alt"></i>
+                    Phone
+                </label>
+                <input type="tel" id="profilePhone" placeholder="+1 234 567 8900" required>
+            </div>
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-calendar-alt"></i>
+                    Date of Birth
+                </label>
+                <input type="date" id="profileDob" required>
+            </div>
+            <button type="submit" class="register-btn">
+                <i class="fas fa-save"></i>
+                <span>Update Profile</span>
+                <span class="btn-loader" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+            </button>
+        </form>
+    </div>
+    
+    <!-- Change Password Section -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h2>Change Password</h2>
+            <p>Update your password to keep your account secure</p>
+        </div>
+        <form id="passwordForm" class="profile-form">
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-lock"></i>
+                    Current Password
+                </label>
+                <div class="password-wrapper">
+                    <input type="password" id="currentPassword" placeholder="Enter your current password" required>
+                    <button type="button" class="toggle-password" data-target="currentPassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-key"></i>
+                    New Password
+                </label>
+                <div class="password-wrapper">
+                    <input type="password" id="newPassword" placeholder="Enter new password" required>
+                    <button type="button" class="toggle-password" data-target="newPassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <!-- Password Strength Meter -->
+                <div class="password-strength" id="passwordStrength" style="display: none;">
+                    <div class="strength-meter">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-labels">
+                        <span>Weak</span>
+                        <span>Fair</span>
+                        <span>Good</span>
+                        <span>Strong</span>
+                    </div>
+                </div>
+                <!-- Password Requirements -->
+                <ul class="password-requirements">
+                    <li id="reqLength"><i class="fas fa-circle"></i> At least 6 characters</li>
+                    <li id="reqLowercase"><i class="fas fa-circle"></i> At least one lowercase letter</li>
+                    <li id="reqUppercase"><i class="fas fa-circle"></i> At least one uppercase letter</li>
+                    <li id="reqNumber"><i class="fas fa-circle"></i> At least one number</li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-check-circle"></i>
+                    Confirm Password
+                </label>
+                <div class="password-wrapper">
+                    <input type="password" id="confirmNewPassword" placeholder="Confirm your new password" required>
+                    <button type="button" class="toggle-password" data-target="confirmNewPassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="register-btn">
+                <i class="fas fa-key"></i>
+                <span>Change Password</span>
+                <span class="btn-loader" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </span>
+            </button>
+        </form>
+    </div>
+</div>
+        </main>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+        <div class="toast-content">
+            <i class="fas"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+    
+    <script type="module" src="../js/utils/constants.js"></script>
+    <script type="module" src="../js/components/darkMode.js"></script>
+    <script type="module" src="../js/components/dashboard.js"></script>
+</body>
+</html>

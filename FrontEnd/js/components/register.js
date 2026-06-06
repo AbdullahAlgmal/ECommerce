@@ -393,11 +393,11 @@ class RegisterForm {
         terms: this.termsCheckbox.checked,
       };
 
+      
+      if (this.validateForm(formData)) {
       // Remove confirmPassword before sending to API
       delete formData.confirmPassword;
       delete formData.terms;
-
-      if (this.validateForm(formData)) {
         await this.handleRegister(formData);
       }
     });
