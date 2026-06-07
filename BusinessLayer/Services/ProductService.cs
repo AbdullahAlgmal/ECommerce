@@ -19,6 +19,12 @@ namespace BusinessLayer.Services
             _categoryRepository = categoryRepository;
         }
 
+        public override async Task<IEnumerable<ProductDto>> GetAllAsync()
+        {
+            var products = await _productRepository.GetAllAsync();
+            var productDtos = await MapToDtoList(products);
+            return productDtos;
+        }
         public async Task<ProductDto?> GetProductWithDetailsAsync(int id)
         {
             var product = await _productRepository.GetProductWithDetailsAsync(id);

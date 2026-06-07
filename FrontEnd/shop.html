@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Shop - E-Commerce Platform">
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+    <title>Shop | E-Commerce Platform</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/shop.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/all.min.css">
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (savedTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="shop-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-store"></i>
+                    <span>E-Commerce</span>
+                </a>
+            </div>
+            
+            <nav class="header-nav">
+                <a href="index.html">Home</a>
+                <a href="shop.html" class="active">Shop</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            
+            <div class="header-actions">
+                <button class="search-toggle" id="searchToggle">
+                    <i class="fas fa-search"></i>
+                </button>
+                <a href="wishlist.html" class="wishlist-link">
+                    <i class="fas fa-heart"></i>
+                    <span class="badge" id="wishlistCount">0</span>
+                </a>
+                <a href="cart.html" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge" id="cartCount">0</span>
+                </a>
+                <div class="theme-toggle">
+                    <button id="themeToggle">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                </div>
+                <div class="user-dropdown">
+                    <button class="user-btn" id="userBtn">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="dashboard/customer.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                        <a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a>
+                        <a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a>
+                        <hr>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="search-bar" id="searchBar" style="display: none;">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products...">
+                <button id="closeSearch"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="shop-main">
+        <!-- Hero Banner -->
+        <section class="shop-hero">
+            <div class="hero-content">
+                <h1>Shop Our Collection</h1>
+                <p>Discover amazing products at great prices</p>
+            </div>
+        </section>
+
+        <div class="shop-container">
+            <!-- Filters Sidebar -->
+            <aside class="shop-sidebar">
+                <div class="filter-header">
+                    <h3>Filters</h3>
+                    <button id="clearFilters" class="clear-filters">Clear All</button>
+                </div>
+                
+                <!-- Category Filter -->
+                <div class="filter-group">
+                    <button class="filter-toggle" data-filter="category">
+                        <span>Categories</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="filter-content" id="categoryFilter">
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="all" checked>
+                            <span>All Categories</span>
+                        </label>
+                        <div id="categoryList"></div>
+                    </div>
+                </div>
+                
+                <!-- Price Range Filter -->
+                <div class="filter-group">
+                    <button class="filter-toggle" data-filter="price">
+                        <span>Price Range</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="filter-content" id="priceFilter">
+                        <div class="price-range">
+                            <div class="range-slider">
+                                <input type="range" id="minPrice" min="0" max="1000" value="0">
+                                <input type="range" id="maxPrice" min="0" max="1000" value="1000">
+                            </div>
+                            <div class="price-inputs">
+                                <div class="price-input">
+                                    <span>$</span>
+                                    <input type="number" id="minPriceInput" value="0">
+                                </div>
+                                <span>-</span>
+                                <div class="price-input">
+                                    <span>$</span>
+                                    <input type="number" id="maxPriceInput" value="1000">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rating Filter -->
+                <div class="filter-group">
+                    <button class="filter-toggle" data-filter="rating">
+                        <span>Customer Rating</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="filter-content" id="ratingFilter">
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="4">
+                            <span><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> & Up</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="3">
+                            <span><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i> & Up</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="2">
+                            <span><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i> & Up</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="1">
+                            <span><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i> & Up</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Availability Filter -->
+                <div class="filter-group">
+                    <button class="filter-toggle" data-filter="availability">
+                        <span>Availability</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="filter-content" id="availabilityFilter">
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="inStock">
+                            <span>In Stock</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" value="outOfStock">
+                            <span>Out of Stock</span>
+                        </label>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Products Grid -->
+            <div class="shop-content">
+                <!-- Sort Bar -->
+                <div class="sort-bar">
+                    <div class="results-count">
+                        <span id="productsCount">0</span> products found
+                    </div>
+                    <div class="sort-options">
+                        <label for="sortBy">Sort by:</label>
+                        <select id="sortBy">
+                            <option value="featured">Featured</option>
+                            <option value="price_asc">Price: Low to High</option>
+                            <option value="price_desc">Price: High to Low</option>
+                            <option value="name_asc">Name: A to Z</option>
+                            <option value="name_desc">Name: Z to A</option>
+                            <option value="rating">Top Rated</option>
+                        </select>
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="grid">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button class="view-btn" data-view="list">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Products Grid Container -->
+                <div class="products-grid" id="productsGrid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination" id="pagination">
+                    <!-- Pagination will be injected here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="shop-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>Your trusted e-commerce platform for quality products.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Order Tracking</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Get the latest updates and offers.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email">
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 E-Commerce. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+        <div class="toast-content">
+            <i class="fas fa-info-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script type="module" src="js/utils/constants.js"></script>
+    <script type="module" src="js/components/darkMode.js"></script>
+    <script type="module" src="js/components/shop.js"></script>
+</body>
+</html>

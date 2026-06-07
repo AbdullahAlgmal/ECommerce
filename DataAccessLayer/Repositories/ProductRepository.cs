@@ -9,6 +9,16 @@ namespace DataAccessLayer.Repositories
     {
         public ProductRepository(AppDbContext context) : base(context) { }
 
+        public override async Task<IEnumerable<Product>> GetAllAsync()
+        {
+            return await _dbSet
+                .Include(p => p.Category)
+                .Include(p => p.ProductImages)
+                .Include(p => p.Reviews)
+                .OrderBy(p => p.Id)
+                .ToListAsync();
+        }
+
         public async Task<Product?> GetProductWithDetailsAsync(int id)
         {
             return await _dbSet

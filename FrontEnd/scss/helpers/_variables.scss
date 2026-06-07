@@ -10,6 +10,7 @@
   --text: #1f2937; /* Primary text */
   --muted: #556072; /* Secondary text */
   --accent: #4f46e5; /* Brand/link accent (indigo) */
+  --accent-hover: #4338ca; /* Accent hover state */
   --accent-2: #22c55e; /* Secondary accent (green) */
   --line: #e5e7eb; /* Hairline borders */
 
@@ -63,6 +64,7 @@
   --text: #e5e7eb; /* Primary text */
   --muted: #9ca3af; /* Secondary text */
   --accent: #8b93f9; /* Brand/link accent (indigo) */
+  --accent-hover: #747cf4; /* Accent hover state */
   --accent-2: #34d399; /* Secondary accent (green) */
   --line: #1f2a44; /* Hairline borders */
 
@@ -78,6 +80,7 @@ $card: var(--card);
 $text: var(--text);
 $muted: var(--muted);
 $accent: var(--accent);
+$accent-hover: var(--accent-hover);
 $accent-2: var(--accent-2);
 $line: var(--line);
 

@@ -1,0 +1,940 @@
+// sass/pages/_shop.scss
+
+@use "../helpers/variables" as *;
+@use "../helpers/mixins" as *;
+
+// ============================================
+// Header Styles
+// ============================================
+.shop-header {
+  position: sticky;
+  top: 0;
+  background: $card;
+  border-bottom: 1px solid $line;
+  z-index: $z-sticky;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $spacing-4 $spacing-6;
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+
+  @include respond-to("mobile") {
+    padding: $spacing-3 $spacing-4;
+  }
+}
+
+.logo a {
+  @include flex(row, flex-start, center, $spacing-2);
+  text-decoration: none;
+
+  i {
+    font-size: $font-size-2xl;
+    color: $accent;
+  }
+
+  span {
+    @include heading($font-size-xl, $font-weight-bold);
+  }
+}
+
+.header-nav {
+  @include flex(row, center, center, $spacing-6);
+
+  a {
+    text-decoration: none;
+    @include text($font-size-sm, $font-weight-medium);
+    transition: color $transition-fast;
+    position: relative;
+
+    &:hover {
+      color: $accent;
+    }
+
+    &.active {
+      color: $accent;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -$spacing-2;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: $accent;
+        border-radius: $radius-full;
+      }
+    }
+  }
+
+  @include respond-to("tablet") {
+    display: none;
+  }
+}
+
+.header-actions {
+  @include flex(row, flex-end, center, $spacing-4);
+
+  button,
+  a {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $text;
+    font-size: $font-size-lg;
+    transition: color $transition-fast;
+    position: relative;
+
+    &:hover {
+      color: $accent;
+    }
+  }
+
+  .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: $accent;
+    color: $white;
+    font-size: $font-size-xs;
+    padding: 2px 6px;
+    border-radius: $radius-full;
+    min-width: 18px;
+    text-align: center;
+  }
+}
+
+.user-dropdown {
+  position: relative;
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: $card;
+    border: 1px solid $line;
+    border-radius: $radius-lg;
+    padding: $spacing-2 0;
+    min-width: 200px;
+    display: none;
+    z-index: $z-dropdown;
+    box-shadow: $shadow;
+
+    &.show {
+      display: block;
+    }
+
+    a {
+      display: block;
+      padding: $spacing-2 $spacing-4;
+      text-decoration: none;
+      @include text($font-size-sm);
+
+      &:hover {
+        background: rgba($accent, 0.1);
+      }
+
+      i {
+        margin-right: $spacing-2;
+        width: 20px;
+      }
+    }
+
+    hr {
+      margin: $spacing-2 0;
+      border: none;
+      border-top: 1px solid $line;
+    }
+  }
+}
+
+// Search Bar
+.search-bar {
+  background: $card;
+  border-bottom: 1px solid $line;
+  padding: $spacing-4 $spacing-6;
+
+  .search-container {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+
+    i {
+      position: absolute;
+      left: $spacing-4;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $muted;
+    }
+
+    input {
+      width: 100%;
+      padding: $spacing-3 $spacing-4 $spacing-3 $spacing-12;
+      border: 1px solid $line;
+      border-radius: $radius-full;
+      font-size: $font-size-sm;
+      background: $bg;
+      color: $text;
+
+      &:focus {
+        outline: none;
+        border-color: $accent;
+      }
+    }
+
+    #closeSearch {
+      position: absolute;
+      right: $spacing-4;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: $muted;
+
+      &:hover {
+        color: $error-color;
+      }
+    }
+  }
+}
+
+// ============================================
+// Hero Section
+// ============================================
+.shop-hero {
+  background: linear-gradient(135deg, $accent, rgba($accent, 0.8));
+  padding: $spacing-12 $spacing-6;
+  text-align: center;
+  color: $white;
+
+  .hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+
+    h1 {
+      @include heading($font-size-4xl, $font-weight-bold);
+      margin-bottom: $spacing-4;
+    }
+
+    p {
+      @include text($font-size-lg);
+      color: rgba($white, 0.9);
+    }
+  }
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 $spacing-4;
+
+    h1 {
+      font-size: $font-size-2xl;
+    }
+  }
+}
+
+// ============================================
+// Shop Container
+// ============================================
+.shop-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $spacing-8 $spacing-6;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: $spacing-8;
+
+  @include respond-to("tablet") {
+    grid-template-columns: 1fr;
+    gap: $spacing-6;
+    padding: $spacing-6 $spacing-4;
+  }
+}
+
+// ============================================
+// Sidebar Filters
+// ============================================
+.shop-sidebar {
+  background: $card;
+  border-radius: $radius-xl;
+  border: 1px solid $line;
+  padding: $spacing-5;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+
+  @include respond-to("tablet") {
+    position: static;
+  }
+}
+
+.filter-header {
+  @include flex-between;
+  margin-bottom: $spacing-5;
+  padding-bottom: $spacing-3;
+  border-bottom: 1px solid $line;
+
+  h3 {
+    @include heading($font-size-lg, $font-weight-semibold);
+  }
+
+  .clear-filters {
+    background: none;
+    border: none;
+    color: $accent;
+    cursor: pointer;
+    font-size: $font-size-xs;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.filter-group {
+  margin-bottom: $spacing-4;
+  border-bottom: 1px solid $line;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.filter-toggle {
+  width: 100%;
+  @include flex-between;
+  padding: $spacing-3 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  @include text($font-size-sm, $font-weight-medium);
+
+  i {
+    transition: transform $transition-fast;
+  }
+
+  &.open i {
+    transform: rotate(180deg);
+  }
+}
+
+.filter-content {
+  padding-bottom: $spacing-3;
+  display: none;
+
+  &.show {
+    display: block;
+  }
+}
+
+.checkbox-label {
+  @include flex(row, flex-start, center, $spacing-2);
+  margin-bottom: $spacing-2;
+  cursor: pointer;
+
+  input {
+    cursor: pointer;
+    accent-color: $accent;
+  }
+
+  span {
+    @include text($font-size-sm);
+
+    i {
+      color: #ffc107;
+      margin-right: 2px;
+    }
+  }
+}
+
+// Price Range Slider
+.price-range {
+  .range-slider {
+    position: relative;
+    height: 4px;
+    margin: $spacing-6 $spacing-2;
+
+    input {
+      position: absolute;
+      width: 100%;
+      pointer-events: none;
+      background: transparent;
+
+      &::-webkit-slider-thumb {
+        pointer-events: auto;
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        background: $accent;
+        border-radius: $radius-full;
+        cursor: pointer;
+      }
+
+      &::-webkit-slider-runnable-track {
+        height: 4px;
+        background: $line;
+        border-radius: $radius-full;
+      }
+    }
+  }
+
+  .price-inputs {
+    @include flex(row, space-between, center, $spacing-2);
+
+    .price-input {
+      @include flex(row, center, center, $spacing-1);
+      background: $bg;
+      border: 1px solid $line;
+      border-radius: $radius-md;
+      padding: $spacing-1 $spacing-2;
+
+      span {
+        @include text($font-size-sm, $font-weight-medium);
+      }
+
+      input {
+        width: 80px;
+        border: none;
+        background: none;
+        @include text($font-size-sm);
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+}
+
+// ============================================
+// Shop Content
+// ============================================
+.shop-content {
+  flex: 1;
+}
+
+.sort-bar {
+  @include flex-between;
+  margin-bottom: $spacing-6;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+
+  .results-count {
+    @include text($font-size-sm);
+  }
+
+  .sort-options {
+    @include flex(row, flex-end, center, $spacing-4);
+
+    label {
+      @include text($font-size-sm);
+    }
+
+    select {
+      padding: $spacing-2 $spacing-3;
+      border: 1px solid $line;
+      border-radius: $radius-md;
+      background: $card;
+      color: $text;
+      cursor: pointer;
+
+      &:focus {
+        outline: none;
+        border-color: $accent;
+      }
+    }
+  }
+
+  .view-toggle {
+    @include flex(row, center, center, $spacing-1);
+
+    .view-btn {
+      padding: $spacing-2;
+      background: none;
+      border: 1px solid $line;
+      border-radius: $radius-md;
+      cursor: pointer;
+      color: $muted;
+
+      &.active {
+        background: $accent;
+        border-color: $accent;
+        color: $white;
+      }
+
+      &:hover {
+        border-color: $accent;
+        color: $accent;
+      }
+    }
+  }
+}
+
+// ============================================
+// Products Grid
+// ============================================
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-6;
+  margin-bottom: $spacing-8;
+
+  @include respond-to("xl") {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to("lg") {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to("mobile") {
+    grid-template-columns: 1fr;
+    gap: $spacing-4;
+  }
+
+  &.list-view {
+    grid-template-columns: 1fr;
+
+    .product-card {
+      @include flex(row, flex-start, stretch, $spacing-4);
+
+      .product-image {
+        width: 200px;
+
+        @include respond-to("mobile") {
+          width: 120px;
+        }
+      }
+
+      .product-info {
+        flex: 1;
+      }
+    }
+  }
+}
+
+// Product Card
+.product-card {
+  background: $card;
+  border-radius: $radius-xl;
+  border: 1px solid $line;
+  overflow: hidden;
+  transition: all $transition-base;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow;
+  }
+
+  .product-image {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform $transition-base;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+
+    .wishlist-btn {
+      position: absolute;
+      top: $spacing-3;
+      right: $spacing-3;
+      background: $card;
+      border: none;
+      border-radius: $radius-full;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      @include flex-center;
+      transition: all $transition-fast;
+
+      i {
+        color: $muted;
+      }
+
+      &:hover {
+        background: $error-color;
+
+        i {
+          color: $white;
+        }
+      }
+
+      &.active i {
+        color: $error-color;
+      }
+    }
+
+    .sale-badge {
+      position: absolute;
+      top: $spacing-3;
+      left: $spacing-3;
+      background: $error-color;
+      color: $white;
+      padding: $spacing-1 $spacing-2;
+      border-radius: $radius-md;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-semibold;
+    }
+  }
+
+  .product-info {
+    padding: $spacing-4;
+
+    h3 {
+      @include heading($font-size-base, $font-weight-semibold);
+      margin-bottom: $spacing-2;
+      @include text-line-clamp(2);
+    }
+
+    .product-price {
+      @include flex(row, flex-start, baseline, $spacing-2);
+      margin-bottom: $spacing-2;
+
+      .current-price {
+        @include heading($font-size-xl, $font-weight-bold);
+        color: $accent;
+      }
+
+      .old-price {
+        @include text($font-size-sm);
+        text-decoration: line-through;
+      }
+    }
+
+    .product-rating {
+      @include flex(row, flex-start, center, $spacing-1);
+      margin-bottom: $spacing-3;
+
+      i {
+        color: #ffc107;
+        font-size: $font-size-sm;
+      }
+
+      span {
+        @include text($font-size-xs);
+      }
+    }
+
+    .product-stock {
+      margin-bottom: $spacing-3;
+
+      .in-stock {
+        color: $success-color;
+        font-size: $font-size-xs;
+      }
+
+      .out-of-stock {
+        color: $error-color;
+        font-size: $font-size-xs;
+      }
+    }
+
+    .add-to-cart {
+      width: 100%;
+      @include button($accent, $white);
+      padding: $spacing-2;
+      font-size: $font-size-sm;
+
+      &:disabled {
+        background: $muted;
+        cursor: not-allowed;
+      }
+    }
+
+    .product-description {
+      @include text($font-size-sm);
+      @include text-line-clamp(3);
+      margin-bottom: $spacing-3;
+    }
+  }
+}
+
+// ============================================
+// Pagination
+// ============================================
+.pagination {
+  @include flex(row, center, center, $spacing-2);
+  margin-top: $spacing-8;
+
+  button,
+  span {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 $spacing-2;
+    border: 1px solid $line;
+    border-radius: $radius-md;
+    background: $card;
+    color: $text;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover:not(.active) {
+      border-color: $accent;
+      color: $accent;
+    }
+
+    &.active {
+      background: $accent;
+      border-color: $accent;
+      color: $white;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .pagination-dots {
+    border: none;
+    cursor: default;
+
+    &:hover {
+      border-color: $line;
+      color: $text;
+    }
+  }
+}
+
+// ============================================
+// Footer
+// ============================================
+.shop-footer {
+  background: $card;
+  border-top: 1px solid $line;
+  margin-top: $spacing-8;
+
+  .footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: $spacing-8 $spacing-6;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-8;
+
+    @include respond-to("tablet") {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to("mobile") {
+      grid-template-columns: 1fr;
+      gap: $spacing-6;
+      padding: $spacing-6 $spacing-4;
+    }
+  }
+
+  .footer-section {
+    h4 {
+      @include heading($font-size-lg, $font-weight-semibold);
+      margin-bottom: $spacing-4;
+    }
+
+    p {
+      @include text($font-size-sm);
+      margin-bottom: $spacing-4;
+    }
+
+    ul {
+      list-style: none;
+
+      li {
+        margin-bottom: $spacing-2;
+
+        a {
+          text-decoration: none;
+          @include text($font-size-sm);
+          transition: color $transition-fast;
+
+          &:hover {
+            color: $accent;
+          }
+        }
+      }
+    }
+  }
+
+  .social-links {
+    @include flex(row, flex-start, center, $spacing-3);
+
+    a {
+      width: 36px;
+      height: 36px;
+      background: rgba($accent, 0.1);
+      border-radius: $radius-full;
+      @include flex-center;
+      transition: all $transition-fast;
+
+      i {
+        color: $accent;
+      }
+
+      &:hover {
+        background: $accent;
+
+        i {
+          color: $white;
+        }
+      }
+    }
+  }
+
+  .newsletter-form {
+    @include flex(row, flex-start, stretch, 0);
+
+    input {
+      flex: 1;
+      padding: $spacing-2 $spacing-3;
+      border: 1px solid $line;
+      border-radius: $radius-md 0 0 $radius-md;
+      background: $bg;
+      color: $text;
+
+      &:focus {
+        outline: none;
+        border-color: $accent;
+      }
+    }
+
+    button {
+      padding: $spacing-2 $spacing-3;
+      background: $accent;
+      border: none;
+      border-radius: 0 $radius-md $radius-md 0;
+      color: $white;
+      cursor: pointer;
+
+      &:hover {
+        background: $accent-hover;
+      }
+    }
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding: $spacing-4;
+    border-top: 1px solid $line;
+    @include text($font-size-xs);
+  }
+}
+
+// ============================================
+// Loading & Empty States
+// ============================================
+.loading {
+  @include flex-center;
+  padding: $spacing-8;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid $line;
+    border-top-color: $accent;
+    border-radius: $radius-full;
+    animation: spin 1s linear infinite;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: $spacing-12;
+
+  i {
+    font-size: $font-size-4xl;
+    color: $muted;
+    margin-bottom: $spacing-4;
+  }
+
+  h3 {
+    @include heading($font-size-xl, $font-weight-semibold);
+    margin-bottom: $spacing-2;
+  }
+
+  p {
+    @include text($font-size-sm);
+    margin-bottom: $spacing-6;
+  }
+}
+
+// ============================================
+// Toast Notification
+// ============================================
+.toast {
+  position: fixed;
+  bottom: $spacing-8;
+  right: $spacing-8;
+  background: $card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow;
+  transform: translateX(400px);
+  transition: transform $transition-base;
+  z-index: $z-toast;
+  border: 1px solid $line;
+
+  &.show {
+    transform: translateX(0);
+  }
+
+  &.success {
+    border-left: 4px solid $success-color;
+
+    i {
+      color: $success-color;
+    }
+  }
+
+  &.error {
+    border-left: 4px solid $error-color;
+
+    i {
+      color: $error-color;
+    }
+  }
+}
+
+.toast-content {
+  @include flex(row, flex-start, center, $spacing-3);
+  padding: $spacing-4 $spacing-6;
+  min-width: 300px;
+
+  i {
+    font-size: $font-size-xl;
+  }
+
+  span {
+    @include text($font-size-sm, $font-weight-medium);
+  }
+}
+
+// ============================================
+// Print Styles
+// ============================================
+@media print {
+  .shop-header,
+  .shop-sidebar,
+  .shop-footer,
+  .theme-toggle,
+  .user-dropdown,
+  .pagination {
+    display: none !important;
+  }
+
+  .shop-container {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .product-card {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+}
