@@ -523,6 +523,160 @@
   }
 }
 
+
+// Wishlist Grid Styles
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: $spacing-5;
+  
+  @include respond-to('mobile') {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wishlist-card {
+  background: $card;
+  border-radius: $radius-xl;
+  border: 1px solid $line;
+  overflow: hidden;
+  transition: all $transition-base;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow;
+  }
+}
+
+.wishlist-image {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $transition-base;
+  }
+  
+  &:hover img {
+    transform: scale(1.05);
+  }
+}
+
+.remove-wishlist-btn {
+  position: absolute;
+  top: $spacing-3;
+  right: $spacing-3;
+  background: rgba($error-color, 0.9);
+  border: none;
+  border-radius: $radius-full;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  @include flex-center;
+  transition: all $transition-fast;
+  color: $white;
+  
+  &:hover {
+    background: $error-color;
+    transform: scale(1.1);
+  }
+}
+
+.wishlist-info {
+  padding: $spacing-4;
+  
+  h3 {
+    @include heading($font-size-base, $font-weight-semibold);
+    margin-bottom: $spacing-2;
+    @include text-line-clamp(2);
+  }
+  
+  .product-description {
+    @include text($font-size-sm);
+    margin-bottom: $spacing-3;
+    @include text-line-clamp(2);
+  }
+  
+  .product-price {
+    @include flex(row, flex-start, baseline, $spacing-2);
+    margin-bottom: $spacing-2;
+    
+    .current-price {
+      @include heading($font-size-xl, $font-weight-bold);
+      color: $accent;
+    }
+    
+    .old-price {
+      @include text($font-size-sm);
+      text-decoration: line-through;
+    }
+  }
+  
+  .product-rating {
+    @include flex(row, flex-start, center, $spacing-1);
+    margin-bottom: $spacing-3;
+    
+    i {
+      color: #ffc107;
+      font-size: $font-size-sm;
+    }
+    
+    span {
+      @include text($font-size-xs);
+    }
+  }
+  
+  .product-stock {
+    margin-bottom: $spacing-3;
+    
+    .in-stock {
+      color: $success-color;
+      font-size: $font-size-xs;
+    }
+    
+    .out-of-stock {
+      color: $error-color;
+      font-size: $font-size-xs;
+    }
+  }
+  
+  .added-date {
+    margin-top: $spacing-3;
+    text-align: right;
+    
+    small {
+      @include text($font-size-xs);
+    }
+  }
+}
+
+.wishlist-actions {
+  @include flex(row, flex-start, center, $spacing-3);
+  margin-top: $spacing-4;
+  
+  .add-to-cart-btn {
+    @include button($accent, $white);
+    padding: $spacing-2 $spacing-4;
+    font-size: $font-size-sm;
+    flex: 1;
+    
+    &:disabled {
+      background: $muted;
+      cursor: not-allowed;
+    }
+  }
+  
+  .view-product-btn {
+    @include button-outline($accent);
+    padding: $spacing-2 $spacing-4;
+    font-size: $font-size-sm;
+    flex: 1;
+  }
+}
+
 // ============================================
 // Profile Page Styles
 // ============================================
