@@ -1,0 +1,205 @@
+// ============================================
+// Import Helpers
+// ============================================
+@use "../helpers/variables" as *;
+@use "../helpers/mixins" as *;
+
+
+// ============================================
+// Header Styles
+// ============================================
+header {
+  position: sticky;
+  top: 0;
+  background: $card;
+  border-bottom: 1px solid $line;
+  z-index: $z-sticky;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $spacing-4 $spacing-6;
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+
+  @include respond-to("mobile") {
+    padding: $spacing-3 $spacing-4;
+  }
+}
+
+.logo a {
+  @include flex(row, flex-start, center, $spacing-2);
+  text-decoration: none;
+
+  i {
+    font-size: $font-size-2xl;
+    color: $accent;
+  }
+
+  span {
+    @include heading($font-size-xl, $font-weight-bold);
+  }
+}
+
+.header-nav {
+  @include flex(row, center, center, $spacing-6);
+
+  a {
+    text-decoration: none;
+    @include text($font-size-sm, $font-weight-medium);
+    transition: color $transition-fast;
+    position: relative;
+
+    &:hover {
+      color: $accent;
+    }
+
+    &.active {
+      color: $accent;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -$spacing-2;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: $accent;
+        border-radius: $radius-full;
+      }
+    }
+  }
+
+  @include respond-to("tablet") {
+    display: none;
+  }
+}
+
+.header-actions {
+  @include flex(row, flex-end, center, $spacing-4);
+
+  button,
+  a {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $text;
+    font-size: $font-size-lg;
+    transition: color $transition-fast;
+    position: relative;
+
+    &:hover {
+      color: $accent;
+    }
+  }
+
+  .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: $accent;
+    color: $white;
+    font-size: $font-size-xs;
+    padding: 2px 6px;
+    border-radius: $radius-full;
+    min-width: 18px;
+    text-align: center;
+  }
+}
+
+.user-dropdown {
+  position: relative;
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: $card;
+    border: 1px solid $line;
+    border-radius: $radius-lg;
+    padding: $spacing-2 0;
+    min-width: 200px;
+    display: none;
+    z-index: $z-dropdown;
+    box-shadow: $shadow;
+
+    &.show {
+      display: block;
+    }
+
+    a {
+      display: block;
+      padding: $spacing-2 $spacing-4;
+      text-decoration: none;
+      @include text($font-size-sm);
+
+      &:hover {
+        background: rgba($accent, 0.1);
+      }
+
+      i {
+        margin-right: $spacing-2;
+        width: 20px;
+      }
+    }
+
+    hr {
+      margin: $spacing-2 0;
+      border: none;
+      border-top: 1px solid $line;
+    }
+  }
+}
+
+// Search Bar
+.search-bar {
+  background: $card;
+  border-bottom: 1px solid $line;
+  padding: $spacing-4 $spacing-6;
+
+  .search-container {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+
+    i {
+      position: absolute;
+      left: $spacing-4;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $muted;
+    }
+
+    input {
+      width: 100%;
+      padding: $spacing-3 $spacing-4 $spacing-3 $spacing-12;
+      border: 1px solid $line;
+      border-radius: $radius-full;
+      font-size: $font-size-sm;
+      background: $bg;
+      color: $text;
+
+      &:focus {
+        outline: none;
+        border-color: $accent;
+      }
+    }
+
+    #closeSearch {
+      position: absolute;
+      right: $spacing-4;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: $muted;
+
+      &:hover {
+        color: $error-color;
+      }
+    }
+  }
+}

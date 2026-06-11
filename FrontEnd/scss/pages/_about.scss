@@ -1,0 +1,784 @@
+// sass/pages/_about.scss
+
+@use "../helpers/variables" as *;
+@use "../helpers/mixins" as *;
+
+
+// ============================================
+// Hero Section
+// ============================================
+.about-hero {
+  position: relative;
+  height: 500px;
+  background: url("https://images.unsplash.com/photo-1522071820081-009f0129c71c")
+    center/cover no-repeat;
+  @include flex-center;
+  text-align: center;
+
+  @include respond-to("mobile") {
+    height: 350px;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba($accent, 0.9),
+      rgba($secondary-color, 0.9)
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    color: $white;
+
+    h1 {
+      @include heading($font-size-4xl, $font-weight-bold);
+      margin-bottom: $spacing-4;
+
+      @include respond-to("mobile") {
+        font-size: $font-size-2xl;
+      }
+    }
+
+    p {
+      @include text($font-size-xl);
+      color: rgba($white, 0.9);
+
+      @include respond-to("mobile") {
+        font-size: $font-size-base;
+      }
+    }
+  }
+}
+
+// ============================================
+// Container
+// ============================================
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+
+  @include respond-to("mobile") {
+    padding: 0 $spacing-4;
+  }
+}
+
+// ============================================
+// Section Badge
+// ============================================
+.section-badge {
+  display: inline-block;
+  padding: $spacing-1 $spacing-3;
+  background: rgba($accent, 0.1);
+  color: $accent;
+  border-radius: $radius-full;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  margin-bottom: $spacing-3;
+}
+
+// ============================================
+// Story Section
+// ============================================
+.story-section {
+  padding: $spacing-16 0;
+  background: $bg;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 0;
+  }
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-8;
+  align-items: center;
+
+  @include respond-to("tablet") {
+    grid-template-columns: 1fr;
+    gap: $spacing-6;
+  }
+}
+
+.story-content {
+  h2 {
+    @include heading($font-size-3xl, $font-weight-bold);
+    margin-bottom: $spacing-4;
+  }
+
+  p {
+    @include text($font-size-base);
+    margin-bottom: $spacing-4;
+    line-height: 1.8;
+  }
+}
+
+.story-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-4;
+  margin-top: $spacing-8;
+
+  @include respond-to("mobile") {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-6;
+  }
+
+  .stat {
+    text-align: center;
+
+    .stat-number {
+      @include heading($font-size-2xl, $font-weight-bold);
+      color: $accent;
+      display: block;
+    }
+
+    .stat-label {
+      @include text($font-size-sm);
+    }
+  }
+}
+
+.story-image {
+  position: relative;
+  border-radius: $radius-2xl;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba($accent, 0.2),
+      rgba($secondary-color, 0.2)
+    );
+  }
+}
+
+// ============================================
+// Mission Section
+// ============================================
+.mission-section {
+  padding: $spacing-16 0;
+  background: $card;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 0;
+  }
+}
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-8;
+
+  @include respond-to("tablet") {
+    grid-template-columns: 1fr;
+    gap: $spacing-6;
+  }
+}
+
+.mission-card,
+.vision-card {
+  text-align: center;
+  padding: $spacing-8;
+  background: $bg;
+  border-radius: $radius-2xl;
+  border: 1px solid $line;
+  transition: all $transition-base;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: $shadow;
+  }
+
+  .card-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba($accent, 0.1);
+    border-radius: $radius-full;
+    @include flex-center;
+    margin: 0 auto $spacing-4;
+
+    i {
+      font-size: $font-size-3xl;
+      color: $accent;
+    }
+  }
+
+  h3 {
+    @include heading($font-size-xl, $font-weight-semibold);
+    margin-bottom: $spacing-4;
+  }
+
+  p {
+    @include text($font-size-base);
+    line-height: 1.8;
+  }
+}
+
+// ============================================
+// Values Section
+// ============================================
+.values-section {
+  padding: $spacing-16 0;
+  background: $bg;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 0;
+  }
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: $spacing-12;
+
+  h2 {
+    @include heading($font-size-3xl, $font-weight-bold);
+    margin-bottom: $spacing-3;
+
+    @include respond-to("mobile") {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  p {
+    @include text($font-size-lg);
+    color: $muted;
+
+    @include respond-to("mobile") {
+      font-size: $font-size-base;
+    }
+  }
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-6;
+
+  @include respond-to("tablet") {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to("mobile") {
+    grid-template-columns: 1fr;
+  }
+}
+
+.value-card {
+  background: $card;
+  border-radius: $radius-xl;
+  padding: $spacing-6;
+  text-align: center;
+  border: 1px solid $line;
+  transition: all $transition-base;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow;
+  }
+
+  .value-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba($accent, 0.1);
+    border-radius: $radius-full;
+    @include flex-center;
+    margin: 0 auto $spacing-4;
+
+    i {
+      font-size: $font-size-2xl;
+      color: $accent;
+    }
+  }
+
+  h3 {
+    @include heading($font-size-lg, $font-weight-semibold);
+    margin-bottom: $spacing-3;
+  }
+
+  p {
+    @include text($font-size-sm);
+    line-height: 1.7;
+  }
+}
+
+// ============================================
+// Team Section
+// ============================================
+.team-section {
+  padding: $spacing-16 0;
+  background: $card;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 0;
+  }
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-6;
+
+  @include respond-to("lg") {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to("mobile") {
+    grid-template-columns: 1fr;
+  }
+}
+
+.team-card {
+  background: $bg;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  border: 1px solid $line;
+  transition: all $transition-base;
+  text-align: center;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow;
+
+    .team-image img {
+      transform: scale(1.05);
+    }
+  }
+
+  .team-image {
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: auto;
+      transition: transform $transition-base;
+    }
+  }
+
+  .team-info {
+    padding: $spacing-5;
+
+    h3 {
+      @include heading($font-size-lg, $font-weight-semibold);
+      margin-bottom: $spacing-1;
+    }
+
+    .team-position {
+      @include text($font-size-sm);
+      color: $accent;
+      margin-bottom: $spacing-3;
+    }
+
+    .team-bio {
+      @include text($font-size-xs);
+      margin-bottom: $spacing-4;
+    }
+
+    .team-social {
+      display: flex;
+      justify-content: center;
+      gap: $spacing-3;
+
+      a {
+        width: 32px;
+        height: 32px;
+        @include flex-center;
+        background: rgba($accent, 0.1);
+        border-radius: $radius-full;
+        color: $accent;
+        transition: all $transition-fast;
+
+        &:hover {
+          background: $accent;
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+// ============================================
+// Stats Section
+// ============================================
+.stats-section {
+  padding: $spacing-16 0;
+  background: linear-gradient(135deg, $accent, $secondary-color);
+  color: $white;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 0;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-6;
+  text-align: center;
+
+  @include respond-to("tablet") {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to("mobile") {
+    grid-template-columns: 1fr;
+    gap: $spacing-8;
+  }
+}
+
+.stat-item {
+  .stat-icon {
+    font-size: $font-size-3xl;
+    margin-bottom: $spacing-3;
+  }
+
+  .stat-number {
+    @include heading($font-size-4xl, $font-weight-bold);
+    margin-bottom: $spacing-2;
+  }
+
+  .stat-label {
+    @include text($font-size-base);
+    opacity: 0.9;
+  }
+}
+
+// ============================================
+// Testimonials Section
+// ============================================
+.testimonials-section {
+  padding: $spacing-16 0;
+  background: $bg;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 0;
+  }
+}
+
+.testimonials-slider {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.testimonials-track {
+  display: flex;
+  transition: transform $transition-slow;
+}
+
+.testimonial-card {
+  flex-shrink: 0;
+  width: 100%;
+  padding: $spacing-8;
+  text-align: center;
+
+  .testimonial-avatar {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto $spacing-4;
+    border-radius: $radius-full;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .testimonial-text {
+    @include text($font-size-lg);
+    font-style: italic;
+    margin-bottom: $spacing-4;
+    line-height: 1.8;
+  }
+
+  .testimonial-name {
+    @include heading($font-size-base, $font-weight-semibold);
+    margin-bottom: $spacing-1;
+  }
+
+  .testimonial-title {
+    @include text($font-size-sm);
+    color: $accent;
+  }
+
+  .testimonial-rating {
+    margin-top: $spacing-3;
+    color: #ffc107;
+  }
+}
+
+.slider-prev,
+.slider-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  background: $card;
+  border: 1px solid $line;
+  border-radius: $radius-full;
+  cursor: pointer;
+  color: $text;
+  transition: all $transition-fast;
+  z-index: 10;
+
+  &:hover {
+    background: $accent;
+    color: $white;
+    border-color: $accent;
+  }
+}
+
+.slider-prev {
+  left: -60px;
+
+  @include respond-to("desktop") {
+    left: -20px;
+  }
+}
+
+.slider-next {
+  right: -60px;
+
+  @include respond-to("desktop") {
+    right: -20px;
+  }
+}
+
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-2;
+  margin-top: $spacing-6;
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    background: $line;
+    border-radius: $radius-full;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &.active {
+      width: 30px;
+      background: $accent;
+    }
+
+    &:hover {
+      background: $accent;
+    }
+  }
+}
+
+// ============================================
+// CTA Section
+// ============================================
+.cta-section {
+  padding: $spacing-16 0;
+  background: $card;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 0;
+  }
+}
+
+.cta-content {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+
+  h2 {
+    @include heading($font-size-3xl, $font-weight-bold);
+    margin-bottom: $spacing-3;
+
+    @include respond-to("mobile") {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  p {
+    @include text($font-size-lg);
+    margin-bottom: $spacing-6;
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: $spacing-4;
+
+    @include respond-to("mobile") {
+      flex-direction: column;
+      gap: $spacing-3;
+    }
+
+    .btn-primary {
+      @include button($accent, $white);
+      padding: $spacing-3 $spacing-8;
+      text-decoration: none;
+    }
+
+    .btn-secondary {
+      @include button-outline($accent);
+      padding: $spacing-3 $spacing-8;
+      text-decoration: none;
+      background: transparent;
+
+      &:hover {
+        background: rgba($accent, 0.1);
+      }
+    }
+  }
+}
+
+
+// ============================================
+// Back to Top Button
+// ============================================
+.back-to-top {
+  position: fixed;
+  bottom: $spacing-8;
+  right: $spacing-8;
+  width: 48px;
+  height: 48px;
+  background: $accent;
+  border: none;
+  border-radius: $radius-full;
+  color: $white;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all $transition-base;
+  z-index: $z-fixed;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &:hover {
+    background: darken($accent-color, 10%);
+    transform: translateY(-4px);
+  }
+}
+
+// ============================================
+// Toast Notification
+// ============================================
+.toast {
+  position: fixed;
+  bottom: $spacing-8;
+  right: $spacing-8;
+  background: $card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow;
+  transform: translateX(400px);
+  transition: transform $transition-base;
+  z-index: $z-toast;
+  border: 1px solid $line;
+
+  &.show {
+    transform: translateX(0);
+  }
+
+  &.success {
+    border-left: 4px solid $success-color;
+
+    i {
+      color: $success-color;
+    }
+  }
+
+  &.error {
+    border-left: 4px solid $error-color;
+
+    i {
+      color: $error-color;
+    }
+  }
+}
+
+.toast-content {
+  @include flex(row, flex-start, center, $spacing-3);
+  padding: $spacing-4 $spacing-6;
+  min-width: 300px;
+
+  i {
+    font-size: $font-size-xl;
+  }
+
+  span {
+    @include text($font-size-sm, $font-weight-medium);
+  }
+}
+
+// ============================================
+// Animations
+// ============================================
+@include keyframes(fadeInUp) {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@include keyframes(counter) {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ============================================
+// Print Styles
+// ============================================
+@media print {
+  .about-header,
+  .about-footer,
+  .cta-section,
+  .testimonials-section,
+  .team-section,
+  .back-to-top,
+  .theme-toggle,
+  .user-dropdown {
+    display: none !important;
+  }
+
+  .about-hero {
+    height: auto;
+    background: $accent;
+    padding: $spacing-8;
+  }
+
+  * {
+    background: white !important;
+    color: black !important;
+  }
+}

@@ -1,0 +1,741 @@
+// sass/pages/_cart.scss
+
+@use "../helpers/variables" as *;
+@use "../helpers/mixins" as *;
+
+// ============================================
+// Header Styles
+// ============================================
+.cart-header {
+  position: sticky;
+  top: 0;
+  background: $card;
+  border-bottom: 1px solid $line;
+  z-index: $z-sticky;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $spacing-4 $spacing-6;
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+
+  @include respond-to("mobile") {
+    padding: $spacing-3 $spacing-4;
+  }
+}
+
+.logo a {
+  @include flex(row, flex-start, center, $spacing-2);
+  text-decoration: none;
+
+  i {
+    font-size: $font-size-2xl;
+    color: $accent;
+  }
+
+  span {
+    @include heading($font-size-xl, $font-weight-bold);
+  }
+}
+
+.header-nav {
+  @include flex(row, center, center, $spacing-6);
+
+  a {
+    text-decoration: none;
+    @include text($font-size-sm, $font-weight-medium);
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $accent;
+    }
+  }
+
+  @include respond-to("tablet") {
+    display: none;
+  }
+}
+
+.header-actions {
+  @include flex(row, flex-end, center, $spacing-4);
+
+  a,
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $text;
+    font-size: $font-size-lg;
+    transition: color $transition-fast;
+    position: relative;
+
+    &:hover {
+      color: $accent;
+    }
+  }
+
+  .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: $accent;
+    color: $white;
+    font-size: $font-size-xs;
+    padding: 2px 6px;
+    border-radius: $radius-full;
+    min-width: 18px;
+    text-align: center;
+  }
+}
+
+.user-dropdown {
+  position: relative;
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: $card;
+    border: 1px solid $line;
+    border-radius: $radius-lg;
+    padding: $spacing-2 0;
+    min-width: 200px;
+    display: none;
+    z-index: $z-dropdown;
+    box-shadow: $shadow;
+
+    &.show {
+      display: block;
+    }
+
+    a {
+      display: block;
+      padding: $spacing-2 $spacing-4;
+      text-decoration: none;
+      @include text($font-size-sm);
+
+      &:hover {
+        background: rgba($accent, 0.1);
+      }
+
+      i {
+        margin-right: $spacing-2;
+        width: 20px;
+      }
+    }
+
+    hr {
+      margin: $spacing-2 0;
+      border: none;
+      border-top: 1px solid $line;
+    }
+  }
+}
+
+// ============================================
+// Cart Main Content
+// ============================================
+.cart-main {
+  min-height: calc(100vh - 200px);
+  background: $bg;
+  padding: $spacing-8 $spacing-6;
+
+  @include respond-to("mobile") {
+    padding: $spacing-4;
+  }
+}
+
+.cart-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.cart-title {
+  @include heading($font-size-3xl, $font-weight-bold);
+  margin-bottom: $spacing-8;
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -$spacing-2;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: $accent;
+    border-radius: $radius-full;
+  }
+}
+
+// ============================================
+// Cart Content Grid
+// ============================================
+.cart-content {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: $spacing-8;
+
+  @include respond-to("tablet") {
+    grid-template-columns: 1fr;
+    gap: $spacing-6;
+  }
+}
+
+// ============================================
+// Cart Items Section
+// ============================================
+.cart-items {
+  background: $card;
+  border-radius: $radius-xl;
+  border: 1px solid $line;
+  overflow: hidden;
+}
+
+.cart-item {
+  display: flex;
+  padding: $spacing-5;
+  border-bottom: 1px solid $line;
+  transition: all $transition-base;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: rgba($accent, 0.02);
+  }
+
+  @include respond-to("mobile") {
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+}
+
+.cart-item-image {
+  width: 120px;
+  height: 120px;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @include respond-to("mobile") {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+.cart-item-details {
+  flex: 1;
+  padding: 0 $spacing-5;
+
+  @include respond-to("mobile") {
+    padding: 0;
+  }
+
+  h3 {
+    @include heading($font-size-lg, $font-weight-semibold);
+    margin-bottom: $spacing-2;
+  }
+
+  .cart-item-price {
+    @include heading($font-size-xl, $font-weight-bold);
+    color: $accent;
+    margin-bottom: $spacing-2;
+  }
+
+  .cart-item-stock {
+    margin-bottom: $spacing-3;
+
+    .in-stock {
+      color: $success-color;
+      font-size: $font-size-xs;
+    }
+
+    .out-of-stock {
+      color: $error-color;
+      font-size: $font-size-xs;
+    }
+  }
+}
+
+.cart-item-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  flex-shrink: 0;
+
+  @include respond-to("mobile") {
+    justify-content: space-between;
+  }
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  background: $bg;
+  border: 1px solid $line;
+  border-radius: $radius-lg;
+  padding: $spacing-1;
+
+  button {
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: $font-size-lg;
+    color: $text;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: $accent;
+      color: $white;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+
+      &:hover {
+        background: none;
+        color: $text;
+      }
+    }
+  }
+
+  span {
+    min-width: 40px;
+    text-align: center;
+    @include text($font-size-base, $font-weight-medium);
+  }
+}
+
+.cart-item-total {
+  min-width: 100px;
+  text-align: right;
+
+  .item-total-label {
+    display: none;
+    @include text($font-size-xs, $font-weight-medium, $muted);
+    margin-bottom: $spacing-1;
+  }
+
+  .item-total {
+    @include heading($font-size-xl, $font-weight-bold);
+    color: $accent;
+  }
+
+  @include respond-to("mobile") {
+    text-align: left;
+
+    .item-total-label {
+      display: block;
+    }
+  }
+}
+
+.remove-item {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $error-color;
+  font-size: $font-size-lg;
+  padding: $spacing-2;
+  border-radius: $radius-md;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: rgba($error-color, 0.1);
+    transform: scale(1.1);
+  }
+}
+
+// ============================================
+// Cart Summary Section
+// ============================================
+.cart-summary {
+  background: $card;
+  border-radius: $radius-xl;
+  border: 1px solid $line;
+  padding: $spacing-6;
+  position: sticky;
+  top: 100px;
+
+  h2 {
+    @include heading($font-size-xl, $font-weight-semibold);
+    margin-bottom: $spacing-5;
+    padding-bottom: $spacing-3;
+    border-bottom: 1px solid $line;
+  }
+}
+
+.summary-row {
+  @include flex-between;
+  padding: $spacing-3 0;
+  @include text($font-size-base);
+
+  &.total {
+    border-top: 1px solid $line;
+    margin-top: $spacing-3;
+    padding-top: $spacing-4;
+
+    span:last-child {
+      @include heading($font-size-2xl, $font-weight-bold);
+      color: $accent;
+    }
+  }
+}
+
+.promo-code {
+  margin: $spacing-5 0;
+  display: flex;
+  gap: $spacing-2;
+
+  input {
+    flex: 1;
+    padding: $spacing-3 $spacing-4;
+    border: 1px solid $line;
+    border-radius: $radius-lg;
+    background: $bg;
+    color: $text;
+    font-size: $font-size-sm;
+
+    &:focus {
+      outline: none;
+      border-color: $accent;
+    }
+  }
+
+  button {
+    padding: $spacing-3 $spacing-5;
+    background: $accent;
+    color: $white;
+    border: none;
+    border-radius: $radius-lg;
+    cursor: pointer;
+    font-weight: $font-weight-medium;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: $accent-hover;
+    }
+  }
+}
+
+.checkout-btn {
+  width: 100%;
+  @include button($accent, $white);
+  padding: $spacing-4;
+  font-size: $font-size-base;
+  margin-bottom: $spacing-3;
+
+  i {
+    margin-right: $spacing-2;
+  }
+}
+
+.continue-shopping-btn {
+  width: 100%;
+  @include button-outline($accent);
+  padding: $spacing-3;
+  font-size: $font-size-sm;
+  background: transparent;
+
+  i {
+    margin-right: $spacing-2;
+  }
+
+  &:hover {
+    background: rgba($accent, 0.1);
+  }
+}
+
+// ============================================
+// Payment Methods
+// ============================================
+.payment-methods {
+  background: $card;
+  border-radius: $radius-xl;
+  border: 1px solid $line;
+  padding: $spacing-5;
+  margin-top: $spacing-4;
+  text-align: center;
+
+  p {
+    @include text($font-size-sm, $font-weight-medium);
+    margin-bottom: $spacing-3;
+  }
+}
+
+.payment-icons {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-4;
+  flex-wrap: wrap;
+
+  i {
+    font-size: $font-size-2xl;
+    color: $muted;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $accent;
+    }
+  }
+}
+
+// ============================================
+// Empty Cart State
+// ============================================
+.empty-cart {
+  text-align: center;
+  padding: $spacing-12;
+
+  i {
+    font-size: $font-size-4xl;
+    color: $muted;
+    margin-bottom: $spacing-4;
+  }
+
+  h3 {
+    @include heading($font-size-xl, $font-weight-semibold);
+    margin-bottom: $spacing-2;
+  }
+
+  p {
+    @include text($font-size-sm);
+    margin-bottom: $spacing-6;
+  }
+
+  .shop-now-btn {
+    @include button($accent, $white);
+    padding: $spacing-3 $spacing-8;
+  }
+}
+
+// ============================================
+// Footer
+// ============================================
+.cart-footer {
+  background: $card;
+  border-top: 1px solid $line;
+  margin-top: $spacing-8;
+
+  .footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: $spacing-8 $spacing-6;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-8;
+
+    @include respond-to("tablet") {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to("mobile") {
+      grid-template-columns: 1fr;
+      gap: $spacing-6;
+      padding: $spacing-6 $spacing-4;
+    }
+  }
+
+  .footer-section {
+    h4 {
+      @include heading($font-size-lg, $font-weight-semibold);
+      margin-bottom: $spacing-4;
+    }
+
+    p {
+      @include text($font-size-sm);
+      margin-bottom: $spacing-4;
+    }
+
+    ul {
+      list-style: none;
+
+      li {
+        margin-bottom: $spacing-2;
+
+        a {
+          text-decoration: none;
+          @include text($font-size-sm);
+          transition: color $transition-fast;
+
+          &:hover {
+            color: $accent;
+          }
+        }
+      }
+    }
+  }
+
+  .social-links {
+    @include flex(row, flex-start, center, $spacing-3);
+
+    a {
+      width: 36px;
+      height: 36px;
+      background: rgba($accent, 0.1);
+      border-radius: $radius-full;
+      @include flex-center;
+      transition: all $transition-fast;
+
+      i {
+        color: $accent;
+      }
+
+      &:hover {
+        background: $accent;
+
+        i {
+          color: $white;
+        }
+      }
+    }
+  }
+
+  .newsletter-form {
+    @include flex(row, flex-start, stretch, 0);
+
+    input {
+      flex: 1;
+      padding: $spacing-2 $spacing-3;
+      border: 1px solid $line;
+      border-radius: $radius-md 0 0 $radius-md;
+      background: $bg;
+      color: $text;
+
+      &:focus {
+        outline: none;
+        border-color: $accent;
+      }
+    }
+
+    button {
+      padding: $spacing-2 $spacing-3;
+      background: $accent;
+      border: none;
+      border-radius: 0 $radius-md $radius-md 0;
+      color: $white;
+      cursor: pointer;
+
+      &:hover {
+        background: $accent-hover;
+      }
+    }
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding: $spacing-4;
+    border-top: 1px solid $line;
+    @include text($font-size-xs);
+  }
+}
+
+// ============================================
+// Loading & Toast
+// ============================================
+.loading {
+  @include flex-center;
+  padding: $spacing-8;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid $line;
+    border-top-color: $accent;
+    border-radius: $radius-full;
+    animation: spin 1s linear infinite;
+  }
+}
+
+.toast {
+  position: fixed;
+  bottom: $spacing-8;
+  right: $spacing-8;
+  background: $card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow;
+  transform: translateX(400px);
+  transition: transform $transition-base;
+  z-index: $z-toast;
+  border: 1px solid $line;
+
+  &.show {
+    transform: translateX(0);
+  }
+
+  &.success {
+    border-left: 4px solid $success-color;
+
+    i {
+      color: $success-color;
+    }
+  }
+
+  &.error {
+    border-left: 4px solid $error-color;
+
+    i {
+      color: $error-color;
+    }
+  }
+}
+
+.toast-content {
+  @include flex(row, flex-start, center, $spacing-3);
+  padding: $spacing-4 $spacing-6;
+  min-width: 300px;
+
+  i {
+    font-size: $font-size-xl;
+  }
+
+  span {
+    @include text($font-size-sm, $font-weight-medium);
+  }
+}
+
+// ============================================
+// Animations
+// ============================================
+@include keyframes(spin) {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// Print Styles
+// ============================================
+@media print {
+  .cart-header,
+  .cart-footer,
+  .cart-summary-section,
+  .user-dropdown,
+  .theme-toggle {
+    display: none !important;
+  }
+
+  .cart-content {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-item {
+    break-inside: avoid;
+  }
+}

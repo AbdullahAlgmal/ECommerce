@@ -374,7 +374,7 @@ class ShopPage {
         (product) => `
           <div class="product-card" data-product-id="${product.id}">
             <div class="product-image">
-              <img src="${product.images?.[0]?.url || product.mainImageUrl || "https://via.placeholder.com/300"}" alt="${product.name}">
+              <img loading="lazy" src="${product.images?.[0]?.url || product.mainImageUrl || "https://via.placeholder.com/300"}" alt="${product.name}">
               <button class="wishlist-btn" data-id="${product.id}">
                 <i class="far fa-heart"></i>
               </button>

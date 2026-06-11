@@ -1,6 +1,12 @@
 // sass/helpers/_variables.scss
 
 // ============================================
+// Actual Color Values (for Sass functions like darken/lighten)
+// ============================================
+$accent-color: #4f46e5;
+$accent-2-color: #22c55e;
+
+// ============================================
 // CSS Variables (Light Theme - Default)
 // ============================================
 :root {

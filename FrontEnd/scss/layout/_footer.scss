@@ -1,0 +1,127 @@
+// ============================================
+// Import Helpers
+// ============================================
+@use "../helpers/variables" as *;
+@use "../helpers/mixins" as *;
+
+
+// ============================================
+// Footer
+// ============================================
+footer {
+  background: $card;
+  border-top: 1px solid $line;
+  margin-top: $spacing-8;
+
+  .footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: $spacing-8 $spacing-6;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-8;
+
+    @include respond-to("tablet") {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to("mobile") {
+      grid-template-columns: 1fr;
+      gap: $spacing-6;
+      padding: $spacing-6 $spacing-4;
+    }
+  }
+
+  .footer-section {
+    h4 {
+      @include heading($font-size-lg, $font-weight-semibold);
+      margin-bottom: $spacing-4;
+    }
+
+    p {
+      @include text($font-size-sm);
+      margin-bottom: $spacing-4;
+    }
+
+    ul {
+      list-style: none;
+
+      li {
+        margin-bottom: $spacing-2;
+
+        a {
+          text-decoration: none;
+          @include text($font-size-sm);
+          transition: color $transition-fast;
+
+          &:hover {
+            color: $accent;
+          }
+        }
+      }
+    }
+  }
+
+  .social-links {
+    @include flex(row, flex-start, center, $spacing-3);
+
+    a {
+      width: 36px;
+      height: 36px;
+      background: rgba($accent, 0.1);
+      border-radius: $radius-full;
+      @include flex-center;
+      transition: all $transition-fast;
+
+      i {
+        color: $accent;
+      }
+
+      &:hover {
+        background: $accent;
+
+        i {
+          color: $white;
+        }
+      }
+    }
+  }
+
+  .newsletter-form {
+    @include flex(row, flex-start, stretch, 0);
+
+    input {
+      flex: 1;
+      padding: $spacing-2 $spacing-3;
+      border: 1px solid $line;
+      border-radius: $radius-md 0 0 $radius-md;
+      background: $bg;
+      color: $text;
+
+      &:focus {
+        outline: none;
+        border-color: $accent;
+      }
+    }
+
+    button {
+      padding: $spacing-2 $spacing-3;
+      background: $accent;
+      border: none;
+      border-radius: 0 $radius-md $radius-md 0;
+      color: $white;
+      cursor: pointer;
+
+      &:hover {
+        background: $accent-hover;
+      }
+    }
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding: $spacing-4;
+    border-top: 1px solid $line;
+    @include text($font-size-xs);
+  }
+}

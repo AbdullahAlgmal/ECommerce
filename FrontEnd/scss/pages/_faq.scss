@@ -1,0 +1,514 @@
+// sass/pages/_faq.scss
+
+@use "../helpers/variables" as *;
+@use "../helpers/mixins" as *;
+
+// ============================================
+// Hero Section
+// ============================================
+.faq-hero {
+  position: relative;
+  background: linear-gradient(135deg, $accent, $secondary-color);
+  padding: $spacing-16 $spacing-6;
+  text-align: center;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 $spacing-4;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+
+    h1 {
+      @include heading($font-size-4xl, $font-weight-bold);
+      color: $white;
+      margin-bottom: $spacing-3;
+
+      @include respond-to("mobile") {
+        font-size: $font-size-2xl;
+      }
+    }
+
+    p {
+      @include text($font-size-lg);
+      color: rgba($white, 0.9);
+      margin-bottom: $spacing-6;
+    }
+  }
+}
+
+.search-faq {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+
+  i {
+    position: absolute;
+    left: $spacing-4;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $muted;
+  }
+
+  input {
+    width: 100%;
+    padding: $spacing-4 $spacing-4 $spacing-4 $spacing-12;
+    border: none;
+    border-radius: $radius-full;
+    font-size: $font-size-base;
+    background: $white;
+    color: $text;
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba($white, 0.3);
+    }
+
+    &::placeholder {
+      color: $muted;
+    }
+  }
+}
+
+// ============================================
+// FAQ Categories Tabs
+// ============================================
+.faq-categories {
+  background: $card;
+  border-bottom: 1px solid $line;
+  position: sticky;
+  top: 80px;
+  z-index: $z-sticky - 1;
+
+  @include respond-to("mobile") {
+    top: 70px;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.categories-tabs {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+  display: flex;
+  gap: $spacing-1;
+
+  @include respond-to("mobile") {
+    padding: 0 $spacing-4;
+  }
+}
+
+.category-tab {
+  padding: $spacing-4 $spacing-6;
+  background: none;
+  border: none;
+  cursor: pointer;
+  @include text($font-size-sm, $font-weight-medium);
+  color: $muted;
+  transition: all $transition-fast;
+  position: relative;
+
+  &:hover {
+    color: $accent;
+  }
+
+  &.active {
+    color: $accent;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: $accent;
+    }
+  }
+}
+
+// ============================================
+// FAQ Content
+// ============================================
+.faq-content {
+  padding: $spacing-12 0;
+  background: $bg;
+  min-height: 500px;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 0;
+  }
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+
+  @include respond-to("mobile") {
+    padding: 0 $spacing-4;
+  }
+}
+
+.faq-grid {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.faq-item {
+  background: $card;
+  border: 1px solid $line;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  transition: all $transition-base;
+
+  &:hover {
+    border-color: $accent;
+  }
+}
+
+.faq-question {
+  padding: $spacing-5 $spacing-6;
+  cursor: pointer;
+  @include flex-between;
+  gap: $spacing-4;
+
+  @include respond-to("mobile") {
+    padding: $spacing-4;
+  }
+
+  h3 {
+    @include heading($font-size-base, $font-weight-semibold);
+    flex: 1;
+  }
+
+  .faq-icon {
+    color: $accent;
+    font-size: $font-size-lg;
+    transition: transform $transition-base;
+  }
+
+  &:hover {
+    background: rgba($accent, 0.02);
+  }
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height $transition-base;
+  border-top: none;
+
+  .answer-content {
+    padding: 0 $spacing-6 $spacing-5 $spacing-6;
+    @include text($font-size-sm);
+    line-height: 1.7;
+
+    @include respond-to("mobile") {
+      padding: 0 $spacing-4 $spacing-4 $spacing-4;
+    }
+
+    ul,
+    ol {
+      margin: $spacing-3 0;
+      padding-left: $spacing-5;
+
+      li {
+        margin-bottom: $spacing-2;
+      }
+    }
+
+    a {
+      color: $accent;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.faq-item.active {
+  border-color: $accent;
+
+  .faq-question {
+    background: rgba($accent, 0.02);
+  }
+
+  .faq-icon {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    max-height: 500px;
+    border-top: 1px solid $line;
+  }
+}
+
+// ============================================
+// No Results
+// ============================================
+.no-results {
+  text-align: center;
+  padding: $spacing-12;
+
+  i {
+    font-size: $font-size-4xl;
+    color: $muted;
+    margin-bottom: $spacing-4;
+  }
+
+  h3 {
+    @include heading($font-size-xl, $font-weight-semibold);
+    margin-bottom: $spacing-2;
+  }
+
+  p {
+    @include text($font-size-base);
+    margin-bottom: $spacing-6;
+  }
+
+  .clear-search-btn {
+    @include button-outline($accent);
+    padding: $spacing-3 $spacing-6;
+  }
+}
+
+// ============================================
+// Still Have Questions Section
+// ============================================
+.still-have-questions {
+  padding: $spacing-12 0;
+  background: $card;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 0;
+  }
+}
+
+.questions-card {
+  background: $bg;
+  border-radius: $radius-2xl;
+  padding: $spacing-12;
+  text-align: center;
+  border: 1px solid $line;
+
+  @include respond-to("mobile") {
+    padding: $spacing-8 $spacing-4;
+  }
+
+  i {
+    font-size: $font-size-4xl;
+    color: $accent;
+    margin-bottom: $spacing-4;
+  }
+
+  h2 {
+    @include heading($font-size-2xl, $font-weight-bold);
+    margin-bottom: $spacing-3;
+  }
+
+  p {
+    @include text($font-size-base);
+    margin-bottom: $spacing-6;
+  }
+}
+
+.questions-actions {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-4;
+  margin-bottom: $spacing-8;
+
+  @include respond-to("mobile") {
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+
+  .btn-primary {
+    @include button($accent, $white);
+    padding: $spacing-3 $spacing-8;
+    text-decoration: none;
+  }
+
+  .btn-secondary {
+    @include button-outline($accent);
+    padding: $spacing-3 $spacing-8;
+    text-decoration: none;
+    background: transparent;
+
+    &:hover {
+      background: rgba($accent, 0.1);
+    }
+  }
+}
+
+.contact-info {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-6;
+  flex-wrap: wrap;
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+
+    i {
+      font-size: $font-size-lg;
+      margin-bottom: 0;
+      color: $accent;
+    }
+
+    span {
+      @include text($font-size-sm);
+    }
+  }
+}
+
+// ============================================
+// Back to Top Button
+// ============================================
+.back-to-top {
+  position: fixed;
+  bottom: $spacing-8;
+  right: $spacing-8;
+  width: 48px;
+  height: 48px;
+  background: $accent;
+  border: none;
+  border-radius: $radius-full;
+  color: $white;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all $transition-base;
+  z-index: $z-fixed;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &:hover {
+    background: darken($accent-color, 10%);
+    transform: translateY(-4px);
+  }
+}
+
+// ============================================
+// Loading
+// ============================================
+.loading {
+  @include flex-center;
+  padding: $spacing-8;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid $line;
+    border-top-color: $accent;
+    border-radius: $radius-full;
+    animation: spin 1s linear infinite;
+  }
+}
+
+// ============================================
+// Toast Notification
+// ============================================
+.toast {
+  position: fixed;
+  bottom: $spacing-8;
+  right: $spacing-8;
+  background: $card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow;
+  transform: translateX(400px);
+  transition: transform $transition-base;
+  z-index: $z-toast;
+  border: 1px solid $line;
+
+  &.show {
+    transform: translateX(0);
+  }
+
+  &.success {
+    border-left: 4px solid $success-color;
+
+    i {
+      color: $success-color;
+    }
+  }
+
+  &.error {
+    border-left: 4px solid $error-color;
+
+    i {
+      color: $error-color;
+    }
+  }
+}
+
+.toast-content {
+  @include flex(row, flex-start, center, $spacing-3);
+  padding: $spacing-4 $spacing-6;
+  min-width: 300px;
+
+  i {
+    font-size: $font-size-xl;
+  }
+
+  span {
+    @include text($font-size-sm, $font-weight-medium);
+  }
+}
+
+// ============================================
+// Animations
+// ============================================
+@include keyframes(spin) {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// Print Styles
+// ============================================
+@media print {
+  .faq-header,
+  .faq-footer,
+  .faq-categories,
+  .still-have-questions,
+  .search-faq,
+  .back-to-top,
+  .theme-toggle,
+  .user-dropdown {
+    display: none !important;
+  }
+
+  .faq-item {
+    break-inside: avoid;
+    border: 1px solid #e5e7eb;
+    margin-bottom: $spacing-4;
+  }
+
+  .faq-answer {
+    max-height: none !important;
+    display: block !important;
+  }
+
+  .faq-icon {
+    display: none;
+  }
+}

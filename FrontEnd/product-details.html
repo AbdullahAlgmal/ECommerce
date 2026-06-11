@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Product Details - E-Commerce Platform">
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+    <title>Product Details | E-Commerce Platform</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/product-details.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.min.css">
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (savedTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="product-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-store"></i>
+                    <span>E-Commerce</span>
+                </a>
+            </div>
+            
+            <nav class="header-nav">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            
+            <div class="header-actions">
+                <button class="search-toggle" id="searchToggle">
+                    <i class="fas fa-search"></i>
+                </button>
+                <a href="wishlist.html" class="wishlist-link">
+                    <i class="fas fa-heart"></i>
+                    <span class="badge" id="wishlistCount">0</span>
+                </a>
+                <a href="cart.html" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge" id="cartCount">0</span>
+                </a>
+                <div class="theme-toggle">
+                    <button id="themeToggle">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                </div>
+                <div class="user-dropdown">
+                    <button class="user-btn" id="userBtn">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="dashboard/customer.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                        <a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a>
+                        <a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a>
+                        <hr>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="search-bar" id="searchBar" style="display: none;">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products...">
+                <button id="closeSearch"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="breadcrumb-container">
+            <a href="index.html">Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="shop.html">Shop</a>
+            <i class="fas fa-chevron-right"></i>
+            <span id="breadcrumbCategory">Category</span>
+            <i class="fas fa-chevron-right"></i>
+            <span id="breadcrumbProduct">Product Name</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="product-main">
+        <div class="product-container">
+            <!-- Product Gallery Section -->
+            <div class="product-gallery">
+                <div class="main-image">
+                    <img id="mainProductImage" src="https://via.placeholder.com/600" alt="Product Image">
+                </div>
+                <div class="thumbnail-list" id="thumbnailList">
+                    <!-- Thumbnails will be injected here -->
+                </div>
+            </div>
+            
+            <!-- Product Info Section -->
+            <div class="product-info">
+                <div class="product-category" id="productCategory">Category</div>
+                <h1 id="productName">Product Name</h1>
+                
+                <div class="product-rating">
+                    <div class="stars" id="productRating"></div>
+                    <span class="review-count" id="reviewCount">(0 reviews)</span>
+                </div>
+                
+                <div class="product-price" id="productPrice">$0.00</div>
+                
+                <div class="product-stock" id="productStock">
+                    <span class="in-stock"><i class="fas fa-check-circle"></i> In Stock</span>
+                </div>
+                
+                <div class="product-description" id="productDescription">
+                    Product description goes here...
+                </div>
+                
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">SKU:</span>
+                        <span class="meta-value" id="productSku">SKU-001</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Category:</span>
+                        <span class="meta-value" id="productCategoryName">Electronics</span>
+                    </div>
+                </div>
+                
+                <div class="product-actions">
+                    <div class="quantity-selector">
+                        <button class="qty-btn" id="decreaseQty">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" id="productQuantity" value="1" min="1" max="99">
+                        <button class="qty-btn" id="increaseQty">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    
+                    <button class="add-to-cart-btn" id="addToCartBtn">
+                        <i class="fas fa-shopping-cart"></i>
+                        Add to Cart
+                    </button>
+                    
+                    <button class="wishlist-btn" id="wishlistBtn">
+                        <i class="far fa-heart"></i>
+                        Add to Wishlist
+                    </button>
+                </div>
+                
+                <div class="product-share">
+                    <span>Share:</span>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product Details Tabs -->
+        <div class="product-tabs">
+            <div class="tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="description">Description</button>
+                    <button class="tab-btn" data-tab="specifications">Specifications</button>
+                    <button class="tab-btn" data-tab="reviews">Reviews (<span id="reviewTabCount">0</span>)</button>
+                </div>
+                
+                <div class="tabs-content">
+                    <!-- Description Tab -->
+                    <div class="tab-pane active" id="descriptionTab">
+                        <div class="tab-content" id="fullDescription">
+                            Full description will appear here...
+                        </div>
+                    </div>
+                    
+                    <!-- Specifications Tab -->
+                    <div class="tab-pane" id="specificationsTab">
+                        <div class="specs-table" id="specificationsTable">
+                            <!-- Specifications will be injected here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Reviews Tab -->
+                    <div class="tab-pane" id="reviewsTab">
+                        <div class="reviews-summary">
+                            <div class="average-rating">
+                                <div class="rating-number" id="avgRating">0.0</div>
+                                <div class="rating-stars" id="avgRatingStars"></div>
+                                <div class="rating-count" id="totalReviews">0 reviews</div>
+                            </div>
+                            <div class="rating-bars" id="ratingBars">
+                                <!-- Rating distribution bars will be injected -->
+                            </div>
+                        </div>
+                        
+                        <div class="write-review">
+                            <h3>Write a Review</h3>
+                            <form id="reviewForm">
+                                <div class="rating-input">
+                                    <label>Your Rating:</label>
+                                    <div class="star-rating">
+                                        <i class="far fa-star" data-rating="1"></i>
+                                        <i class="far fa-star" data-rating="2"></i>
+                                        <i class="far fa-star" data-rating="3"></i>
+                                        <i class="far fa-star" data-rating="4"></i>
+                                        <i class="far fa-star" data-rating="5"></i>
+                                    </div>
+                                    <input type="hidden" id="reviewRating" value="0">
+                                </div>
+                                <div class="review-input">
+                                    <label>Your Review:</label>
+                                    <textarea id="reviewText" rows="4" placeholder="Share your experience with this product..."></textarea>
+                                </div>
+                                <button type="submit" class="submit-review-btn">Submit Review</button>
+                            </form>
+                        </div>
+                        
+                        <div class="reviews-list" id="reviewsList">
+                            <!-- Reviews will be injected here -->
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Products Section -->
+        <div class="related-products">
+            <div class="section-header">
+                <h2>You May Also Like</h2>
+                <div class="related-nav">
+                    <button class="related-prev" id="relatedPrev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="related-next" id="relatedNext">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="related-products-grid" id="relatedProductsGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="product-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>Your trusted e-commerce platform for quality products.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Order Tracking</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Get the latest updates and offers.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email">
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 E-Commerce. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+        <div class="toast-content">
+            <i class="fas"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+    <script type="module" src="js/components/darkMode.js"></script>
+    <script type="module" src="js/components/product-details.js"></script>
+</body>
+</html>
