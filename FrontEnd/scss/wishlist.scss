@@ -1,0 +1,13 @@
+// ============================================
+// Import Helpers
+// ============================================
+@use "helpers/variables" as *;
+@use "helpers/mixins" as *;
+
+// ============================================
+// Import Pages
+// ============================================
+@import "pages/globalpage";
+@import "layout/header";
+@import "pages/wishlist";
+@import "layout/footer";

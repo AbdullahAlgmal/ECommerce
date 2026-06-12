@@ -118,7 +118,7 @@
       @include text($font-size-sm);
 
       &:hover {
-        background: rgba($accent, 0.1);
+        background: rgba($accent-color, 0.1);
       }
 
       i {
@@ -206,7 +206,7 @@
   }
 
   &:hover {
-    background: rgba($accent, 0.02);
+    background: rgba($accent-color, 0.02);
   }
 
   @include respond-to("mobile") {
@@ -458,7 +458,7 @@
   }
 
   &:hover {
-    background: rgba($accent, 0.1);
+    background: rgba($accent-color, 0.1);
   }
 }
 
@@ -588,7 +588,7 @@
     a {
       width: 36px;
       height: 36px;
-      background: rgba($accent, 0.1);
+      background: rgba($accent-color, 0.1);
       border-radius: $radius-full;
       @include flex-center;
       transition: all $transition-fast;

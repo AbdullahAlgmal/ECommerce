@@ -85,7 +85,7 @@
   }
 
   &:hover {
-    background: rgba($accent, 0.1);
+    background: rgba($accent-color, 0.1);
     color: $accent;
   }
 
@@ -109,7 +109,7 @@
   @include flex(row, flex-start, center, $spacing-3);
   margin-bottom: $spacing-4;
   padding: $spacing-3 $spacing-4;
-  background: rgba($accent, 0.05);
+  background: rgba($accent-color, 0.05);
   border-radius: $radius-lg;
 
   .user-avatar {
@@ -248,7 +248,7 @@
   .stat-icon {
     width: 48px;
     height: 48px;
-    background: rgba($accent, 0.1);
+    background: rgba($accent-color, 0.1);
     border-radius: $radius-lg;
     @include flex-center;
     margin-bottom: $spacing-4;
@@ -322,7 +322,7 @@
 
     th {
       @include text($font-size-sm, $font-weight-semibold, $text);
-      background: rgba($accent, 0.02);
+      background: rgba($accent-color, 0.02);
     }
 
     td {
@@ -330,7 +330,7 @@
     }
 
     tr:hover {
-      background: rgba($accent, 0.02);
+      background: rgba($accent-color, 0.02);
     }
   }
 }
@@ -377,13 +377,13 @@
   transition: all $transition-base;
 
   &:hover {
-    background: rgba($accent, 0.02);
+    background: rgba($accent-color, 0.02);
   }
 
   .activity-icon {
     width: 40px;
     height: 40px;
-    background: rgba($accent, 0.1);
+    background: rgba($accent-color, 0.1);
     border-radius: $radius-full;
     @include flex-center;
 
@@ -437,7 +437,7 @@
 
   &:hover {
     border-color: $accent;
-    background: rgba($accent, 0.05);
+    background: rgba($accent-color, 0.05);
     transform: translateY(-2px);
   }
 }
@@ -523,14 +523,13 @@
   }
 }
 
-
 // Wishlist Grid Styles
 .wishlist-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: $spacing-5;
-  
-  @include respond-to('mobile') {
+
+  @include respond-to("mobile") {
     grid-template-columns: 1fr;
   }
 }
@@ -541,7 +540,7 @@
   border: 1px solid $line;
   overflow: hidden;
   transition: all $transition-base;
-  
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: $shadow;
@@ -552,14 +551,14 @@
   position: relative;
   aspect-ratio: 1;
   overflow: hidden;
-  
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform $transition-base;
   }
-  
+
   &:hover img {
     transform: scale(1.05);
   }
@@ -578,7 +577,7 @@
   @include flex-center;
   transition: all $transition-fast;
   color: $white;
-  
+
   &:hover {
     background: $error-color;
     transform: scale(1.1);
@@ -587,66 +586,66 @@
 
 .wishlist-info {
   padding: $spacing-4;
-  
+
   h3 {
     @include heading($font-size-base, $font-weight-semibold);
     margin-bottom: $spacing-2;
     @include text-line-clamp(2);
   }
-  
+
   .product-description {
     @include text($font-size-sm);
     margin-bottom: $spacing-3;
     @include text-line-clamp(2);
   }
-  
+
   .product-price {
     @include flex(row, flex-start, baseline, $spacing-2);
     margin-bottom: $spacing-2;
-    
+
     .current-price {
       @include heading($font-size-xl, $font-weight-bold);
       color: $accent;
     }
-    
+
     .old-price {
       @include text($font-size-sm);
       text-decoration: line-through;
     }
   }
-  
+
   .product-rating {
     @include flex(row, flex-start, center, $spacing-1);
     margin-bottom: $spacing-3;
-    
+
     i {
       color: #ffc107;
       font-size: $font-size-sm;
     }
-    
+
     span {
       @include text($font-size-xs);
     }
   }
-  
+
   .product-stock {
     margin-bottom: $spacing-3;
-    
+
     .in-stock {
       color: $success-color;
       font-size: $font-size-xs;
     }
-    
+
     .out-of-stock {
       color: $error-color;
       font-size: $font-size-xs;
     }
   }
-  
+
   .added-date {
     margin-top: $spacing-3;
     text-align: right;
-    
+
     small {
       @include text($font-size-xs);
     }
@@ -656,19 +655,19 @@
 .wishlist-actions {
   @include flex(row, flex-start, center, $spacing-3);
   margin-top: $spacing-4;
-  
+
   .add-to-cart-btn {
     @include button($accent, $white);
     padding: $spacing-2 $spacing-4;
     font-size: $font-size-sm;
     flex: 1;
-    
+
     &:disabled {
       background: $muted;
       cursor: not-allowed;
     }
   }
-  
+
   .view-product-btn {
     @include button-outline($accent);
     padding: $spacing-2 $spacing-4;
@@ -1017,50 +1016,50 @@
 // Toast Notification
 // ============================================
 .toast {
-    position: fixed;
-    bottom: $spacing-8;
-    right: $spacing-8;
-    background: $card;
-    border-radius: $radius-lg;
-    box-shadow: $shadow;
-    transform: translateX(400px);
-    transition: transform $transition-base;
-    z-index: $z-toast;
-    border: 1px solid $line;
-    
-    &.show {
-        transform: translateX(0);
+  position: fixed;
+  bottom: $spacing-8;
+  right: $spacing-8;
+  background: $card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow;
+  transform: translateX(400px);
+  transition: transform $transition-base;
+  z-index: $z-toast;
+  border: 1px solid $line;
+
+  &.show {
+    transform: translateX(0);
+  }
+
+  &.success {
+    border-left: 4px solid $success-color;
+
+    i {
+      color: $success-color;
     }
-    
-    &.success {
-        border-left: 4px solid $success-color;
-        
-        i {
-            color: $success-color;
-        }
+  }
+
+  &.error {
+    border-left: 4px solid $error-color;
+
+    i {
+      color: $error-color;
     }
-    
-    &.error {
-        border-left: 4px solid $error-color;
-        
-        i {
-            color: $error-color;
-        }
-    }
+  }
 }
 
 .toast-content {
-    @include flex(row, flex-start, center, $spacing-3);
-    padding: $spacing-4 $spacing-6;
-    min-width: 300px;
-    
-    i {
-        font-size: $font-size-xl;
-    }
-    
-    span {
-        @include text($font-size-sm, $font-weight-medium);
-    }
+  @include flex(row, flex-start, center, $spacing-3);
+  padding: $spacing-4 $spacing-6;
+  min-width: 300px;
+
+  i {
+    font-size: $font-size-xl;
+  }
+
+  span {
+    @include text($font-size-sm, $font-weight-medium);
+  }
 }
 
 // Print styles for profile

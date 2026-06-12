@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Order Confirmation - Your order has been placed successfully">
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+    <title>Order Confirmation | E-Commerce Platform</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/order-confirmation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.min.css">
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (savedTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="confirmation-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-store"></i>
+                    <span>E-Commerce</span>
+                </a>
+            </div>
+            
+            <div class="checkout-steps">
+                <div class="step completed" data-step="1">
+                    <div class="step-number">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="step-label">Shopping Cart</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step completed" data-step="2">
+                    <div class="step-number">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="step-label">Checkout</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step active" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Order Complete</div>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="theme-toggle">
+                    <button id="themeToggle">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                </div>
+                <a href="orders.html" class="orders-link">
+                    <i class="fas fa-list"></i>
+                    My Orders
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="confirmation-main">
+        <div class="confirmation-container">
+            <!-- Success Icon -->
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            
+            <h1>Thank You for Your Order!</h1>
+            <p class="confirmation-message">Your order has been placed successfully.</p>
+            
+            <!-- Order Info Card -->
+            <div class="order-info-card">
+                <div class="order-info-grid">
+                    <div class="order-info-item">
+                        <span class="order-label">Order Number</span>
+                        <h2 class="order-number" id="orderNumber">#ORD-0000</h2>
+                    </div>
+                    <div class="order-info-item">
+                        <span class="order-label">Order Date</span>
+                        <p class="order-date" id="orderDate">-</p>
+                    </div>
+                    <div class="order-info-item">
+                        <span class="order-label">Total Amount</span>
+                        <p class="order-total" id="orderTotal">$0.00</p>
+                    </div>
+                    <div class="order-info-item">
+                        <span class="order-label">Payment Status</span>
+                        <span class="payment-status" id="paymentStatus">Pending</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Details Card -->
+            <div class="order-details-card">
+                <h3>Order Details</h3>
+                <div class="order-items" id="orderItems">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Shipping & Payment Info -->
+            <div class="info-grid">
+                <div class="shipping-card">
+                    <h3><i class="fas fa-truck"></i> Shipping Address</h3>
+                    <div id="shippingAddress">
+                        <div class="loading-small">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-card">
+                    <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
+                    <div id="paymentMethod">
+                        <div class="loading-small">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="shop.html" class="btn-continue">
+                    <i class="fas fa-shopping-bag"></i>
+                    Continue Shopping
+                </a>
+                <a href="orders.html" class="btn-orders">
+                    <i class="fas fa-list"></i>
+                    View My Orders
+                </a>
+                <button class="btn-print" id="printOrderBtn">
+                    <i class="fas fa-print"></i>
+                    Print Receipt
+                </button>
+            </div>
+            
+            <!-- Email Confirmation Note -->
+            <div class="email-note">
+                <i class="fas fa-envelope"></i>
+                <p>A confirmation email has been sent to your email address.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="confirmation-footer">
+        <div class="footer-container">
+            <p>&copy; 2024 E-Commerce. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact</a>
+                <a href="faq.html">FAQ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+        <div class="toast-content">
+            <i class="fas"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script type="model" src="js/utils/constants.js"></script>
+    <script type="model" src="js/utils/helpers.js"></script>
+    <script type="model" src="js/services/api.js"></script>
+    <script type="model" src="js/services/auth.js"></script>
+    <script type="model" src="js/services/indexedDB.js"></script>
+    <script type="model" src="js/components/darkMode.js"></script>
+    <script type="model" src="js/components/order-confirmation.js"></script>
+</body>
+</html>

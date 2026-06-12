@@ -134,7 +134,7 @@
       @include text($font-size-sm);
 
       &:hover {
-        background: rgba($accent, 0.1);
+        background: rgba($accent-color, 0.1);
       }
 
       i {
@@ -206,7 +206,7 @@
 // Hero Section
 // ============================================
 .shop-hero {
-  background: linear-gradient(135deg, $accent, rgba($accent, 0.8));
+  background: linear-gradient(135deg, $accent-color, rgba($accent-color, 0.8));
   padding: $spacing-12 $spacing-6;
   text-align: center;
   color: $white;
@@ -769,7 +769,7 @@
     a {
       width: 36px;
       height: 36px;
-      background: rgba($accent, 0.1);
+      background: rgba($accent-color, 0.1);
       border-radius: $radius-full;
       @include flex-center;
       transition: all $transition-fast;

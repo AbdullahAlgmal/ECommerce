@@ -4,7 +4,6 @@
 @use "../helpers/variables" as *;
 @use "../helpers/mixins" as *;
 
-
 // ============================================
 // Header Styles
 // ============================================
@@ -136,7 +135,7 @@ header {
       @include text($font-size-sm);
 
       &:hover {
-        background: rgba($accent, 0.1);
+        background: rgba($accent-color, 0.1);
       }
 
       i {

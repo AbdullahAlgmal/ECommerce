@@ -4,7 +4,6 @@
 @use "../helpers/variables" as *;
 @use "../helpers/mixins" as *;
 
-
 // ============================================
 // Footer
 // ============================================
@@ -68,7 +67,7 @@ footer {
     a {
       width: 36px;
       height: 36px;
-      background: rgba($accent, 0.1);
+      background: rgba($accent-color, 0.1);
       border-radius: $radius-full;
       @include flex-center;
       transition: all $transition-fast;

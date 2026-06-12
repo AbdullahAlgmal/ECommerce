@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Checkout - Complete your purchase securely">
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+    <title>Checkout | E-Commerce Platform</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.min.css">
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (savedTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="checkout-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-store"></i>
+                    <span>E-Commerce</span>
+                </a>
+            </div>
+            
+            <div class="checkout-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Shopping Cart</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Checkout</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Order Complete</div>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="theme-toggle">
+                    <button id="themeToggle">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="checkout-main">
+        <div class="checkout-container">
+            <!-- Checkout Form Section -->
+            <div class="checkout-form-section">
+                <form id="checkoutForm" class="checkout-form">
+                    <!-- Contact Information -->
+                    <div class="form-card">
+                        <h2>Contact Information</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" required placeholder="your@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number <span class="required">*</span></label>
+                                <input type="tel" id="phone" name="phone" required placeholder="+1 234 567 8900">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="form-card">
+                        <h2>Shipping Address</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name <span class="required">*</span></label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name <span class="required">*</span></label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Street Address <span class="required">*</span></label>
+                            <input type="text" id="address" name="address" required placeholder="House number and street name">
+                        </div>
+                        <div class="form-group">
+                            <label for="apartment">Apartment, suite, etc. (optional)</label>
+                            <input type="text" id="apartment" name="apartment" placeholder="Apartment, suite, unit, etc.">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City <span class="required">*</span></label>
+                                <input type="text" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State/Province <span class="required">*</span></label>
+                                <input type="text" id="state" name="state" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="zipCode">ZIP/Postal Code <span class="required">*</span></label>
+                                <input type="text" id="zipCode" name="zipCode" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country <span class="required">*</span></label>
+                            <select id="country" name="country" required>
+                                <option value="">Select Country</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="AU">Australia</option>
+                                <option value="DE">Germany</option>
+                                <option value="FR">France</option>
+                            </select>
+                        </div>
+                        
+                        <div class="save-address">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="saveAddress">
+                                <span>Save this address to my account</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Method -->
+                    <div class="form-card">
+                        <h2>Shipping Method</h2>
+                        <div class="shipping-options" id="shippingOptions">
+                            <label class="shipping-option">
+                                <input type="radio" name="shipping" value="standard" checked>
+                                <div class="shipping-details">
+                                    <span class="shipping-name">Standard Shipping</span>
+                                    <span class="shipping-time">3-7 business days</span>
+                                </div>
+                                <span class="shipping-price">$5.99</span>
+                            </label>
+                            <label class="shipping-option">
+                                <input type="radio" name="shipping" value="express">
+                                <div class="shipping-details">
+                                    <span class="shipping-name">Express Shipping</span>
+                                    <span class="shipping-time">1-3 business days</span>
+                                </div>
+                                <span class="shipping-price">$12.99</span>
+                            </label>
+                            <label class="shipping-option">
+                                <input type="radio" name="shipping" value="overnight">
+                                <div class="shipping-details">
+                                    <span class="shipping-name">Overnight Shipping</span>
+                                    <span class="shipping-time">Next business day</span>
+                                </div>
+                                <span class="shipping-price">$24.99</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="form-card">
+                        <h2>Payment Method</h2>
+                        <div class="payment-tabs">
+                            <button type="button" class="payment-tab active" data-method="card">
+                                <i class="fas fa-credit-card"></i> Credit Card
+                            </button>
+                            <button type="button" class="payment-tab" data-method="paypal">
+                                <i class="fab fa-paypal"></i> PayPal
+                            </button>
+                            <button type="button" class="payment-tab" data-method="cod">
+                                <i class="fas fa-money-bill-wave"></i> Cash on Delivery
+                            </button>
+                        </div>
+                        
+                        <!-- Credit Card Form -->
+                        <div id="cardPayment" class="payment-form active">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cardNumber">Card Number <span class="required">*</span></label>
+                                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                                    <div class="card-icons">
+                                        <i class="fab fa-cc-visa"></i>
+                                        <i class="fab fa-cc-mastercard"></i>
+                                        <i class="fab fa-cc-amex"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cardName">Name on Card <span class="required">*</span></label>
+                                    <input type="text" id="cardName" placeholder="John Doe">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="expiryDate">Expiry Date <span class="required">*</span></label>
+                                    <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvv">CVV <span class="required">*</span></label>
+                                    <input type="text" id="cvv" placeholder="123" maxlength="4">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- PayPal Form -->
+                        <div id="paypalPayment" class="payment-form">
+                            <div class="paypal-info">
+                                <i class="fab fa-paypal"></i>
+                                <p>You will be redirected to PayPal to complete your payment securely.</p>
+                                <button type="button" class="paypal-btn">Pay with PayPal</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Cash on Delivery Form -->
+                        <div id="codPayment" class="payment-form">
+                            <div class="cod-info">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <p>Pay with cash when your order is delivered.</p>
+                                <div class="cod-note">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Additional COD fee of $2.99 applies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Notes -->
+                    <div class="form-card">
+                        <h2>Order Notes (Optional)</h2>
+                        <textarea id="orderNotes" rows="3" placeholder="Notes about your order, e.g., special delivery instructions"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="place-order-btn" id="placeOrderBtn">
+                        <span class="btn-text">Place Order</span>
+                        <span class="btn-loader" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Order Summary Section -->
+            <div class="order-summary-section">
+                <div class="summary-card">
+                    <h2>Order Summary</h2>
+                    <div class="summary-items" id="summaryItems">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-totals">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="summarySubtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <span id="summaryShipping">$5.99</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax (10%)</span>
+                            <span id="summaryTax">$0.00</span>
+                        </div>
+                        <div class="summary-row discount-row" style="display: none;">
+                            <span>Discount</span>
+                            <span id="summaryDiscount">-$0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span id="summaryTotal">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="promo-code-section">
+                        <div class="promo-input">
+                            <input type="text" id="promoCodeInput" placeholder="Promo code">
+                            <button id="applyPromoBtn">Apply</button>
+                        </div>
+                        <div class="promo-message" id="promoMessage"></div>
+                    </div>
+                    
+                    <div class="secure-checkout">
+                        <i class="fas fa-lock"></i>
+                        <span>Secure Checkout</span>
+                        <div class="payment-icons">
+                            <i class="fab fa-cc-visa"></i>
+                            <i class="fab fa-cc-mastercard"></i>
+                            <i class="fab fa-cc-amex"></i>
+                            <i class="fab fa-cc-paypal"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="checkout-footer">
+        <div class="footer-container">
+            <p>&copy; 2024 E-Commerce. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Returns</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+        <div class="toast-content">
+            <i class="fas"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script type="module" src="js/components/darkMode.js"></script>
+    <script type="module" src="js/components/checkout.js"></script>
+</body>
+</html>

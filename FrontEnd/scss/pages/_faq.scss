@@ -242,7 +242,7 @@
   border-color: $accent;
 
   .faq-question {
-    background: rgba($accent, 0.02);
+    background: rgba($accent-color, 0.02);
   }
 
   .faq-icon {
@@ -348,7 +348,7 @@
     background: transparent;
 
     &:hover {
-      background: rgba($accent, 0.1);
+      background: rgba($accent-color, 0.1);
     }
   }
 }

@@ -3,7 +3,6 @@
 @use "../helpers/variables" as *;
 @use "../helpers/mixins" as *;
 
-
 // ============================================
 // Hero Section
 // ============================================
@@ -27,7 +26,7 @@
     bottom: 0;
     background: linear-gradient(
       135deg,
-      rgba($accent, 0.9),
+      rgba($accent-color, 0.9),
       rgba($secondary-color, 0.9)
     );
   }
@@ -76,7 +75,7 @@
 .section-badge {
   display: inline-block;
   padding: $spacing-1 $spacing-3;
-  background: rgba($accent, 0.1);
+  background: rgba($accent-color, 0.1);
   color: $accent;
   border-radius: $radius-full;
   font-size: $font-size-sm;
@@ -166,7 +165,7 @@
     bottom: 0;
     background: linear-gradient(
       135deg,
-      rgba($accent, 0.2),
+      rgba($accent-color, 0.2),
       rgba($secondary-color, 0.2)
     );
   }
@@ -212,7 +211,7 @@
   .card-icon {
     width: 80px;
     height: 80px;
-    background: rgba($accent, 0.1);
+    background: rgba($accent-color, 0.1);
     border-radius: $radius-full;
     @include flex-center;
     margin: 0 auto $spacing-4;
@@ -299,7 +298,7 @@
   .value-icon {
     width: 60px;
     height: 60px;
-    background: rgba($accent, 0.1);
+    background: rgba($accent-color, 0.1);
     border-radius: $radius-full;
     @include flex-center;
     margin: 0 auto $spacing-4;
@@ -402,7 +401,7 @@
         width: 32px;
         height: 32px;
         @include flex-center;
-        background: rgba($accent, 0.1);
+        background: rgba($accent-color, 0.1);
         border-radius: $radius-full;
         color: $accent;
         transition: all $transition-fast;
@@ -646,12 +645,11 @@
       background: transparent;
 
       &:hover {
-        background: rgba($accent, 0.1);
+        background: rgba($accent-color, 0.1);
       }
     }
   }
 }
-
 
 // ============================================
 // Back to Top Button

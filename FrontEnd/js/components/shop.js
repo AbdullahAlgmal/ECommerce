@@ -567,7 +567,7 @@ class ShopPage {
           productId: product.id,
           productName: product.name,
           productPrice: product.price,
-          productImage: product.productImages?.[0]?.url || product.mainImageUrl,
+          productImage: product.images?.[0]?.url || product.mainImageUrl,
           quantity: 1,
           userId: userId,
           addedAt: new Date().toISOString(),
@@ -617,7 +617,7 @@ class ShopPage {
           productName: product?.name,
           productPrice: product?.price,
           productImage:
-            product?.productImages?.[0]?.url || product?.mainImageUrl,
+            product?.images[0]?.url || product?.mainImageUrl,
           userId: userId,
           addedAt: new Date().toISOString(),
         });

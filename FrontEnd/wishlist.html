@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your Wishlist - Save and manage your favorite products">
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+    <title>My Wishlist | E-Commerce Platform</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/wishlist.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.min.css">
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (savedTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="wishlist-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-store"></i>
+                    <span>E-Commerce</span>
+                </a>
+            </div>
+            
+            <nav class="header-nav">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            
+            <div class="header-actions">
+                <button class="search-toggle" id="searchToggle">
+                    <i class="fas fa-search"></i>
+                </button>
+                <a href="wishlist.html" class="wishlist-link active">
+                    <i class="fas fa-heart"></i>
+                    <span class="badge" id="wishlistCount">0</span>
+                </a>
+                <a href="cart.html" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge" id="cartCount">0</span>
+                </a>
+                <div class="theme-toggle">
+                    <button id="themeToggle">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                </div>
+                <div class="user-dropdown">
+                    <button class="user-btn" id="userBtn">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="dashboard/customer.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                        <a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a>
+                        <a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a>
+                        <hr>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="search-bar" id="searchBar" style="display: none;">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products...">
+                <button id="closeSearch"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="wishlist-main">
+        <div class="wishlist-container">
+            <div class="wishlist-header-section">
+                <h1>My Wishlist</h1>
+                <p>Save your favorite items and never lose track of them</p>
+            </div>
+            
+            <!-- Wishlist Actions -->
+            <div class="wishlist-actions-bar">
+                <div class="wishlist-stats">
+                    <i class="fas fa-heart"></i>
+                    <span id="wishlistItemCount">0</span> items in your wishlist
+                </div>
+                <div class="wishlist-buttons">
+                    <button class="share-wishlist-btn" id="shareWishlistBtn">
+                        <i class="fas fa-share-alt"></i>
+                        Share Wishlist
+                    </button>
+                    <button class="clear-wishlist-btn" id="clearWishlistBtn">
+                        <i class="fas fa-trash-alt"></i>
+                        Clear All
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Wishlist Items Grid -->
+            <div id="wishlistItemsContainer" class="wishlist-items-grid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+            
+            <!-- Recommended Products Section -->
+            <div class="recommended-section" id="recommendedSection" style="display: none;">
+                <div class="section-header">
+                    <h2>You May Also Like</h2>
+                    <a href="shop.html" class="view-all-link">View All →</a>
+                </div>
+                <div class="recommended-grid" id="recommendedGrid">
+                    <!-- Recommended products will be injected here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="wishlist-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>Your trusted e-commerce platform for quality products.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Order Tracking</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Get the latest updates and offers.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email">
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 E-Commerce. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Share Your Wishlist</h3>
+                <button class="close-modal" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Share your wishlist with friends and family</p>
+                <div class="share-options">
+                    <button class="share-option" data-platform="facebook">
+                        <i class="fab fa-facebook-f"></i>
+                        <span>Facebook</span>
+                    </button>
+                    <button class="share-option" data-platform="twitter">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                    </button>
+                    <button class="share-option" data-platform="pinterest">
+                        <i class="fab fa-pinterest-p"></i>
+                        <span>Pinterest</span>
+                    </button>
+                    <button class="share-option" data-platform="whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </button>
+                    <button class="share-option" data-platform="email">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email</span>
+                    </button>
+                </div>
+                <div class="share-link">
+                    <label>Share Link:</label>
+                    <div class="link-copy">
+                        <input type="text" id="shareLink" readonly value="https://ecommerce.com/wishlist/share/abc123">
+                        <button id="copyLinkBtn">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+        <div class="toast-content">
+            <i class="fas"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script type="module" src="js/components/darkMode.js"></script>
+    <script type="module" src="js/components/wishlist.js"></script>
+</body>
+</html>

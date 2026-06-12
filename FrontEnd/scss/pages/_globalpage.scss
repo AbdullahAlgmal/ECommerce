@@ -39,12 +39,12 @@ body {
 // Selection Styles
 // ============================================
 ::selection {
-  background: rgba($accent, 0.2);
+  background: rgba($accent-color, 0.2);
   color: $accent;
 }
 
 ::-moz-selection {
-  background: rgba($accent, 0.2);
+  background: rgba($accent-color, 0.2);
   color: $accent;
 }
 

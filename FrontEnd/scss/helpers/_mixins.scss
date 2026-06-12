@@ -197,7 +197,7 @@
   &:focus {
     outline: none;
     border-color: $accent;
-    box-shadow: 0 0 0 3px rgba($accent, 0.1);
+    box-shadow: 0 0 0 3px rgba($accent-color, 0.1);
   }
 
   &::placeholder {
@@ -238,7 +238,7 @@
 }
 
 @mixin gradient-primary {
-  background: linear-gradient(135deg, $accent, rgba($accent, 0.8));
+  background: linear-gradient(135deg, $accent-color, rgba($accent-color, 0.8));
 }
 
 // ============================================

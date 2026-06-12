@@ -108,7 +108,7 @@ class CartPage {
       itemsHtml += `
                 <div class="cart-item" data-cart-id="${item.cartId}" data-product-id="${item.productId}">
                     <div class="cart-item-image">
-                        <img loading="lazy" src="${item.images?.[0]?.url || "https://via.placeholder.com/300"}" alt="${item.name}">
+                        <img loading="lazy" src="${item.productImage || "https://via.placeholder.com/300"}" alt="${item.name}">
                     </div>
                     <div class="cart-item-details">
                         <h3>${item.productName}</h3>

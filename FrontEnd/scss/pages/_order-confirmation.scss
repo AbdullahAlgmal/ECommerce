@@ -1,0 +1,661 @@
+// sass/pages/_order-confirmation.scss
+
+@use "../helpers/variables" as *;
+@use "../helpers/mixins" as *;
+
+// ============================================
+// Header Styles
+// ============================================
+.confirmation-header {
+  background: $card;
+  border-bottom: 1px solid $line;
+  padding: $spacing-4 $spacing-6;
+
+  @include respond-to("mobile") {
+    padding: $spacing-3 $spacing-4;
+  }
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $spacing-4;
+}
+
+.logo a {
+  @include flex(row, flex-start, center, $spacing-2);
+  text-decoration: none;
+
+  i {
+    font-size: $font-size-2xl;
+    color: $accent;
+  }
+
+  span {
+    @include heading($font-size-xl, $font-weight-bold);
+  }
+}
+
+.checkout-steps {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+
+  @include respond-to("mobile") {
+    display: none;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: $line;
+      border-radius: $radius-full;
+      @include flex-center;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-semibold;
+      color: $muted;
+    }
+
+    .step-label {
+      font-size: $font-size-sm;
+      color: $muted;
+    }
+
+    &.completed {
+      .step-number {
+        background: $success-color;
+        color: $white;
+
+        i {
+          font-size: $font-size-sm;
+        }
+      }
+
+      .step-label {
+        color: $success-color;
+      }
+    }
+
+    &.active {
+      .step-number {
+        background: $accent;
+        color: $white;
+      }
+
+      .step-label {
+        color: $accent;
+        font-weight: $font-weight-semibold;
+      }
+    }
+  }
+
+  .step-line {
+    width: 50px;
+    height: 1px;
+    background: $line;
+  }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+
+  .theme-toggle button {
+    background: $card;
+    border: 1px solid $line;
+    border-radius: $radius-full;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    @include flex-center;
+    color: $text;
+
+    &:hover {
+      border-color: $accent;
+      color: $accent;
+    }
+  }
+
+  .orders-link {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-2 $spacing-4;
+    background: $accent;
+    color: $white;
+    border-radius: $radius-lg;
+    text-decoration: none;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: $accent-hover;
+    }
+
+    i {
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+// ============================================
+// Main Content
+// ============================================
+.confirmation-main {
+  background: $bg;
+  padding: $spacing-8 $spacing-6;
+  min-height: calc(100vh - 200px);
+
+  @include respond-to("mobile") {
+    padding: $spacing-4;
+  }
+}
+
+.confirmation-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+// ============================================
+// Success Icon
+// ============================================
+.success-icon {
+  text-align: center;
+  margin-bottom: $spacing-6;
+
+  i {
+    font-size: 80px;
+    color: $success-color;
+    animation: scaleIn 0.5s ease;
+  }
+}
+
+@include keyframes(scaleIn) {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+h1 {
+  text-align: center;
+  @include heading($font-size-3xl, $font-weight-bold);
+  margin-bottom: $spacing-2;
+
+  @include respond-to("mobile") {
+    font-size: $font-size-2xl;
+  }
+}
+
+.confirmation-message {
+  text-align: center;
+  @include text($font-size-base);
+  color: $muted;
+  margin-bottom: $spacing-8;
+}
+
+// ============================================
+// Order Info Card
+// ============================================
+.order-info-card {
+  background: $card;
+  border-radius: $radius-xl;
+  border: 1px solid $line;
+  padding: $spacing-6;
+  margin-bottom: $spacing-6;
+}
+
+.order-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-4;
+
+  @include respond-to("tablet") {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to("mobile") {
+    grid-template-columns: 1fr;
+  }
+}
+
+.order-info-item {
+  .order-label {
+    display: block;
+    @include text($font-size-xs);
+    color: $muted;
+    margin-bottom: $spacing-1;
+  }
+
+  .order-number {
+    @include heading($font-size-xl, $font-weight-bold);
+    color: $accent;
+  }
+
+  .order-date,
+  .order-total {
+    @include heading($font-size-lg, $font-weight-semibold);
+  }
+
+  .payment-status {
+    display: inline-block;
+    padding: $spacing-1 $spacing-3;
+    background: rgba($warning-color, 0.1);
+    color: $warning-color;
+    border-radius: $radius-full;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+
+    &.completed {
+      background: rgba($success-color, 0.1);
+      color: $success-color;
+    }
+  }
+}
+
+// ============================================
+// Order Details Card
+// ============================================
+.order-details-card {
+  background: $card;
+  border-radius: $radius-xl;
+  border: 1px solid $line;
+  padding: $spacing-6;
+  margin-bottom: $spacing-6;
+
+  h3 {
+    @include heading($font-size-lg, $font-weight-semibold);
+    margin-bottom: $spacing-5;
+    padding-bottom: $spacing-3;
+    border-bottom: 1px solid $line;
+  }
+}
+
+.order-items {
+  .order-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+    padding: $spacing-4 0;
+    border-bottom: 1px solid $line;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .order-item-image {
+      width: 80px;
+      height: 80px;
+      border-radius: $radius-lg;
+      overflow: hidden;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .order-item-details {
+      flex: 1;
+
+      .order-item-name {
+        @include heading($font-size-base, $font-weight-semibold);
+        margin-bottom: $spacing-1;
+      }
+
+      .order-item-price {
+        @include text($font-size-sm);
+        color: $muted;
+      }
+    }
+
+    .order-item-quantity {
+      @include text($font-size-sm);
+      color: $muted;
+    }
+
+    .order-item-total {
+      @include heading($font-size-lg, $font-weight-bold);
+      color: $accent;
+      min-width: 100px;
+      text-align: right;
+    }
+  }
+}
+
+.order-summary {
+  margin-top: $spacing-5;
+  padding-top: $spacing-5;
+  border-top: 1px solid $line;
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: $spacing-2 0;
+    @include text($font-size-sm);
+
+    &.total {
+      margin-top: $spacing-2;
+      padding-top: $spacing-3;
+      border-top: 1px solid $line;
+
+      span:last-child {
+        @include heading($font-size-xl, $font-weight-bold);
+        color: $accent;
+      }
+    }
+
+    &.discount span:last-child {
+      color: $success-color;
+    }
+  }
+}
+
+// ============================================
+// Info Grid
+// ============================================
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-6;
+  margin-bottom: $spacing-8;
+
+  @include respond-to("mobile") {
+    grid-template-columns: 1fr;
+    gap: $spacing-4;
+  }
+}
+
+.shipping-card,
+.payment-card {
+  background: $card;
+  border-radius: $radius-xl;
+  border: 1px solid $line;
+  padding: $spacing-6;
+
+  h3 {
+    @include heading($font-size-base, $font-weight-semibold);
+    margin-bottom: $spacing-4;
+
+    i {
+      color: $accent;
+      margin-right: $spacing-2;
+    }
+  }
+
+  .shipping-address,
+  .payment-info {
+    @include text($font-size-sm);
+    line-height: 1.8;
+
+    p {
+      margin-bottom: $spacing-1;
+    }
+
+    .address-name {
+      font-weight: $font-weight-semibold;
+    }
+  }
+}
+
+// ============================================
+// Action Buttons
+// ============================================
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-4;
+  margin-bottom: $spacing-8;
+  flex-wrap: wrap;
+
+  .btn-continue,
+  .btn-orders,
+  .btn-print {
+    padding: $spacing-3 $spacing-6;
+    border-radius: $radius-lg;
+    text-decoration: none;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: all $transition-fast;
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-2;
+
+    i {
+      font-size: $font-size-sm;
+    }
+  }
+
+  .btn-continue {
+    background: $accent;
+    color: $white;
+    border: none;
+
+    &:hover {
+      background: $accent-hover;
+      transform: translateY(-2px);
+    }
+  }
+
+  .btn-orders {
+    background: $card;
+    color: $text;
+    border: 1px solid $line;
+
+    &:hover {
+      border-color: $accent;
+      color: $accent;
+    }
+  }
+
+  .btn-print {
+    background: $card;
+    color: $text;
+    border: 1px solid $line;
+
+    &:hover {
+      border-color: $accent;
+      color: $accent;
+    }
+  }
+}
+
+// ============================================
+// Email Note
+// ============================================
+.email-note {
+  text-align: center;
+  padding: $spacing-4;
+  background: rgba($accent, 0.05);
+  border-radius: $radius-lg;
+
+  i {
+    color: $accent;
+    margin-right: $spacing-2;
+  }
+
+  p {
+    @include text($font-size-sm);
+    display: inline;
+  }
+}
+
+// ============================================
+// Footer
+// ============================================
+.confirmation-footer {
+  background: $card;
+  border-top: 1px solid $line;
+  padding: $spacing-4 $spacing-6;
+
+  .footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    @include flex-between;
+    flex-wrap: wrap;
+    gap: $spacing-4;
+
+    @include respond-to("mobile") {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    p {
+      @include text($font-size-xs);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: $spacing-4;
+
+      a {
+        @include text($font-size-xs);
+        text-decoration: none;
+
+        &:hover {
+          color: $accent;
+        }
+      }
+    }
+  }
+}
+
+// ============================================
+// Loading States
+// ============================================
+.loading {
+  @include flex-center;
+  padding: $spacing-8;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid $line;
+    border-top-color: $accent;
+    border-radius: $radius-full;
+    animation: spin 1s linear infinite;
+  }
+}
+
+.loading-small {
+  @include flex-center;
+  padding: $spacing-4;
+
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid $line;
+    border-top-color: $accent;
+    border-radius: $radius-full;
+    animation: spin 1s linear infinite;
+  }
+}
+
+// ============================================
+// Toast Notification
+// ============================================
+.toast {
+  position: fixed;
+  bottom: $spacing-8;
+  right: $spacing-8;
+  background: $card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow;
+  transform: translateX(400px);
+  transition: transform $transition-base;
+  z-index: $z-toast;
+  border: 1px solid $line;
+
+  &.show {
+    transform: translateX(0);
+  }
+
+  &.success {
+    border-left: 4px solid $success-color;
+
+    i {
+      color: $success-color;
+    }
+  }
+
+  &.error {
+    border-left: 4px solid $error-color;
+
+    i {
+      color: $error-color;
+    }
+  }
+}
+
+.toast-content {
+  @include flex(row, flex-start, center, $spacing-3);
+  padding: $spacing-4 $spacing-6;
+  min-width: 300px;
+
+  i {
+    font-size: $font-size-xl;
+  }
+
+  span {
+    @include text($font-size-sm, $font-weight-medium);
+  }
+}
+
+// ============================================
+// Animations
+// ============================================
+@include keyframes(spin) {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// Print Styles
+// ============================================
+@media print {
+  .confirmation-header,
+  .confirmation-footer,
+  .action-buttons,
+  .email-note,
+  .theme-toggle,
+  .orders-link {
+    display: none !important;
+  }
+
+  .confirmation-main {
+    padding: 0;
+  }
+
+  .order-info-card,
+  .order-details-card,
+  .shipping-card,
+  .payment-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
+
+  .success-icon i {
+    color: #000 !important;
+  }
+}
