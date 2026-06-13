@@ -60,7 +60,13 @@ namespace BusinessLayer.Services
         }
         public virtual async Task<bool> ExistsAsync(int id)
         {
-            return await _repository.ExistsAsync(e => (int)typeof(T).GetProperty("Id")!.GetValue(e)! == id);
+            var parameter = Expression.Parameter(typeof(T), "e");
+            var property = Expression.Property(parameter, "Id");
+            var constant = Expression.Constant(id);
+
+            var body = Expression.Equal(property, constant);
+            var lambda = Expression.Lambda<Func<T, bool>>(body, parameter);
+            return await _repository.ExistsAsync(lambda);
         }
         public virtual async Task<int> CountAsync()
         {

@@ -23,6 +23,7 @@ namespace DataAccessLayer.Repositories
             return await _dbSet
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
+                .ThenInclude(p => p.ProductImages)
                 .Where(o => o.UserId == userId)
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();

@@ -5,6 +5,7 @@ using BusinessLayer.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Security.Claims;
 
 namespace ECommerceApi.Controllers
 {
@@ -115,8 +116,14 @@ namespace ECommerceApi.Controllers
                 if (!userExists)
                     return NotFound(ApiResponse<IEnumerable<OrderDto>>.Fail($"User with ID {userId} not found"));
 
-                var authResult = await authorizationService.AuthorizeAsync(User, userId, "AdminOrUserOwner");
-                if (!authResult.Succeeded)
+                //var authResult = await authorizationService.AuthorizeAsync(User, userId, "AdminOrUserOwner");
+                //if (!authResult.Succeeded)
+                //    return Forbid();
+                // Get current user ID
+                var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+                // Check authorization
+                if (!User.IsInRole("Admin") && currentUserId != userId)
                     return Forbid();
 
                 var orders = await _orderService.GetOrdersByUserAsync(userId);
