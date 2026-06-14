@@ -14,10 +14,6 @@ namespace BusinessLayer.DTOs.Shipping
         [StringLength(100)]
         public string CarrierName { get; set; } = null!;
 
-        [Required]
-        [StringLength(50)]
-        public string TrackingNumber { get; set; } = null!;
-
         public DateOnly? ShippingDate { get; set; }
         public DateOnly? DeliveryDate { get; set; }
     }

@@ -1,14 +1,15 @@
-﻿using DataAccessLayer;
+﻿using BusinessLayer.DTOs.Order;
+using DataAccessLayer;
 using System.Linq.Expressions;
 
 namespace BusinessLayer.Interfaces.Repositories
 {
     public interface IOrderRepository : IBaseRepository<Order>
     {
-        Task<Order?> GetOrderWithDetailsAsync(int id);
-        Task<IEnumerable<Order>> GetOrdersByUserAsync(int userId);
-        Task<IEnumerable<Order>> GetOrdersByStatusAsync(byte status);
-        Task<IEnumerable<Order>> GetOrdersByDateRangeAsync(DateOnly startDate, DateOnly endDate);
+        Task<OrderDto?> GetOrderWithDetailsAsync(int id);
+        Task<IEnumerable<OrderDto>> GetOrdersByUserAsync(int userId);
+        Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(byte status);
+        Task<IEnumerable<OrderDto>> GetOrdersByDateRangeAsync(DateOnly startDate, DateOnly endDate);
 
         Task<decimal> GetTotalRevenueAsync(DateOnly? fromDate = null, DateOnly? toDate = null);
         Task<Dictionary<byte, int>> GetOrderStatusStatisticsAsync();

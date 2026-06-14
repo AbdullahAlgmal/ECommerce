@@ -227,8 +227,8 @@ class OrdersPage {
         const order = this.orders.find(
           (o) => o.id === parseInt(btn.dataset.id),
         );
-        if (order && order.trackingNumber) {
-          window.location.href = `order-tracking.html?number=${order.trackingNumber}`;
+        if (order) {
+          window.location.href = `order-tracking.html?number=${order.id}`;
         } else {
           this.showToast("Tracking information not available yet", "error");
         }

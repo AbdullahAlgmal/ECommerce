@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track your order - Real-time order status and delivery updates">
+    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)">
+    <title>Track Order | E-Commerce Platform</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/order-tracking.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.min.css">
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (savedTheme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="tracking-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-store"></i>
+                    <span>E-Commerce</span>
+                </a>
+            </div>
+            
+            <nav class="header-nav">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            
+            <div class="header-actions">
+                <button class="search-toggle" id="searchToggle">
+                    <i class="fas fa-search"></i>
+                </button>
+                <a href="wishlist.html" class="wishlist-link">
+                    <i class="fas fa-heart"></i>
+                    <span class="badge" id="wishlistCount">0</span>
+                </a>
+                <a href="cart.html" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge" id="cartCount">0</span>
+                </a>
+                <div class="theme-toggle">
+                    <button id="themeToggle">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                </div>
+                <div class="user-dropdown">
+                    <button class="user-btn" id="userBtn">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="dashboard/customer.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                        <a href="orders.html"><i class="fas fa-shopping-cart"></i> Orders</a>
+                        <a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a>
+                        <hr>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="search-bar" id="searchBar" style="display: none;">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products...">
+                <button id="closeSearch"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tracking-main">
+        <div class="tracking-container">
+            <!-- Tracking Header -->
+            <div class="tracking-header-section">
+                <h1>Track Your Order</h1>
+                <p>Enter your tracking number or order ID to get real-time updates</p>
+            </div>
+            <!-- Tracking Search Form -->
+            <div class="tracking-search">
+                <form id="trackingForm" class="tracking-form">
+                    <div class="input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="trackingInput" placeholder="Enter order ID...">
+                        <button type="submit">Track Order</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Tracking Result -->
+            <div id="trackingResult" class="tracking-result" style="display: none;">
+                <!-- Order Info Card -->
+                <div class="order-info-card">
+                    <div class="order-info-header">
+                        <div>
+                            <span class="order-label">Order Number</span>
+                            <h2 class="order-number" id="orderNumber">#ORD-0000</h2>
+                        </div>
+                        <div>
+                            <span class="order-label">Order Date</span>
+                            <p class="order-date" id="orderDate">-</p>
+                        </div>
+                        <div>
+                            <span class="order-label">Total Amount</span>
+                            <p class="order-total" id="orderTotal">$0.00</p>
+                        </div>
+                        <div>
+                            <span class="order-label">Tracking Number</span>
+                            <p class="tracking-number" id="trackingNumberDisplay">-</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tracking Timeline -->
+                <div class="tracking-timeline">
+                    <h3>Order Status Timeline</h3>
+                    <div class="timeline" id="timeline">
+                        <!-- Timeline steps will be injected here -->
+                    </div>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="order-summary-card">
+                    <h3>Order Summary</h3>
+                    <div class="order-items" id="orderItems">
+                        <div class="loading-small">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                    <div class="order-totals" id="orderTotals">
+                        <!-- Totals will be injected here -->
+                    </div>
+                </div>
+                
+                <!-- Shipping Address -->
+                <div class="shipping-card">
+                    <h3><i class="fas fa-truck"></i> Shipping Information</h3>
+                    <div id="shippingAddress">
+                        <div class="loading-small">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Need Help -->
+                <div class="help-card">
+                    <i class="fas fa-headset"></i>
+                    <h3>Need Help?</h3>
+                    <p>If you have any questions about your order, our support team is here to help.</p>
+                    <div class="help-buttons">
+                        <a href="contact.html" class="contact-btn">Contact Support</a>
+                        <a href="faq.html" class="faq-btn">View FAQ</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Not Found State -->
+            <div id="notFoundState" class="not-found" style="display: none;">
+                <i class="fas fa-box-open"></i>
+                <h3>Order Not Found</h3>
+                <p>We couldn't find any order with that tracking number or order ID.</p>
+                <p>Please check your tracking number or contact customer support.</p>
+                <button class="try-again-btn" id="tryAgainBtn">Try Again</button>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state" style="display: none;">
+                <div class="spinner"></div>
+                <p>Fetching order information...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="tracking-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>Your trusted e-commerce platform for quality products.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Order Tracking</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Get the latest updates and offers.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email">
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 E-Commerce. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+        <div class="toast-content">
+            <i class="fas"></i>
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <script type="model" src="js/components/darkMode.js"></script>
+    <script type="model" src="js/components/order-tracking.js"></script>
+</body>
+</html>

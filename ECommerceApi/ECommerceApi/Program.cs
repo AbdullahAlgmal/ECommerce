@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +53,7 @@ builder.Services.AddDbContext<AppDbContext>(Options =>
 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
 b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
 
-builder.Services.AddScoped<AdminOrCustomerOwnerHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, AdminOrCustomerOwnerHandler>();
 
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();

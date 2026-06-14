@@ -12,18 +12,15 @@ namespace BusinessLayer.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IOrderItemRepository _orderItemRepository;
         private readonly IProductRepository _productRepository;
         private readonly IUserRepository _userRepository;
 
         public OrderService(
             IOrderRepository orderRepository,
-            IOrderItemRepository orderItemRepository,
             IProductRepository productRepository,
             IUserRepository userRepository)
         {
             _orderRepository = orderRepository;
-            _orderItemRepository = orderItemRepository;
             _productRepository = productRepository;
             _userRepository = userRepository;
         }
@@ -41,7 +38,7 @@ namespace BusinessLayer.Services
         public async Task<OrderDto?> GetOrderWithDetailsAsync(int id)
         {
             var order = await _orderRepository.GetOrderWithDetailsAsync(id);
-            return order != null ? MapToOrderDto(order) : null;
+            return order;
         }
         public async Task<OrderDto> CreateOrderAsync(CreateOrderDto createDto)
         {
@@ -121,7 +118,7 @@ namespace BusinessLayer.Services
 
         public async Task<OrderDto> UpdateOrderStatusAsync(int id, byte newStatus)
         {
-            var order = await _orderRepository.GetOrderWithDetailsAsync(id);
+            var order = await _orderRepository.GetByIdAsync(id);
             if (order == null)
                 throw new KeyNotFoundException($"Order with ID {id} not found");
 
@@ -142,12 +139,12 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException($"User with ID {userId} does not exist");
 
             var orders = await _orderRepository.GetOrdersByUserAsync(userId);
-            return orders.Select(MapToOrderDto);
+            return orders;
         }
         public async Task<IEnumerable<OrderDto>> GetOrdersByStatusAsync(byte status)
         {
             var orders = await _orderRepository.GetOrdersByStatusAsync(status);
-            return orders.Select(MapToOrderDto);
+            return orders;
         }
 
         public async Task<PagedResult<OrderDto>> SearchOrdersAsync(OrderFilterDto filter)

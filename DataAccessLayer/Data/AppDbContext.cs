@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DataAccessLayer;
+﻿using DataAccessLayer.Data.Config;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Data;
@@ -38,6 +36,8 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        new OrderAggregatedRawConfiguration().Configure(modelBuilder.Entity<OrderAggregatedRaw>());
+
         modelBuilder.Entity<Address>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Address__3214EC07722EA367");
