@@ -5,7 +5,7 @@ namespace BusinessLayer.Interfaces.Services
 {
     public interface IAddressService : IBaseService<Address, AddressDto, CreateAddressDto, UpdateAddressDto>
     {
-        Task<IEnumerable<AddressDto>> GetAddressesByUserAsync(int userId);
+        Task<AddressDto?> GetAddressByUserAsync(int userId);
         Task<bool> AddressBelongsToUserAsync(int addressId, int userId);
     }
 }

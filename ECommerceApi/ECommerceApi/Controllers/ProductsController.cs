@@ -97,9 +97,8 @@ namespace ECommerceApi.Controllers
                 if (!categoryExists)
                     return NotFound(ApiResponse<IEnumerable<ProductDto>>.Fail($"Category with ID {categoryId} not found"));
 
-                var filter = new ProductFilterDto { CategoryId = categoryId, PageSize = int.MaxValue };
-                var result = await _productService.SearchProductsAsync(filter);
-                return Ok(ApiResponse<IEnumerable<ProductDto>>.Succ(result.Items));
+                var result = await _productService.GetProductsByCategoryAsync(categoryId);
+                return Ok(ApiResponse<IEnumerable<ProductDto>>.Succ(result));
             }
             catch (Exception ex)
             {

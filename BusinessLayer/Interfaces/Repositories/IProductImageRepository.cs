@@ -9,7 +9,7 @@ namespace BusinessLayer.Interfaces.Repositories
         Task<ProductImage?> GetPrimaryImageAsync(int productId);
         Task<bool> ReorderImagesAsync(int productId, Dictionary<int, byte> imageOrders);
 
-        Task<bool> UserOwnsAddressAsync(int imageId, int productId);
-        Task<int> CountAddressesByUserAsync(int productId);
+        Task<bool> ProductOwnsImageAsync(int imageId, int productId);
+        Task<int> CountImagesByProductAsync(int productId);
     }
 }

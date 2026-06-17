@@ -9,11 +9,11 @@ namespace DataAccessLayer.Repositories
     {
         public AddressRepository(AppDbContext context) : base(context) { }
 
-        public async Task<IEnumerable<Address>> GetAddressesByUserAsync(int userId)
+        public async Task<Address?> GetAddressByUserAsync(int userId)
         {
             return await _dbSet
                 .Where(a => a.UserId == userId)
-                .ToListAsync();
+                .FirstOrDefaultAsync();
         }
         public async Task<Address?> GetAddressWithUserAsync(int addressId)
         {

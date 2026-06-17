@@ -1,12 +1,15 @@
-﻿using DataAccessLayer;
+﻿using BusinessLayer.DTOs.Shipping;
+using DataAccessLayer;
 using System.Linq.Expressions;
 
 namespace BusinessLayer.Interfaces.Repositories
 {
     public interface IShippingRepository : IBaseRepository<Shipping>
     {
-        Task<Shipping?> GetShippingByOrderAsync(int orderId);
-        Task<Shipping?> GetShippingByTrackingNumberAsync(string trackingNumber);
-        Task<IEnumerable<Shipping>> GetShippingsByAddressAsync(int addressId);
+        new Task<IEnumerable<ShippingDto>> GetAllAsync();
+        new Task<ShippingDto?> GetByIdAsync(int id);
+        Task<ShippingDto?> GetShippingByOrderAsync(int orderId);
+        Task<ShippingDto?> GetShippingByTrackingNumberAsync(string trackingNumber);
+        Task<IEnumerable<ShippingDto>> GetShippingsByAddressAsync(int addressId);
     }
 }

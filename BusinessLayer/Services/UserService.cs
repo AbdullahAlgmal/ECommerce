@@ -17,9 +17,9 @@ namespace BusinessLayer.Services
             _addressRepository = addressRepository;
         }
 
-        public async Task<UserDto?> GetUserWithAddressesAsync(int id)
+        public async Task<UserDto?> GetUserWithAddressAsync(int id)
         {
-            var user = await _userRepository.GetUserWithAddressesAsync(id);
+            var user = await _userRepository.GetUserWithAddressAsync(id);
             return user != null ? await MapToDto(user) : null;
         }
         public override async Task<bool> DeleteAsync(int id)
@@ -36,7 +36,7 @@ namespace BusinessLayer.Services
 
         protected override async Task<UserDto> MapToDto(User user)
         {
-            var addresses = await _addressRepository.GetAddressesByUserAsync(user.Id);
+            var address = await _addressRepository.GetAddressByUserAsync(user.Id);
 
             return new UserDto
             {
@@ -47,19 +47,19 @@ namespace BusinessLayer.Services
                 Phone = user.Phone,
                 DateofBirth = user.DateofBirth,
                 Role = user.Role,
-                Addresses = addresses.Select(a => new AddressDto
+                Address = address != null ? new AddressDto
                 {
-                    Id = a.Id,
-                    HouseNumber = a.HouseNumber,
-                    StreetBlock = a.StreetBlock,
-                    Area = a.Area,
-                    City = a.City,
-                    Province = a.Province,
-                    Country = a.Country,
-                    ZipCode = a.ZipCode,
-                    UserId = a.UserId,
+                    Id = address.Id,
+                    HouseNumber = address.HouseNumber,
+                    StreetBlock = address.StreetBlock,
+                    Area = address.Area,
+                    City = address.City,
+                    Province = address.Province,
+                    Country = address.Country,
+                    ZipCode = address.ZipCode,
+                    UserId = address.UserId,
                     UserName = $"{user.FirstName} {user.LastName}"
-                }).ToList()
+                } : new AddressDto()
             };
         }
         protected override async Task<IEnumerable<UserDto>> MapToDtoList(IEnumerable<User> entities)

@@ -12,6 +12,5 @@
         public int AddressId { get; set; }
         public string FullAddress { get; set; } = null!;
         public int OrderId { get; set; }
-        public List<ShippingTrackingEventDto> TrackingHistory { get; set; } = new();
     }
 }

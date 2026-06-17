@@ -16,21 +16,15 @@ namespace BusinessLayer.Services
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<AddressDto>> GetAddressesByUserAsync(int userId)
+        public async Task<AddressDto?> GetAddressByUserAsync(int userId)
         {
             var userExists = await _userRepository.ExistsAsync(u => u.Id == userId);
             if (!userExists)
                 throw new InvalidOperationException($"User with ID {userId} does not exist");
 
-            var addresses = await _addressRepository.GetAddressesByUserAsync(userId);
-            var addressDtos = new List<AddressDto>();
+            var address = await _addressRepository.GetAddressByUserAsync(userId);
 
-            foreach (var address in addresses)
-            {
-                addressDtos.Add(await MapToDto(address));
-            }
-
-            return addressDtos;
+            return address != null ? await MapToDto(address) : null;
         }
         public async Task<bool> AddressBelongsToUserAsync(int addressId, int userId)
         {

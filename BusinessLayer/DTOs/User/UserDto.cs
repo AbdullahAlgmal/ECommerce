@@ -12,6 +12,6 @@ namespace BusinessLayer.DTOs.User
         public string Phone { get; set; } = null!;
         public DateOnly DateofBirth { get; set; }
         public string Role { get; set; } = null!;
-        public List<AddressDto> Addresses { get; set; } = new();
+        public AddressDto Address { get; set; } = new();
     }
 }

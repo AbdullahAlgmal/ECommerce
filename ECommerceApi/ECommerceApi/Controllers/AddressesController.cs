@@ -52,28 +52,28 @@ namespace ECommerceApi.Controllers
 
         [Authorize(Roles = "Admin,Customer")]
         [HttpGet("user/{userId}")]
-        [ProducesResponseType(typeof(ApiResponse<IEnumerable<AddressDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<AddressDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<ApiResponse<IEnumerable<AddressDto>>>> GetAddressesByUser(int userId, [FromServices] IAuthorizationService authorizationService)
+        public async Task<ActionResult<ApiResponse<AddressDto>>> GetAddressByUser(int userId, [FromServices] IAuthorizationService authorizationService)
         {
             try
             {
                 var userExists = await _userService.ExistsAsync(userId);
                 if (!userExists)
-                    return NotFound(ApiResponse<IEnumerable<AddressDto>>.Fail($"User with ID {userId} not found"));
+                    return NotFound(ApiResponse<AddressDto>.Fail($"User with ID {userId} not found"));
 
                 var authResult = await authorizationService.AuthorizeAsync(User, userId, "AdminOrUserOwner");
                 if (!authResult.Succeeded)
                     return Forbid();
 
-                var addresses = await _addressService.GetAddressesByUserAsync(userId);
-                return Ok(ApiResponse<IEnumerable<AddressDto>>.Succ(addresses));
+                var address = await _addressService.GetAddressByUserAsync(userId);
+                return Ok(ApiResponse<AddressDto>.Succ(address ?? new AddressDto()));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<IEnumerable<AddressDto>>.Fail(ex.Message));
+                return StatusCode(500, ApiResponse<AddressDto>.Fail(ex.Message));
             }
         }
 

@@ -8,6 +8,7 @@ namespace BusinessLayer.Interfaces.Services
     public interface IProductService : IBaseService<Product, ProductDto, CreateProductDto, UpdateProductDto>
     {
         Task<ProductDto?> GetProductWithDetailsAsync(int id);
+        Task<IEnumerable<ProductDto>> GetProductsByCategoryAsync(int categoryId);
         Task<PagedResult<ProductDto>> SearchProductsAsync(ProductFilterDto filter);
         Task<bool> UpdateStockAsync(int productId, int quantity);
         Task<bool> ReduceStockAsync(int productId, int quantity);

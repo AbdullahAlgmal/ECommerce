@@ -37,6 +37,8 @@ public partial class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         new OrderAggregatedRawConfiguration().Configure(modelBuilder.Entity<OrderAggregatedRaw>());
+        new OrderItemStatisticsRawConfiguration().Configure(modelBuilder.Entity<OrderItemStatisticsRaw>());
+        new ProductRawConfiguration().Configure(modelBuilder.Entity<ProductRaw>());
 
         modelBuilder.Entity<Address>(entity =>
         {
@@ -66,8 +68,8 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.User).WithMany(p => p.Addresses)
-                .HasForeignKey(d => d.UserId)
+            entity.HasOne(d => d.User).WithOne(p => p.Address)
+                .HasForeignKey<Address>(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Address__UserId__3B75D760");
         });

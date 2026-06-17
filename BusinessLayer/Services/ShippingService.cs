@@ -28,17 +28,16 @@ namespace BusinessLayer.Services
         public async Task<IEnumerable<ShippingDto>> GetAllShippingsAsync()
         {
             var shippings = await _shippingRepository.GetAllAsync();
-            var shippingDtos = new List<ShippingDto>();
             foreach (var shipping in shippings)
             {
-                shippingDtos.Add(await MapToShippingDto(shipping));
+               shipping.StatusName = ((ShippingStatus)shipping.Status).ToString();
             }
-            return shippingDtos;
+            return shippings;
         }
         public async Task<ShippingDto?> GetShippingByIdAsync(int id)
         {
             var shipping = await _shippingRepository.GetByIdAsync(id);
-            return shipping != null ? await MapToShippingDto(shipping) : null;
+            return shipping;
         }
         public async Task<ShippingDto> CreateShippingAsync(CreateShippingDto createDto)
         {
@@ -95,12 +94,22 @@ namespace BusinessLayer.Services
             var oldStatus = (ShippingStatus)shipping.Status;
             var newStatus = (ShippingStatus)updateDto.Status;
 
-            shipping.Status = updateDto.Status;
+            var shippingEntity = new Shipping
+            {
+                Id = shipping.Id,
+                OrderId = shipping.OrderId,
+                AddressId = shipping.AddressId,
+                CarrierName = shipping.CarrierName,
+                TrackingNumber = shipping.TrackingNumber,
+                ShippingDate = shipping.ShippingDate,
+                DeliveryDate = shipping.DeliveryDate,
+                Status = (byte)updateDto.Status
+            };
 
             if (updateDto.DeliveryDate.HasValue)
-                shipping.DeliveryDate = updateDto.DeliveryDate.Value;
+                shippingEntity.DeliveryDate = updateDto.DeliveryDate.Value;
 
-            var updatedShipping = await _shippingRepository.UpdateAsync(shipping);
+            var updatedShipping = await _shippingRepository.UpdateAsync(shippingEntity);
            
             if (newStatus == ShippingStatus.Delivered && oldStatus != ShippingStatus.Delivered)
             {
@@ -124,8 +133,18 @@ namespace BusinessLayer.Services
 
             if (result)
             {
-                shipping.Status = (byte)ShippingStatus.Cancelled;
-                await _shippingRepository.UpdateAsync(shipping);
+                var shippingEntity = new Shipping
+                {
+                    Id = shipping.Id,
+                    OrderId = shipping.OrderId,
+                    AddressId = shipping.AddressId,
+                    CarrierName = shipping.CarrierName,
+                    TrackingNumber = shipping.TrackingNumber,
+                    ShippingDate = shipping.ShippingDate,
+                    DeliveryDate = shipping.DeliveryDate,
+                    Status = (byte)ShippingStatus.Cancelled
+                };
+                await _shippingRepository.UpdateAsync(shippingEntity);
             }
 
             return result;
@@ -133,7 +152,12 @@ namespace BusinessLayer.Services
         public async Task<ShippingDto?> GetShippingByOrderAsync(int orderId)
         {
             var shipping = await _shippingRepository.GetShippingByOrderAsync(orderId);
-            return shipping != null ? await MapToShippingDto(shipping) : null;
+
+            if (shipping != null)
+            {
+                shipping.StatusName = ((ShippingStatus)shipping.Status).ToString();
+            }
+            return shipping;
         }
         public async Task<ShippingTrackingResult> TrackShipmentAsync(string trackingNumber)
         {
@@ -183,7 +207,6 @@ namespace BusinessLayer.Services
                 AddressId = shipping.AddressId,
                 FullAddress = address != null ? $"{address.HouseNumber}, {address.StreetBlock}, {address.City}" : "Unknown",
                 OrderId = shipping.OrderId,
-                TrackingHistory = trackingHistory
             };
         }
     }

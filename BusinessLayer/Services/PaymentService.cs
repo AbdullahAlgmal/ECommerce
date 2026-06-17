@@ -27,7 +27,7 @@ namespace BusinessLayer.Services
         public async Task<IEnumerable<PaymentDto>> GetAllPaymentsAsync()
         {
             var payments = await _paymentRepository.GetAllAsync();
-            return payments.Select(MapToPaymentDto);
+            return payments;
         }
 
         public async Task<PaymentDto?> GetPaymentByIdAsync(int id)
@@ -117,12 +117,12 @@ namespace BusinessLayer.Services
         public async Task<IEnumerable<PaymentDto>> GetPaymentsByUserAsync(int userId)
         {
             var payments = await _paymentRepository.GetPaymentsByUserAsync(userId);
-            return payments.Select(MapToPaymentDto);
+            return payments;
         }
         public async Task<PaymentDto?> GetPaymentByOrderAsync(int orderId)
         {
             var payment = await _paymentRepository.GetPaymentByOrderAsync(orderId);
-            return payment != null ? MapToPaymentDto(payment) : null;
+            return payment;
         }
         public async Task<decimal> GetTotalUserSpendingAsync(int userId)
         {

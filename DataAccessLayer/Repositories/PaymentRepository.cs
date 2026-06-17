@@ -1,4 +1,5 @@
-﻿using BusinessLayer.Interfaces.Repositories;
+﻿using BusinessLayer.DTOs.Payment;
+using BusinessLayer.Interfaces.Repositories;
 using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -9,16 +10,58 @@ namespace DataAccessLayer.Repositories
     {
         public PaymentRepository(AppDbContext context) : base(context) { }
 
-        public async Task<Payment?> GetPaymentByOrderAsync(int orderId)
+        public new async Task<IEnumerable<PaymentDto>> GetAllAsync()
         {
             return await _dbSet
-                .FirstOrDefaultAsync(p => p.OrderId == orderId);
+                .Select(p => new PaymentDto
+                {
+                    Id = p.Id,
+                    OrderId = p.OrderId,
+                    UserId = p.UserId,
+                    TransactionId = p.TransactionId,
+                    Amount = p.Amount,
+                    Method = p.Method,
+                    PaymentDate = p.PaymentDate,
+                    Status = p.Status,
+                    UserName = p.User.FirstName + " " + p.User.LastName
+                })
+                .OrderByDescending(p => p.PaymentDate)
+                .ToListAsync();
         }
-        public async Task<IEnumerable<Payment>> GetPaymentsByUserAsync(int userId)
+        public async Task<PaymentDto?> GetPaymentByOrderAsync(int orderId)
         {
             return await _dbSet
-                .Include(p => p.Order)
+                .Where(p => p.OrderId == orderId)
+                .Select(p => new PaymentDto
+                {
+                    Id = p.Id,
+                    OrderId = p.OrderId,
+                    UserId = p.UserId,
+                    TransactionId = p.TransactionId,
+                    Amount = p.Amount,
+                    Method = p.Method,
+                    PaymentDate = p.PaymentDate,
+                    Status = p.Status,
+                    UserName = p.User.FirstName + " " + p.User.LastName
+                })
+                .FirstOrDefaultAsync();
+        }
+        public async Task<IEnumerable<PaymentDto>> GetPaymentsByUserAsync(int userId)
+        {
+            return await _dbSet
                 .Where(p => p.UserId == userId)
+                .Select(p => new PaymentDto
+                {
+                    Id = p.Id,
+                    OrderId = p.OrderId,
+                    UserId = p.UserId,
+                    TransactionId = p.TransactionId,
+                    Amount = p.Amount,
+                    Method = p.Method,
+                    PaymentDate = p.PaymentDate,
+                    Status = p.Status,
+                    UserName = p.User.FirstName + " " + p.User.LastName
+                })
                 .OrderByDescending(p => p.PaymentDate)
                 .ToListAsync();
         }

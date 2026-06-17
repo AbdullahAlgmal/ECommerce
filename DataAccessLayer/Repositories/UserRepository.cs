@@ -11,10 +11,10 @@ namespace DataAccessLayer.Repositories
         {
         }
 
-        public async Task<User?> GetUserWithAddressesAsync(int userId)
+        public async Task<User?> GetUserWithAddressAsync(int userId)
         {
             return await _dbSet
-                .Include(u => u.Addresses)
+                .Include(u => u.Address)
                 .FirstOrDefaultAsync(u => u.Id == userId);
         }
         public async Task<User?> GetUserByEmailAsync(string email)

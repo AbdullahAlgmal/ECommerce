@@ -28,7 +28,7 @@ namespace BusinessLayer.Services
         public async Task<ReviewDto?> GetReviewWithDetailsAsync(int id)
         {
             var review = await _reviewRepository.GetReviewWithDetailsAsync(id);
-            return review != null ? await MapToDto(review) : null;
+            return review;
         }
 
         public async Task<IEnumerable<ReviewDto>> GetReviewsByProductAsync(int productId)
@@ -38,7 +38,7 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException($"Product with ID {productId} does not exist");
 
             var reviews = await _reviewRepository.GetReviewsByProductAsync(productId);
-            return await Task.WhenAll(reviews.Select(MapToDto));
+            return reviews;
         }
         public async Task<IEnumerable<ReviewDto>> GetReviewsByUserAsync(int userId)
         {
@@ -47,7 +47,7 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException($"User with ID {userId} does not exist");
 
             var reviews = await _reviewRepository.GetReviewsByUserAsync(userId);
-            return await Task.WhenAll(reviews.Select(MapToDto));
+            return reviews;
         }
         public async Task<IEnumerable<ReviewDto>> GetReviewsByRatingRangeAsync(decimal minRating, decimal maxRating)
         {
@@ -55,7 +55,7 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException("Invalid rating range. Ratings must be between 0 and 5");
 
             var reviews = await _reviewRepository.GetReviewsByRatingAsync(minRating, maxRating);
-            return await Task.WhenAll(reviews.Select(MapToDto));
+            return reviews;
         }
 
         public async Task<ProductRatingDto> GetProductRatingAsync(int productId)
@@ -90,11 +90,9 @@ namespace BusinessLayer.Services
 
             var averageRating = reviewsList.Count != 0 ? reviewsList.Average(r => r.Rating) : 0;
             var ratingDistribution = await _reviewRepository.GetRatingDistributionForUserAsync(userId);
-            var recentReviews = (await Task.WhenAll(
+            var recentReviews = 
                 reviewsList
-                    .OrderByDescending(r => r.ReviewDate)
-                    .Take(5)
-                    .Select(MapToDto)))
+                .Take(5)
                 .ToList();
 
             return new UserReviewSummaryDto
@@ -120,7 +118,7 @@ namespace BusinessLayer.Services
 
             return new PagedResult<ReviewDto>
             {
-                Items = await Task.WhenAll(reviews.Select(MapToDto)),
+                Items = reviews,
                 TotalCount = totalCount,
                 PageNumber = filter.PageNumber,
                 PageSize = filter.PageSize

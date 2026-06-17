@@ -97,7 +97,7 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException($"Order with ID {orderId} does not exist");
 
             var orderItems = await _orderItemRepository.GetItemsByOrderAsync(orderId);
-            return await Task.WhenAll(orderItems.Select(MapToDto));
+            return orderItems;
         }
         public async Task<IEnumerable<OrderItemDto>> GetOrderItemsByProductAsync(int productId)
         {
@@ -105,9 +105,8 @@ namespace BusinessLayer.Services
             if (!productExists)
                 throw new InvalidOperationException($"Product with ID {productId} does not exist");
 
-            var allItems = await _orderItemRepository.GetAllAsync();
-            var productItems = allItems.Where(oi => oi.ProductId == productId);
-            return await Task.WhenAll(productItems.Select(MapToDto));
+            var productItems = await _orderItemRepository.GetItemsByProductAsync(productId);
+            return productItems;
         }
         public async Task<decimal> GetTotalSalesByProductAsync(int productId)
         {
@@ -116,47 +115,12 @@ namespace BusinessLayer.Services
 
         public async Task<OrderItemStatisticsDto> GetOrderItemStatisticsAsync()
         {
-            var allItems = await _orderItemRepository.GetAllAsync();
-            var itemsList = allItems.ToList();
-
-            var totalItemsSold = itemsList.Sum(i => i.Quantity);
-            var totalRevenue = itemsList.Sum(i => i.TotalPrice);
-            var uniqueProducts = itemsList.Select(i => i.ProductId).Distinct().Count();
-
-            var topCategories = itemsList
-                .GroupBy(i => i.Product?.Category?.Name ?? "Unknown")
-                .ToDictionary(g => g.Key, g => g.Sum(i => i.Quantity));
-
-            return new OrderItemStatisticsDto
-            {
-                TotalItemsSold = totalItemsSold,
-                TotalRevenue = totalRevenue,
-                AverageOrderValue = totalItemsSold > 0 ? totalRevenue / totalItemsSold : 0,
-                UniqueProductsSold = uniqueProducts,
-                TopCategories = topCategories
-            };
+            return await _orderItemRepository.GetStatisticsAsync();
         }
         public async Task<IEnumerable<ProductSalesDto>> GetTopSellingProductsAsync(int topCount)
         {
-            var allItems = await _orderItemRepository.GetAllAsync();
-
-            var productSales = allItems
-                .GroupBy(i => new { i.ProductId, i.Product.Name })
-                .Select(g => new ProductSalesDto
-                {
-                    ProductId = g.Key.ProductId,
-                    ProductName = g.Key.Name,
-                    TotalQuantitySold = g.Sum(i => i.Quantity),
-                    TotalRevenue = g.Sum(i => i.TotalPrice),
-                    NumberOfOrders = g.Select(i => i.OrderId).Distinct().Count()
-                })
-                .OrderByDescending(p => p.TotalRevenue)
-                .Take(topCount)
-                .ToList();
-
-            return productSales;
+            return await _orderItemRepository.GetTopSellingProductsAsync(topCount);
         }
-
         public async Task<bool> DeleteOrderItemsByOrderAsync(int orderId)
         {
             var orderExists = await _orderRepository.ExistsAsync(o => o.Id == orderId);

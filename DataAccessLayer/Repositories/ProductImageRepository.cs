@@ -28,8 +28,7 @@ namespace DataAccessLayer.Repositories
         public async Task<ProductImage?> GetPrimaryImageAsync(int productId)
         {
             return await _dbSet
-                .Where(pi => pi.ProductId == productId)
-                .OrderBy(pi => pi.ImageOrder)
+                .Where(pi => pi.ProductId == productId && pi.ImageOrder == 1)
                 .FirstOrDefaultAsync();
         }
         public async Task<bool> ReorderImagesAsync(int productId, Dictionary<int, byte> imageOrders)
@@ -48,12 +47,12 @@ namespace DataAccessLayer.Repositories
             return true;
         }
 
-        public async Task<bool> UserOwnsAddressAsync(int imageId, int productId)
+        public async Task<bool> ProductOwnsImageAsync(int imageId, int productId)
         {
             return await _dbSet
                 .AnyAsync(pi => pi.Id == imageId && pi.ProductId == productId);
         }
-        public async Task<int> CountAddressesByUserAsync(int productId)
+        public async Task<int> CountImagesByProductAsync(int productId)
         {
             return await _dbSet.CountAsync(pi => pi.ProductId == productId);
         }

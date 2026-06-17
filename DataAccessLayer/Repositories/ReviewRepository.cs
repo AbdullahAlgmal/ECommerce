@@ -1,4 +1,5 @@
-﻿using BusinessLayer.Interfaces.Repositories;
+﻿using BusinessLayer.DTOs.Review;
+using BusinessLayer.Interfaces.Repositories;
 using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -11,35 +12,71 @@ namespace DataAccessLayer.Repositories
         {
         }
 
-        public async Task<Review?> GetReviewWithDetailsAsync(int id)
+        public async Task<ReviewDto?> GetReviewWithDetailsAsync(int id)
         {
-            return await _dbSet
-                .Include(r => r.Product)
-                .Include(r => r.User)
-                .FirstOrDefaultAsync(r => r.Id == id);
+            return await _dbSet.Where(r => r.Id == id).Select(r => new ReviewDto
+            {
+                Id = r.Id,
+                ReviewText = r.ReviewText,
+                Rating = r.Rating,
+                ReviewDate = r.ReviewDate,
+                ProductId = r.ProductId,
+                ProductName = r.Product.Name ?? "Unknown",
+                UserId = r.UserId,
+                UserName = r.User != null ? $"{r.User.FirstName} {r.User.LastName}" : "Unknown",
+                UserEmail = r.User!.Email ?? "Unknown"
+            }).FirstOrDefaultAsync();
         }
-        public async Task<IEnumerable<Review>> GetReviewsByProductAsync(int productId)
+        public async Task<IEnumerable<ReviewDto>> GetReviewsByProductAsync(int productId)
+        {
+            return await _dbSet.Where(r => r.ProductId == productId).Select(r => new ReviewDto
+            {
+                Id = r.Id,
+                ReviewText = r.ReviewText,
+                Rating = r.Rating,
+                ReviewDate = r.ReviewDate,
+                ProductId = r.ProductId,
+                ProductName = r.Product.Name ?? "Unknown",
+                UserId = r.UserId,
+                UserName = r.User != null ? $"{r.User.FirstName} {r.User.LastName}" : "Unknown",
+                UserEmail = r.User!.Email ?? "Unknown"
+            }).OrderByDescending(r => r.ReviewDate).ToListAsync();
+        }
+        public async Task<IEnumerable<ReviewDto>> GetReviewsByUserAsync(int userId)
         {
             return await _dbSet
-                .Include(r => r.User)
-                .Where(r => r.ProductId == productId)
+                .Where(r => r.UserId == userId)            
+                .Select(r => new ReviewDto
+                {
+                    Id = r.Id,
+                    ReviewText = r.ReviewText,
+                    Rating = r.Rating,
+                    ReviewDate = r.ReviewDate,
+                    ProductId = r.ProductId,
+                    ProductName = r.Product.Name ?? "Unknown",
+                    UserId = r.UserId,
+                    UserName = r.User != null ? $"{r.User.FirstName} {r.User.LastName}" : "Unknown",
+                    UserEmail = r.User!.Email ?? "Unknown"
+                })
                 .OrderByDescending(r => r.ReviewDate)
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Review>> GetReviewsByUserAsync(int userId)
+        public async Task<IEnumerable<ReviewDto>> GetReviewsByRatingAsync(decimal minRating, decimal maxRating)
         {
             return await _dbSet
-                .Include(r => r.Product)
-                .Where(r => r.UserId == userId)
-                .OrderByDescending(r => r.ReviewDate)
-                .ToListAsync();
-        }
-        public async Task<IEnumerable<Review>> GetReviewsByRatingAsync(decimal minRating, decimal maxRating)
-        {
-            return await _dbSet
-                .Include(r => r.Product)
-                .Include(r => r.User)
-                .Where(r => r.Rating >= minRating && r.Rating <= maxRating)
+                .Where(r => r.Rating >= minRating && r.Rating <= maxRating)             
+                .Select(r => new ReviewDto
+                {
+                    Id = r.Id,
+                    ReviewText = r.ReviewText,
+                    Rating = r.Rating,
+                    ReviewDate = r.ReviewDate,
+                    ProductId = r.ProductId,
+                    ProductName = r.Product.Name ?? "Unknown",
+                    UserId = r.UserId,
+                    UserName = r.User != null ? $"{r.User.FirstName} {r.User.LastName}" : "Unknown",
+                    UserEmail = r.User!.Email ?? "Unknown"
+                })
                 .OrderByDescending(r => r.Rating)
                 .ToListAsync();
         }
@@ -72,16 +109,14 @@ namespace DataAccessLayer.Repositories
                 .ToDictionaryAsync(g => g.Rating, g => g.Count);
         }
 
-        public async Task<(IEnumerable<Review> Reviews, int TotalCount)> GetPagedAsync(
+        public async Task<(IEnumerable<ReviewDto> Reviews, int TotalCount)> GetPagedAsync(
             int pageNumber,
             int pageSize,
             Expression<Func<Review, bool>>? predicate = null,
             string? sortBy = null,
             bool sortDescending = false)
         {
-            var query = _dbSet
-                .Include(r => r.Product)
-                .Include(r => r.User)
+            var query = _dbSet               
                 .AsQueryable();
 
             if (predicate != null)
@@ -92,6 +127,18 @@ namespace DataAccessLayer.Repositories
             query = ApplySorting(query, sortBy, sortDescending);
 
             var reviews = await query
+                .Select(r => new ReviewDto
+                {
+                    Id = r.Id,
+                    ReviewText = r.ReviewText,
+                    Rating = r.Rating,
+                    ReviewDate = r.ReviewDate,
+                    ProductId = r.ProductId,
+                    ProductName = r.Product.Name ?? "Unknown",
+                    UserId = r.UserId,
+                    UserName = r.User != null ? $"{r.User.FirstName} {r.User.LastName}" : "Unknown",
+                    UserEmail = r.User!.Email ?? "Unknown"
+                })
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

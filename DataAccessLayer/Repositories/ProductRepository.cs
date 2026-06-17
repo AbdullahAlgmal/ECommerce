@@ -1,5 +1,8 @@
-﻿using BusinessLayer.Interfaces.Repositories;
+﻿using BusinessLayer.DTOs.Product;
+using BusinessLayer.DTOs.ProductImage;
+using BusinessLayer.Interfaces.Repositories;
 using DataAccessLayer.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -9,55 +12,249 @@ namespace DataAccessLayer.Repositories
     {
         public ProductRepository(AppDbContext context) : base(context) { }
 
-        public override async Task<IEnumerable<Product>> GetAllAsync()
+        public new async Task<IEnumerable<ProductDto>> GetAllAsync()
         {
-            return await _dbSet
-                .Include(p => p.Category)
-                .Include(p => p.ProductImages)
-                .Include(p => p.Reviews)
-                .OrderBy(p => p.Id)
-                .ToListAsync();
+            var sql = @"
+                SELECT 
+                p.Id,
+                p.Name,
+                p.Description,
+                p.Price,
+                p.Quantity,
+                p.CategoryId,
+                c.Name AS CategoryName,
+                (
+                    SELECT 
+                        pi.Id,
+                        pi.Url,
+                        pi.ImageOrder,
+			            p.Id as ProductId,
+			            p.Name as ProductName
+                    FROM ProductImages pi
+                    WHERE pi.ProductId = p.Id
+                    ORDER by pi.ImageOrder ASC
+                    FOR JSON PATH
+                ) AS ImagesJson,
+                (
+                    SELECT 
+                        AVG(CAST(r.Rating AS FLOAT)) AS AverageRating,
+                        COUNT(r.Id) AS ReviewCount
+                    FROM Reviews r
+                    WHERE r.ProductId = p.Id
+                    FOR JSON PATH, WITHOUT_ARRAY_WRAPPER  -- ✅ Add this
+                ) AS ReviewsSummaryJson
+            FROM Products p
+            INNER JOIN Category c ON p.CategoryId = c.Id
+            ORDER BY p.Id;";
+
+            var results = await _context.Set<ProductRaw>()
+                .FromSqlRaw(sql)
+                .ToListAsync();     
+
+            return results.Select(r => new ProductDto
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Description = r.Description,
+                Price = r.Price,
+                Quantity = r.Quantity,
+                CategoryId = r.CategoryId,
+                CategoryName = r.CategoryName,
+                Images = r.GetImages(),
+                AverageRating = r.GetReviewsSummary().AverageRating,
+                ReviewCount = r.GetReviewsSummary().ReviewCount
+            }).ToList();
         }
 
-        public async Task<Product?> GetProductWithDetailsAsync(int id)
+        public async Task<ProductDto?> GetProductWithDetailsAsync(int id)
         {
-            return await _dbSet
-                .Include(p => p.Category)
-                .Include(p => p.ProductImages)
-                .Include(p => p.Reviews)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            var sql = @"
+                SELECT 
+                p.Id,
+                p.Name,
+                p.Description,
+                p.Price,
+                p.Quantity,
+                p.CategoryId,
+                c.Name AS CategoryName,
+                (
+                    SELECT 
+                        pi.Id,
+                        pi.Url,
+                        pi.ImageOrder,
+			            p.Id as ProductId,
+			            p.Name as ProductName
+                    FROM ProductImages pi
+                    WHERE pi.ProductId = p.Id
+                    ORDER by pi.ImageOrder ASC
+                    FOR JSON PATH
+                ) AS ImagesJson,
+                (
+                    SELECT 
+                        AVG(CAST(r.Rating AS FLOAT)) AS AverageRating,
+                        COUNT(r.Id) AS ReviewCount
+                    FROM Reviews r
+                    WHERE r.ProductId = p.Id
+                    FOR JSON PATH, WITHOUT_ARRAY_WRAPPER  -- ✅ Add this
+                ) AS ReviewsSummaryJson
+            FROM Products p
+            INNER JOIN Category c ON p.CategoryId = c.Id
+            WHERE p.Id = @productId";
+
+            var result = await _context.Set<ProductRaw>()
+                .FromSqlRaw(sql, new SqlParameter("@productId", id)).FirstOrDefaultAsync();
+
+            if (result == null)
+                return null;
+
+            var productDto = new ProductDto
+            {
+                Id = result.Id,
+                Name = result.Name,
+                Description = result.Description,
+                Price = result.Price,
+                Quantity = result.Quantity,
+                CategoryId = result.CategoryId,
+                CategoryName = result.CategoryName,
+                Images = result.GetImages(),
+                AverageRating = result.GetReviewsSummary().AverageRating,
+                ReviewCount = result.GetReviewsSummary().ReviewCount
+            };
+            return productDto;
         }
-        public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId)
+        public async Task<IEnumerable<ProductDto>> GetProductsByCategoryAsync(int categoryId)
         {
-            return await _dbSet
-                .Include(p => p.Category)
-                .Include(p => p.ProductImages)
-                .Where(p => p.CategoryId == categoryId)
+            var sql = @"
+                SELECT 
+                p.Id,
+                p.Name,
+                p.Description,
+                p.Price,
+                p.Quantity,
+                p.CategoryId,
+                c.Name AS CategoryName,
+                (
+                    SELECT 
+                        pi.Id,
+                        pi.Url,
+                        pi.ImageOrder,
+			            p.Id as ProductId,
+			            p.Name as ProductName
+                    FROM ProductImages pi
+                    WHERE pi.ProductId = p.Id
+                    ORDER by pi.ImageOrder ASC
+                    FOR JSON PATH
+                ) AS ImagesJson,
+                (
+                    SELECT 
+                        AVG(CAST(r.Rating AS FLOAT)) AS AverageRating,
+                        COUNT(r.Id) AS ReviewCount
+                    FROM Reviews r
+                    WHERE r.ProductId = p.Id
+                    FOR JSON PATH, WITHOUT_ARRAY_WRAPPER  -- ✅ Add this
+                ) AS ReviewsSummaryJson
+            FROM Products p           
+            INNER JOIN Category c ON p.CategoryId = c.Id
+            where p.CategoryId = @categoryId
+            ORDER BY p.Id;";
+
+            var results = await _context.Set<ProductRaw>()
+                .FromSqlRaw(sql, new SqlParameter("@categoryId", categoryId))
                 .ToListAsync();
+
+            return results.Select(r => new ProductDto
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Description = r.Description,
+                Price = r.Price,
+                Quantity = r.Quantity,
+                CategoryId = r.CategoryId,
+                CategoryName = r.CategoryName,
+                Images = r.GetImages(),
+                AverageRating = r.GetReviewsSummary().AverageRating,
+                ReviewCount = r.GetReviewsSummary().ReviewCount
+            }).ToList();
         }
-        public async Task<IEnumerable<Product>> GetProductsByPriceRangeAsync(decimal minPrice, decimal maxPrice)
+        public async Task<IEnumerable<ProductDto>> GetProductsByPriceRangeAsync(decimal minPrice, decimal maxPrice)
         {
             return await _dbSet
-                .Include(p => p.Category)
                 .Where(p => p.Price >= minPrice && p.Price <= maxPrice)
+                .SelectMany(p => p.ProductImages, (p, pi) => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Quantity = p.Quantity,
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.Category.Name,
+                    Images = p.ProductImages.Select(pi => new ProductImageDto
+                    {
+                        Id = pi.Id,
+                        Url = pi.Url,
+                        ImageOrder = pi.ImageOrder,
+                        ProductId = p.Id,
+                        ProductName = p.Name
+                    }).ToList(),
+                    AverageRating = (double)p.Reviews.Average(r => r.Rating),
+                    ReviewCount = p.Reviews.Count()
+                })
                 .OrderBy(p => p.Price)
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Product>> GetLowStockProductsAsync(int threshold)
+        public async Task<IEnumerable<ProductDto>> GetLowStockProductsAsync(int threshold)
         {
             return await _dbSet
-                .Include(p => p.Category)
                 .Where(p => p.Quantity <= threshold)
+                .SelectMany(p => p.ProductImages, (p, pi) => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Quantity = p.Quantity,
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.Category.Name,
+                    Images = p.ProductImages.Select(pi => new ProductImageDto
+                    {
+                        Id = pi.Id,
+                        Url = pi.Url,
+                        ImageOrder = pi.ImageOrder,
+                        ProductId = p.Id,
+                        ProductName = p.Name
+                    }).ToList(),
+                    AverageRating = (double)p.Reviews.Average(r => r.Rating),
+                    ReviewCount = p.Reviews.Count()
+                })
                 .OrderBy(p => p.Quantity)
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm)
+        public async Task<IEnumerable<ProductDto>> SearchProductsAsync(string searchTerm)
         {
             var term = searchTerm.ToLower();
             return await _dbSet
-                .Include(p => p.Category)
-                .Where(p => p.Name.ToLower().Contains(term) ||
-                           p.Description.ToLower().Contains(term))
+                .Where(p => p.Name.ToLower().Contains(term) || p.Description.ToLower().Contains(term))
+                .SelectMany(p => p.ProductImages, (p, pi) => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Quantity = p.Quantity,
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.Category.Name,
+                    Images = p.ProductImages.Select(pi => new ProductImageDto
+                    {
+                        Id = pi.Id,
+                        Url = pi.Url,
+                        ImageOrder = pi.ImageOrder,
+                        ProductId = p.Id,
+                        ProductName = p.Name
+                    }).ToList(),
+                    AverageRating = (double)p.Reviews.Average(r => r.Rating),
+                    ReviewCount = p.Reviews.Count()
+                })
                 .ToListAsync();
         }
 
@@ -75,17 +272,14 @@ namespace DataAccessLayer.Repositories
         {
             return await _dbSet.AverageAsync(p => p.Price);
         }
-        public async Task<(IEnumerable<Product> Products, int TotalCount)> GetPagedAsync(
+        public async Task<(IEnumerable<ProductDto> Products, int TotalCount)> GetPagedAsync(
             int pageNumber,
             int pageSize,
             Expression<Func<Product, bool>>? predicate = null,
             string? sortBy = null,
             bool sortDescending = false)
         {
-            var query = _dbSet
-                .Include(p => p.Category)
-                .Include(p => p.ProductImages)
-                .AsQueryable();
+            var query = _dbSet.AsQueryable();
 
             if (predicate != null)
                 query = query.Where(predicate);
@@ -94,7 +288,27 @@ namespace DataAccessLayer.Repositories
 
             query = ApplySorting(query, sortBy, sortDescending);
 
-            var products = await query
+            var products = await query.
+                SelectMany(p => p.ProductImages, (p, pi) => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Quantity = p.Quantity,
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.Category.Name,
+                    Images = p.ProductImages.Select(pi => new ProductImageDto
+                    {
+                        Id = pi.Id,
+                        Url = pi.Url,
+                        ImageOrder = pi.ImageOrder,
+                        ProductId = p.Id,
+                        ProductName = p.Name
+                    }).ToList(),
+                    AverageRating = (double)p.Reviews.Average(r => r.Rating),
+                    ReviewCount = p.Reviews.Count()
+                })
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

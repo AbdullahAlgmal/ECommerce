@@ -22,13 +22,16 @@ namespace BusinessLayer.Services
         public override async Task<IEnumerable<ProductDto>> GetAllAsync()
         {
             var products = await _productRepository.GetAllAsync();
-            var productDtos = await MapToDtoList(products);
-            return productDtos;
+            return products;
+        }
+        public Task<IEnumerable<ProductDto>> GetProductsByCategoryAsync(int categoryId)
+        {
+            return _productRepository.GetProductsByCategoryAsync(categoryId);
         }
         public async Task<ProductDto?> GetProductWithDetailsAsync(int id)
         {
             var product = await _productRepository.GetProductWithDetailsAsync(id);
-            return product != null ? await MapToDto(product) : null;
+            return product != null ? product : null;
         }
         public async Task<PagedResult<ProductDto>> SearchProductsAsync(ProductFilterDto filter)
         {
@@ -43,7 +46,7 @@ namespace BusinessLayer.Services
 
             return new PagedResult<ProductDto>
             {
-                Items = await Task.WhenAll(products.Select(MapToDto)),
+                Items = products,
                 TotalCount = totalCount,
                 PageNumber = filter.PageNumber,
                 PageSize = filter.PageSize
@@ -60,7 +63,7 @@ namespace BusinessLayer.Services
         public async Task<IEnumerable<ProductDto>> GetLowStockProductsAsync(int threshold)
         {
             var products = await _productRepository.GetLowStockProductsAsync(threshold);
-            return await Task.WhenAll(products.Select(MapToDto));
+            return products;
         }
         public async Task<decimal> GetAverageProductPriceAsync()
         {

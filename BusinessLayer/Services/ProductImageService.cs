@@ -26,17 +26,17 @@ namespace BusinessLayer.Services
                 throw new InvalidOperationException($"Product with ID {createDto.ProductId} does not exist");
 
             byte imageOrder;
+            var existingCount = await _productImageRepository.CountImagesByProductAsync(createDto.ProductId);
+
             if (createDto.ImageOrder.HasValue)
             {
                 imageOrder = createDto.ImageOrder.Value;
             }
             else
-            {
-                var existingImages = await _productImageRepository.GetImagesByProductAsync(createDto.ProductId);
-                imageOrder = (byte)(existingImages.Count() + 1);
+            {             
+                imageOrder = (byte)(existingCount + 1);
             }
 
-            var existingCount = await GetImageCountByProductAsync(createDto.ProductId);
             var isFirstImage = existingCount == 0;
 
             var image = new ProductImage
@@ -209,11 +209,11 @@ namespace BusinessLayer.Services
 
         public async Task<bool> ImageBelongsToProductAsync(int imageId, int productId)
         {
-            return await _productImageRepository.UserOwnsAddressAsync(imageId, productId);
+            return await _productImageRepository.ProductOwnsImageAsync(imageId, productId);
         }
         public async Task<int> GetImageCountByProductAsync(int productId)
         {
-            return await _productImageRepository.CountAddressesByUserAsync(productId);
+            return await _productImageRepository.CountImagesByProductAsync(productId);
         }
 
         protected override Task<ProductImageDto> MapToDto(ProductImage entity)
