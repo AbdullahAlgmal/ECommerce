@@ -60,15 +60,14 @@ export const VALIDATION_RULES = {
 
 // Demo Credentials
 export const DEMO_CREDENTIALS = {
-  admin: { email: "admin@example.com", password: "Admin123", role: "Admin" },
-  customer: {
-    email: "customer@example.com",
-    password: "Customer123",
-    role: "Customer",
+  admin: {
+    email: "admin@example.com",
+    password: "Admin123",
+    role: "Admin"
   },
-  seller: {
-    email: "seller@example.com",
-    password: "Seller123",
-    role: "Seller",
+  customer: {
+    email: "ali@gmail.com",
+    password: "Flash.com5252",
+    role: "Customer",
   },
 };

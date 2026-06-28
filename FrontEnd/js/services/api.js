@@ -83,36 +83,36 @@ class ApiService {
 
   // Auth endpoints
   async login(email, password) {
-    return this.request("/auth/login", "POST", { email, password });
+    return this.request("/Auth/login", "POST", { email, password });
   }
 
   async register(userData) {
-    return this.request("/auth/register", "POST", userData);
+    return this.request("/Auth/register", "POST", userData);
   }
 
   async refreshToken(email, refreshToken) {
-    return this.request("/auth/refresh-token", "POST", { email, refreshToken });
+    return this.request("/Auth/refresh-token", "POST", { email, refreshToken });
   }
 
   async logout(email, refreshToken) {
-    return this.request("/auth/logout", "POST", { email, refreshToken });
+    return this.request("/Auth/logout", "POST", { email, refreshToken });
   }
 
   async getCurrentUser() {
-    return this.request("/auth/me", "GET", null, true);
+    return this.request("/Auth/me", "GET", null, true);
   }
 
   async validateToken() {
-    return this.request("/auth/validate", "GET", null, true);
+    return this.request("/Auth/validate", "GET", null, true);
   }
 
   // User endpoints
   async getUserById(id) {
-    return this.request(`/users/${id}`, "GET", null, true);
+    return this.request(`/Users/${id}`, "GET", null, true);
   }
 
   async updateUser(id, userData) {
-    return this.request(`/users/${id}`, "PUT", userData, true);
+    return this.request(`/Users/${id}`, "PUT", userData, true);
   }
 }
 
